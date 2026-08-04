@@ -1,0 +1,9 @@
+<svg viewBox="0 0 480 230" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="230" fill="#F7FAF8"/>
+  <rect x="14" y="14" width="452" height="202" fill="none" stroke="#023316" stroke-width="1.5"/>
+  <rect x="21" y="21" width="438" height="188" fill="none" stroke="#0F7B4F" stroke-width="0.6"/>
+  <text x="240" y="108" text-anchor="middle" font-family="'Playfair Display',Georgia,'Times New Roman',serif" font-size="42" fill="#023316" letter-spacing="1">Roya Vosoughi</text>
+  <line x1="185" y1="132" x2="295" y2="132" stroke="#0F7B4F" stroke-width="1"/>
+  <circle cx="240" cy="132" r="3" fill="#35C97E"/>
+  <text x="240" y="164" text-anchor="middle" font-family="'Space Grotesk',Arial,sans-serif" font-size="13" letter-spacing="3" fill="#0F7B4F">AI ENGINEER · SOFTWARE DEVELOPER</text>
+</svg>

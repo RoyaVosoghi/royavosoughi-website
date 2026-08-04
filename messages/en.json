@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "Roya Vosoughi — AI Engineer & Software Developer",
+    "description": "I build reliable, AI-powered applications for businesses that need them to actually work. Delivered on time, documented, and supported after handoff."
+  },
+  "nav": {
+    "home": "Roya Vosoughi — home",
+    "primary": "Primary",
+    "services": "Services",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact",
+    "menu": "Open menu",
+    "close": "Close menu",
+    "skipToContent": "Skip to content"
+  },
+  "hero": {
+    "badge": "Open for new projects",
+    "lineA": "Building a dream,",
+    "lineB": "line by line.",
+    "subtitle": "I build reliable, AI-powered applications for businesses that need them to actually work — not demos that impress in a meeting and break the week after.",
+    "ctaPrimary": "Book a consultation",
+    "ctaSecondary": "See my work",
+    "credential": "AI Engineer & Software Developer · Python · LLMs · RAG"
+  },
+  "proof": {
+    "title": "How I work",
+    "onTime": {
+      "title": "Delivered when I said",
+      "body": "If I say Thursday, it is Thursday. No invoice for \"unexpected complexity\" — I quote what I can actually deliver."
+    },
+    "real": {
+      "title": "Real, not a demo",
+      "body": "Something your team uses on a normal Tuesday. Deployed, documented, and handed over with everything it needs to keep running."
+    },
+    "custom": {
+      "title": "Built for your problem",
+      "body": "Your workflow is not a template, so the solution isn't either. I start from what your business actually does, not from a tutorial."
+    },
+    "support": {
+      "title": "I don't disappear",
+      "body": "Handoff isn't the end of the conversation. You get support after delivery, and a person who still answers their email."
+    }
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "Start with a conversation.",
+    "intro": "Most AI projects go wrong before a line of code is written — the wrong problem gets picked. So we start by finding the right one.",
+    "soonLabel": "Coming soon",
+    "consultation": {
+      "name": "AI Strategy Consultation",
+      "duration": "60 minutes",
+      "summary": "One focused call about your business and where AI genuinely fits — and, just as often, where it doesn't. Bring a problem, not a technology.",
+      "walkAwayWith": "You leave with",
+      "p1": "A clear read on which of your problems AI can actually solve today, and which are better solved another way.",
+      "p2": "A realistic scope: what it would take to build, roughly how long, and what could go wrong.",
+      "p3": "A written summary after the call, so you can share it with your team without relying on your notes.",
+      "cta": "Request a consultation",
+      "note": "Online booking and payment are opening soon."
+    },
+    "webinars": {
+      "name": "Webinars",
+      "summary": "Live sessions on putting AI to work in a real business — practical, in plain language, with the code shown on screen."
+    },
+    "classes": {
+      "name": "Online classes",
+      "summary": "Structured courses for teams who want to build their own AI capability instead of outsourcing it forever."
+    }
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "title": "A portfolio you can run.",
+    "intro": "My rule: build everything in public. Every project here is deployed, open source and documented — something you can open and try, not a claim you have to trust.",
+    "learnedLabel": "What I learned:",
+    "liveDemo": "Live demo",
+    "sourceCode": "Source code",
+    "emptyState": "The first projects are being built right now, in public. Each one lands here only once it is deployed, open source and documented — never before.",
+    "followGithub": "Follow along on GitHub"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Hi, I'm Roya.",
+    "p1": "I'm an AI engineer and software developer based in Turin, Italy. I build applications powered by large language models — RAG tools, assistants and agents that do a specific job for a specific business.",
+    "p2": "I came to this work later than some, and that turned out to be the useful part: I've been the person on the other side of a software project, waiting for an update that never came. I build the way I wished someone had built for me.",
+    "quote": "Never too late to build.",
+    "readMore": "More about me",
+    "photoAlt": "Photo of Roya Vosoughi — coming soon",
+    "photoPlaceholder": "Photo coming soon"
+  },
+  "aboutPage": {
+    "metaTitle": "About",
+    "metaDescription": "Roya Vosoughi — AI engineer and software developer in Turin, Italy. Building AI-powered applications in public.",
+    "eyebrow": "About",
+    "title": "I build the way I wished someone had built for me.",
+    "lead": "AI engineer and software developer in Turin, Italy. I make large language models do specific, useful jobs for real businesses.",
+    "p1": "My work is mostly applications powered by LLMs: retrieval systems that answer questions from a company's own documents, assistants that handle a repetitive task properly, and agents that know the limits of what they should decide alone.",
+    "p2": "I have one rule that shapes everything: build in public. Every project is deployed, open source and documented. That is partly discipline — it is much harder to cut a corner when the repository is open — and partly the fastest way to show what I can do without asking anyone to take my word for it.",
+    "p3": "I studied computer engineering at Politecnico di Torino. I work in English with clients across Italy and Europe, and in Persian with Persian-speaking businesses.",
+    "cvPlaceholder": "This section will be rewritten once Roya sends her CV and photos — the current text is a working draft, not final copy.",
+    "valuesTitle": "What I hold to",
+    "values": {
+      "punctual": {
+        "name": "Punctuality",
+        "body": "The project arrives when I said it would. Your time is the one thing I cannot give back to you."
+      },
+      "practical": {
+        "name": "Practicality",
+        "body": "A solution that works in the business, not a demo that works in a meeting."
+      },
+      "creative": {
+        "name": "Creativity",
+        "body": "A specific answer to your specific problem, rather than last project's answer with the name changed."
+      },
+      "inspiring": {
+        "name": "Possibility",
+        "body": "I want you to leave knowing what AI could do for you — including, honestly, when the answer is not much."
+      }
+    },
+    "ctaTitle": "Have something you want built?",
+    "ctaBody": "Tell me what the problem is. If I'm not the right person for it, I'll say so and point you somewhere better.",
+    "ctaPrimary": "Get in touch"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Tell me what you're trying to solve.",
+    "intro": "The more concrete, the better — what happens today, who it slows down, and what \"fixed\" would look like.",
+    "emailLabel": "Email",
+    "responseLabel": "Response time",
+    "responseValue": "Within two working days. Always a real reply, even if the answer is no.",
+    "nameLabel": "Your name",
+    "namePlaceholder": "Maria Rossi",
+    "nameError": "Enter your name — at least 2 characters.",
+    "companyLabel": "Company",
+    "companyPlaceholder": "Where you work",
+    "optional": "(optional)",
+    "messageLabel": "What are you working on?",
+    "messagePlaceholder": "Describe the problem in a few sentences — no need for technical detail.",
+    "messageError": "Say a little more — at least 10 characters.",
+    "emailError": "Enter a valid email address.",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "successTitle": "Message sent.",
+    "successBody": "Thank you — I'll get back to you within two working days.",
+    "errorBody": "That didn't go through. Please email me directly at",
+    "formErrorSummary": "Please fix the highlighted field before sending.",
+    "fallbackIntro": "The contact form isn't switched on yet. Email me directly — I read every message."
+  },
+  "footer": {
+    "tagline": "Building a dream, line by line. 🌱",
+    "siteLinks": "Site",
+    "elsewhere": "Elsewhere",
+    "rights": "All rights reserved."
+  },
+  "notFound": {
+    "title": "This page doesn't exist.",
+    "body": "The link may be old, or the page may not be built yet.",
+    "cta": "Back to home"
+  }
+}

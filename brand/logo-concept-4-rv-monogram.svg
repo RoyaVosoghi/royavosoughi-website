@@ -1,0 +1,11 @@
+<svg viewBox="0 0 580 170" xmlns="http://www.w3.org/2000/svg">
+  <rect width="580" height="170" fill="#F7FAF8"/>
+  <g fill="none" stroke="#023316" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42,124 L42,42"/>
+    <path d="M42,47 H64 Q84,47 84,65 Q84,83 64,83 H42"/>
+    <path d="M58,83 L88,124 L116,52"/>
+  </g>
+  <circle cx="88" cy="124" r="7" fill="#35C97E"/>
+  <text x="152" y="88" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="38" font-weight="500" fill="#023316">Roya Vosoughi</text>
+  <text x="154" y="117" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="13" letter-spacing="4" fill="#0F7B4F">AI ENGINEER · SOFTWARE DEVELOPER</text>
+</svg>

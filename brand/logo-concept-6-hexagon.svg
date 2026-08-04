@@ -1,0 +1,8 @@
+<svg viewBox="0 0 580 170" xmlns="http://www.w3.org/2000/svg">
+  <rect width="580" height="170" fill="#F7FAF8"/>
+  <polygon points="95,30 142.6,57.5 142.6,112.5 95,140 47.4,112.5 47.4,57.5" fill="none" stroke="#023316" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="95" cy="30" r="5" fill="#35C97E"/>
+  <text x="95" y="100" text-anchor="middle" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="42" font-weight="700" fill="#023316">RV</text>
+  <text x="175" y="80" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="34" font-weight="500" fill="#1A1E1C">Roya Vosoughi</text>
+  <text x="177" y="108" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="13" letter-spacing="4" fill="#0F7B4F">AI ENGINEER · SOFTWARE DEVELOPER</text>
+</svg>

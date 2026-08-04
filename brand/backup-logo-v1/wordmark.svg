@@ -1,0 +1,7 @@
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="560" height="200" rx="20" fill="#023316"/>
+  <g transform="translate(40,50)">
+    <path fill-rule="evenodd" fill="#3DBE5B" d="M0,100 L0,14 A14,14 0 0 1 14,0 L30,0 L30,100 Z M37,0 L94,0 A24,24 0 0 1 118,24 L118,42 A20,20 0 0 1 98,62 L96,62 L124,100 L90,100 L62,62 L35,62 L37,0 Z M56,18 L90,18 A10,10 0 0 1 100,28 L100,34 A10,10 0 0 1 90,44 L56,44 A10,10 0 0 1 46,34 L46,28 A10,10 0 0 1 56,18 Z"/>
+  </g>
+  <text x="200" y="115" font-family="Georgia,'Times New Roman',serif" font-size="44" font-weight="700" fill="#F7FAF8">Roya Vosoughi</text>
+</svg>

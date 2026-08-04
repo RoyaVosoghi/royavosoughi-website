@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Roya Vosoughi — brand tokens
+   Source of truth: Roya_Brand_Guide.md § 02 Visual Identity
+   Do not introduce colours outside this palette.
+   ========================================================================== */
+
+@theme {
+  /* Palette */
+  --color-forest: #023316; /* Deep Forest — dark base, headings, dark sections */
+  --color-emerald: #0f7b4f; /* Emerald — primary brand: buttons, links, emphasis */
+  --color-spring: #35c97e; /* Spring — accent on dark, display-size highlight only */
+  --color-mint: #dff5e9; /* Mint — soft background, cards, quotes */
+  --color-offwhite: #f7faf8; /* Off-White — main light background */
+  --color-ink: #1a1e1c; /* Ink — body text on light */
+  --color-saffron: #e3a72f; /* Saffron — rare special highlight */
+
+  /* Supporting tints, derived from the palette (not new colours) */
+  --color-forest-soft: #0a4a24; /* hover state on forest surfaces */
+  --color-mint-deep: #8fd9b4; /* muted text on forest — matches the wordmark */
+  --color-saffron-deep: #876012; /* Saffron, darkened for text/borders on light — raw Saffron is 2:1 on Off-White, fails WCAG AA */
+
+  /* Type families. --font-display / --font-body are re-pointed per locale below. */
+  --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* Layout */
+  --spacing-gutter: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Locale-driven typography.
+   The font family follows the LANGUAGE, not the element — per the brand guide,
+   Farsi uses Vazirmatn everywhere, English splits display/body.
+   -------------------------------------------------------------------------- */
+
+.locale-en {
+  --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+}
+
+.locale-fa {
+  --font-display: var(--font-vazirmatn), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-vazirmatn), "Segoe UI", system-ui, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor scrolling for the sticky header */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-offwhite);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Nothing may push the page sideways — checked at 360px in both directions */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-forest);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Farsi headings do not want negative tracking — it breaks letter joining */
+  .locale-fa h1,
+  .locale-fa h2,
+  .locale-fa h3,
+  .locale-fa h4 {
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  .locale-fa p,
+  .locale-fa li {
+    line-height: 2;
+  }
+
+  code,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Visible, on-brand focus ring everywhere */
+  :focus-visible {
+    outline: 3px solid var(--color-emerald);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Tailwind v4 preflight no longer sets this — every clickable control needs it */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    background-color: var(--color-spring);
+    color: var(--color-forest);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Utilities
+   -------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* Page container — logical padding so RTL mirrors for free */
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* Hero display type. Scales from phone to large desktop without breakpoints.
+     The minimum is set so "Building a dream," still fits on ONE line at 360px —
+     anything larger wraps it to "Building a / dream," which reads badly.
+     If the headline text ever changes, re-check the fit at 360px. */
+  .text-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.125rem, 8.5vw, 6.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+
+  .locale-fa .text-display {
+    font-size: clamp(2rem, 7vw, 5.25rem);
+    line-height: 1.45;
+    letter-spacing: 0;
+  }
+
+  /* Section heading */
+  .text-section {
+    font-size: clamp(1.875rem, 4.5vw, 3.25rem);
+    line-height: 1.1;
+  }
+
+  .locale-fa .text-section {
+    line-height: 1.5;
+  }
+
+  /* Small uppercase label above section headings. Never used for Farsi
+     (Persian has no uppercase and letter-spacing breaks the script). */
+  .label-eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .locale-fa .label-eyebrow {
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.9375rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Motion — every animation here must no-op under prefers-reduced-motion
+   -------------------------------------------------------------------------- */
+
+/* The Emerald underline that draws itself under "line by line".
+   A literal reading of the tagline: the line is built, left to right. */
+@keyframes draw-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.underline-draw {
+  transform-origin: left center;
+  animation: draw-underline 1100ms cubic-bezier(0.65, 0, 0.35, 1) 350ms both;
+}
+
+[dir="rtl"] .underline-draw {
+  transform-origin: right center;
+}
+
+/* Entrance for decorative / secondary elements. Fades from transparent, so it
+   must never be used on content the visitor has to read. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Entrance for the headline and subtitle.
+   Deliberately animates TRANSFORM ONLY — never opacity. If the animation is
+   delayed, frozen (background tab) or never runs at all, the worst case is
+   text sitting 0.75rem low, not an empty hero. The one sentence this whole
+   page is built around must never depend on an animation to be visible. */
+@keyframes rise-in-solid {
+  from {
+    transform: translateY(0.75rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.rise-in-solid {
+  animation: rise-in-solid 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .underline-draw {
+    transform: scaleX(1);
+  }
+}

@@ -1,0 +1,6 @@
+<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="200" rx="20" fill="#023316"/>
+  <text x="228" y="108" text-anchor="middle" font-family="'Space Grotesk',Arial,sans-serif" font-size="72" font-weight="700" fill="#F7FAF8">roya</text>
+  <path d="M330 96 L342 108 L366 78" fill="none" stroke="#35C97E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="240" y="150" text-anchor="middle" font-family="'Space Grotesk',Arial,sans-serif" font-size="17" letter-spacing="10" fill="#8FD9B4">VOSOUGHI</text>
+</svg>
