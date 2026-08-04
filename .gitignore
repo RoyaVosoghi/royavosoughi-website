@@ -30,3 +30,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Claude Code — bundled third-party skill packages (fonts, schemas, etc.),
+# not project source. Keep .claude/launch.json, drop everything under skills/.
+.claude/skills/
