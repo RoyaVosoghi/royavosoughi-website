@@ -10,7 +10,6 @@ export function Wordmark({ className = "" }: { className?: string }) {
     <svg
       viewBox="0 0 566 100"
       aria-hidden="true"
-      dir="ltr"
       className={`h-9 w-auto ${className}`}
     >
       <path

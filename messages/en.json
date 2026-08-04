@@ -21,7 +21,8 @@
     "subtitle": "I build reliable, AI-powered applications for businesses that need them to actually work — not demos that impress in a meeting and break the week after.",
     "ctaPrimary": "Book a consultation",
     "ctaSecondary": "See my work",
-    "credential": "AI Engineer & Software Developer · Python · LLMs · RAG"
+    "credential": "AI Engineer & Software Developer · Python · LLMs · RAG",
+    "codeCardLabel": "Illustrative example: an AI agent answering from a company's own documents, not a guess"
   },
   "proof": {
     "title": "How I work",

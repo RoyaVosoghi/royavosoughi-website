@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
+import { Reveal } from "@/components/ui/Reveal";
 
 const consultationPoints = ["p1", "p2", "p3"] as const;
 const upcoming = ["webinars", "classes"] as const;
@@ -15,17 +16,22 @@ export async function Services() {
   const t = await getTranslations("services");
 
   return (
-    <Section id="services" tone="forest">
-      <SectionHeading
-        eyebrow={t("eyebrow")}
-        title={t("title")}
-        intro={t("intro")}
-        tone="forest"
-      />
+    <Section id="services" tone="forest" className="bg-dot-grid">
+      <Reveal>
+        <SectionHeading
+          eyebrow={t("eyebrow")}
+          title={t("title")}
+          intro={t("intro")}
+          tone="forest"
+        />
+      </Reveal>
 
       <div className="mt-14 grid gap-6 lg:grid-cols-3">
         {/* Primary offer */}
-        <article className="rounded-3xl bg-offwhite p-8 md:p-10 lg:col-span-2">
+        <Reveal
+          delayMs={80}
+          className="rounded-3xl bg-offwhite p-8 md:p-10 lg:col-span-2"
+        >
           <div className="flex flex-wrap items-center gap-3">
             <h3 className="text-2xl text-forest md:text-3xl">
               {t("consultation.name")}
@@ -66,13 +72,14 @@ export async function Services() {
             </ButtonLink>
             <p className="text-sm text-ink/70">{t("consultation.note")}</p>
           </div>
-        </article>
+        </Reveal>
 
         {/* Roadmap — visible so the site reads as a growing practice */}
         <div className="flex flex-col gap-6">
-          {upcoming.map((key) => (
-            <article
+          {upcoming.map((key, i) => (
+            <Reveal
               key={key}
+              delayMs={160 + i * 80}
               className="flex-1 rounded-3xl border border-mint-deep/25 p-8"
             >
               <span className="label-eyebrow text-spring">{t("soonLabel")}</span>
@@ -80,7 +87,7 @@ export async function Services() {
               <p className="mt-3 text-[0.9375rem] leading-relaxed text-mint">
                 {t(`${key}.summary`)}
               </p>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>

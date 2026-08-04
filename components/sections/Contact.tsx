@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { site } from "@/lib/site";
 import { ContactForm } from "./ContactForm";
@@ -11,7 +12,7 @@ export async function Contact() {
   return (
     <Section id="contact" tone="light">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-20">
-        <div>
+        <Reveal>
           <SectionHeading
             eyebrow={t("eyebrow")}
             title={t("title")}
@@ -50,11 +51,11 @@ export async function Contact() {
               <dd className="mt-2 text-lg text-ink/75">{t("responseValue")}</dd>
             </div>
           </dl>
-        </div>
+        </Reveal>
 
-        <div className="rounded-3xl bg-mint/40 p-6 md:p-8">
+        <Reveal delayMs={100} className="rounded-3xl bg-mint/40 p-6 md:p-8">
           <ContactForm configured={isSupabaseConfigured()} email={site.email} />
-        </div>
+        </Reveal>
       </div>
     </Section>
   );

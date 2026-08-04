@@ -242,6 +242,37 @@
   animation: rise-in-solid 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Scroll-reveal for below-the-fold content. Reveal.tsx toggles .is-visible
+   via IntersectionObserver once each element scrolls into view — same easing
+   as the Hero's rise-in, so the craft reads as one system top to bottom.
+   Reveal.tsx sets visibility immediately (no transition) under reduced
+   motion, so this block never needs to know about that case. */
+.reveal {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtle technical texture for dark (Forest) sections — a fine dot grid,
+   deliberately faint so it reads as texture, never competes with content.
+   The alpha lives in the dot colour itself (not element opacity), so it
+   never dims the section's actual content. */
+.bg-dot-grid {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-mint-deep) 12%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  background-position: -14px -14px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -258,4 +289,22 @@
   .underline-draw {
     transform: scaleX(1);
   }
+}
+
+/* Blinking cursor for the Hero code card — a small nod to a live terminal.
+   Reduced-motion above forces animation-iteration-count: 1, so this settles
+   on one frame instead of blinking forever. */
+@keyframes blink-cursor {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  animation: blink-cursor 1000ms step-end infinite;
 }

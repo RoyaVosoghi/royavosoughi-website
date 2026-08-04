@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
 
 /**
  * Photo slot stays a framed placeholder until Roya sends real photos.
@@ -14,7 +15,7 @@ export async function AboutTeaser() {
   return (
     <Section id="about" tone="mint">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16">
-        <div className="mx-auto w-full max-w-sm lg:mx-0">
+        <Reveal className="mx-auto w-full max-w-sm lg:mx-0">
           <div
             className="relative aspect-4/5 overflow-hidden rounded-3xl bg-forest"
             role="img"
@@ -40,9 +41,9 @@ export async function AboutTeaser() {
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div>
+        <Reveal delayMs={100}>
           <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
           <h2 className="text-section mt-4 text-forest">{t("title")}</h2>
           <p className="mt-6 text-lg text-ink/80">{t("p1")}</p>
@@ -58,7 +59,7 @@ export async function AboutTeaser() {
           >
             {t("readMore")} →
           </Link>
-        </div>
+        </Reveal>
       </div>
     </Section>
   );
