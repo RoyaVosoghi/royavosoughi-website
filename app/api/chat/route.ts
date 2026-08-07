@@ -1,26 +1,12 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
 import { runBrainTurn } from "@/lib/ai/brain";
+import { ChatRequestSchema, getClientIp } from "@/lib/ai/chat-schema";
 import { BrainNotConfiguredError, RateLimitError } from "@/lib/ai/types";
 
 // Not edge: the admin Supabase client + Gemini SDK are Node-based, and the
 // tool-calling loop makes multiple sequential upstream round-trips.
 export const runtime = "nodejs";
-
-const ChatSchema = z.object({
-  channelSessionId: z.uuid(),
-  locale: z.enum(["en", "fa"]).default("en"),
-  message: z.string().trim().min(1).max(4000),
-  /** Honeypot, same pattern as app/api/contact/route.ts — hidden from humans. */
-  website: z.string().max(2000).optional(),
-});
-
-function getClientIp(request: Request): string | null {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (!forwarded) return null;
-  return forwarded.split(",")[0]?.trim() || null;
-}
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -30,7 +16,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const parsed = ChatSchema.safeParse(body);
+  const parsed = ChatRequestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: "validation_failed", issues: parsed.error.issues },
