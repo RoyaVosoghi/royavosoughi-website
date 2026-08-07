@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/ingest.ts"
+    "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/ingest.ts",
+    "telegram:set-webhook": "tsx --env-file=.env.local scripts/telegram-set-webhook.ts"
   },
   "dependencies": {
     "@google/genai": "^2.16.0",
