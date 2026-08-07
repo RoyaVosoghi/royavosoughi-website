@@ -1,0 +1,71 @@
+/**
+ * Rebuilds the RAG knowledge base: site copy (messages/*.json,
+ * content/projects.ts) plus any curated docs in content/knowledge/*.md.
+ * Run with `npm run ingest` after content changes. Safe to re-run — each
+ * source's chunks are fully replaced, not duplicated.
+ */
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
+import { isGeminiConfigured } from "@/lib/ai/gemini";
+import { ingestCuratedDocs, ingestSiteCopy, type CuratedDoc } from "@/lib/ai/ingest";
+import type { Locale } from "@/lib/ai/types";
+
+const KNOWLEDGE_DIR = join(process.cwd(), "content", "knowledge");
+const DOC_FILENAME_RE = /^(.+)\.(en|fa)\.md$/;
+
+function readCuratedDocs(): CuratedDoc[] {
+  let entries: string[];
+  try {
+    entries = readdirSync(KNOWLEDGE_DIR);
+  } catch {
+    return [];
+  }
+
+  const docs: CuratedDoc[] = [];
+  for (const entry of entries) {
+    const match = entry.match(DOC_FILENAME_RE);
+    if (!match) continue;
+    const [, slug, locale] = match;
+    docs.push({
+      filename: slug,
+      locale: locale as Locale,
+      content: readFileSync(join(KNOWLEDGE_DIR, entry), "utf-8"),
+    });
+  }
+  return docs;
+}
+
+async function main() {
+  if (!isGeminiConfigured() || !isSupabaseServiceConfigured()) {
+    console.error(
+      "Missing GEMINI_API_KEY or SUPABASE_SERVICE_ROLE_KEY — fill in .env.local first.",
+    );
+    process.exit(1);
+  }
+
+  console.log("Ingesting site copy...");
+  const siteResults = await ingestSiteCopy();
+  for (const r of siteResults) {
+    console.log(`  ${r.sourceKey} [${r.locale}] -> ${r.chunks} chunks`);
+  }
+
+  const docs = readCuratedDocs();
+  if (docs.length === 0) {
+    console.log("No curated docs found in content/knowledge/ — skipping.");
+  } else {
+    console.log(`Ingesting ${docs.length} curated doc(s)...`);
+    const docResults = await ingestCuratedDocs(docs);
+    for (const r of docResults) {
+      console.log(`  ${r.sourceKey} [${r.locale}] -> ${r.chunks} chunks`);
+    }
+  }
+
+  console.log("Done.");
+}
+
+main().catch((err) => {
+  console.error("Ingestion failed:", err);
+  process.exit(1);
+});

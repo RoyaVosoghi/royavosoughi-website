@@ -9,6 +9,7 @@
     "services": "Services",
     "projects": "Projects",
     "about": "About",
+    "chat": "Chat",
     "contact": "Contact",
     "menu": "Open menu",
     "close": "Close menu",
@@ -85,8 +86,7 @@
     "p2": "I came to this work later than some, and that turned out to be the useful part: I've been the person on the other side of a software project, waiting for an update that never came. I build the way I wished someone had built for me.",
     "quote": "Never too late to build.",
     "readMore": "More about me",
-    "photoAlt": "Photo of Roya Vosoughi — coming soon",
-    "photoPlaceholder": "Photo coming soon"
+    "photoAlt": "Roya Vosoughi outdoors in Turin"
   },
   "aboutPage": {
     "metaTitle": "About",
@@ -120,6 +120,25 @@
     "ctaTitle": "Have something you want built?",
     "ctaBody": "Tell me what the problem is. If I'm not the right person for it, I'll say so and point you somewhere better.",
     "ctaPrimary": "Get in touch"
+  },
+  "chatPage": {
+    "metaTitle": "Chat",
+    "metaDescription": "Ask about Roya Vosoughi's services, work, and how to get in touch.",
+    "eyebrow": "Chat",
+    "title": "Ask me anything.",
+    "lead": "This assistant knows about my services, background and projects. Ask a question, or tell it what you're working on."
+  },
+  "chat": {
+    "inputPlaceholder": "Type a message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "thinking": "Thinking…",
+    "errorBody": "That didn't go through. Please try again, or email me directly.",
+    "retry": "Try again",
+    "emptyState": "Say hello, or ask about services, projects, or booking a consultation.",
+    "disclaimer": "This assistant can make mistakes. For anything important, confirm by email.",
+    "rateLimited": "You've sent a lot of messages in a short time — please wait a few minutes and try again.",
+    "notConfigured": "Chat isn't switched on yet. Email me directly — I read every message."
   },
   "contact": {
     "eyebrow": "Contact",

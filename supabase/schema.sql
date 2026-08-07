@@ -39,6 +39,177 @@ create policy "anon can insert contact messages"
 
 
 -- =============================================================================
+-- V2: chatbot brain (RAG + memory + tools) — service-role only.
+-- Every table below is RLS-enabled with ZERO policies for anon/authenticated.
+-- The brain runs entirely server-side (Next.js API routes) using the Supabase
+-- service role key, which bypasses RLS unconditionally. Enabling RLS with no
+-- policies is a deny-all safety net in case the anon/publishable key is ever
+-- accidentally pointed at these tables later.
+-- =============================================================================
+
+create extension if not exists vector with schema extensions;
+
+-- -----------------------------------------------------------------------------
+-- RAG knowledge base
+-- -----------------------------------------------------------------------------
+
+-- One row per chunk, from either site copy or a curated doc.
+-- (source_key, locale, chunk_index) is the natural upsert key, so re-running
+-- ingestion is idempotent (delete-by-source_key+locale, re-insert).
+create table if not exists public.kb_chunks (
+  id          uuid primary key default gen_random_uuid(),
+  source_type text not null check (source_type in ('site_copy', 'curated_doc')),
+  source_key  text not null,   -- e.g. 'site:services' or 'doc:pricing-faq'
+  locale      text not null default 'en' check (locale in ('en', 'fa')),
+  chunk_index int not null,
+  content     text not null,
+  embedding   vector(768) not null,   -- gemini-embedding-001, truncated to 768 dims
+  metadata    jsonb not null default '{}'::jsonb,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  unique (source_key, locale, chunk_index)
+);
+
+create index if not exists kb_chunks_embedding_idx
+  on public.kb_chunks using hnsw (embedding vector_cosine_ops);
+
+alter table public.kb_chunks enable row level security;
+-- No policies: service role only. RAG reads happen exclusively server-side.
+
+-- supabase-js cannot express the `<=>` operator via the query builder, so
+-- retrieval calls this function via .rpc(). Runs only under the service-role
+-- connection, which already has full table access — no extra privilege
+-- escalation from this function. search_path is pinned so it can't be
+-- hijacked by a role-local setting.
+create or replace function public.match_kb_chunks(
+  query_embedding vector(768),
+  match_locale text,
+  match_count int default 6
+) returns table (
+  id uuid, content text, metadata jsonb, source_key text, similarity float
+)
+language sql stable
+set search_path = public, extensions
+as $$
+  select id, content, metadata, source_key,
+         1 - (embedding <=> query_embedding) as similarity
+  from public.kb_chunks
+  where locale = match_locale
+  order by embedding <=> query_embedding
+  limit match_count;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- Memory: sessions + short-term message history + long-term facts
+-- -----------------------------------------------------------------------------
+
+-- channel is first-class from day one so telegram/widget are additive later,
+-- never a schema change. channel_session_id is whatever the channel calls
+-- "one conversation" (web: client-generated UUID; telegram: chat_id; widget:
+-- its own generated id).
+create table if not exists public.chat_sessions (
+  id                 uuid primary key default gen_random_uuid(),
+  channel            text not null check (channel in ('web', 'telegram', 'widget')),
+  channel_session_id text not null,
+  locale             text not null default 'en',
+  lead_email         text,   -- set once the lead-gen tool captures an email
+  created_at         timestamptz not null default now(),
+  last_active_at     timestamptz not null default now(),
+  unique (channel, channel_session_id)
+);
+
+alter table public.chat_sessions enable row level security;
+-- No policies: service role only.
+
+-- Short-term memory: full message history per session.
+create table if not exists public.chat_messages (
+  id           uuid primary key default gen_random_uuid(),
+  session_id   uuid not null references public.chat_sessions(id) on delete cascade,
+  role         text not null check (role in ('user', 'assistant', 'tool')),
+  content      text not null,
+  tool_name    text,
+  tool_payload jsonb,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists chat_messages_session_created_idx
+  on public.chat_messages (session_id, created_at);
+
+alter table public.chat_messages enable row level security;
+-- No policies: service role only.
+
+-- Long-term memory: durable facts, keyed by email (the only stable identity
+-- we have — the site has no auth). Anonymous visitors get short-term memory
+-- only; once the lead tool captures an email, facts persist across sessions.
+create table if not exists public.memory_facts (
+  id                uuid primary key default gen_random_uuid(),
+  email             text not null,
+  fact              text not null,
+  source_session_id uuid references public.chat_sessions(id) on delete set null,
+  created_at        timestamptz not null default now()
+);
+
+create index if not exists memory_facts_email_idx on public.memory_facts (email);
+
+alter table public.memory_facts enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Tools: lead generation + registration status
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.leads (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  interest   text,
+  session_id uuid references public.chat_sessions(id) on delete set null,
+  locale     text not null default 'en',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists leads_email_idx on public.leads (email);
+
+alter table public.leads enable row level security;
+-- No policies: service role only.
+
+-- No event catalog exists yet (webinars/classes are "coming soon" on the
+-- site), so this is deliberately minimal: enough to record + look up a
+-- registration by email.
+create table if not exists public.registrations (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  event_type text not null check (event_type in ('webinar', 'online_class')),
+  status     text not null default 'pending'
+               check (status in ('pending', 'confirmed', 'cancelled')),
+  session_id uuid references public.chat_sessions(id) on delete set null,
+  locale     text not null default 'en',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists registrations_email_idx on public.registrations (email);
+
+alter table public.registrations enable row level security;
+-- No policies: service role only.
+
+-- Rate limiting for the chat API. A single-purpose hit log, dual-keyed
+-- (session + IP independently) so clearing localStorage alone doesn't reset
+-- the limit.
+create table if not exists public.rate_limit_hits (
+  id         bigint generated always as identity primary key,
+  hit_key    text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists rate_limit_hits_key_created_idx
+  on public.rate_limit_hits (hit_key, created_at);
+
+alter table public.rate_limit_hits enable row level security;
+-- No policies: service role only.
+
+
+-- =============================================================================
 -- PHASE 2 — booking & payments. Not created yet; documented so the shape is
 -- agreed before it gets built. Uncomment when the consultation goes live.
 -- =============================================================================

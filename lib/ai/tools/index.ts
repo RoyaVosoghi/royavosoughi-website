@@ -1,0 +1,32 @@
+import "server-only";
+
+import type { FunctionDeclaration } from "@google/genai";
+
+import type { Locale } from "../types";
+import { captureLeadDeclaration, executeCaptureLead } from "./lead";
+import { checkRegistrationStatusDeclaration, executeCheckRegistrationStatus } from "./registration";
+
+export const toolDeclarations: FunctionDeclaration[] = [
+  captureLeadDeclaration,
+  checkRegistrationStatusDeclaration,
+];
+
+export interface ToolContext {
+  sessionId: string;
+  locale: Locale;
+}
+
+export async function dispatchTool(
+  name: string,
+  args: unknown,
+  ctx: ToolContext,
+): Promise<Record<string, unknown>> {
+  switch (name) {
+    case "capture_lead":
+      return executeCaptureLead(args, ctx);
+    case "check_registration_status":
+      return executeCheckRegistrationStatus(args);
+    default:
+      return { error: "unknown_tool" };
+  }
+}
