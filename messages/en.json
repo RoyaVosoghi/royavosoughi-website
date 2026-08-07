@@ -9,7 +9,6 @@
     "services": "Services",
     "projects": "Projects",
     "about": "About",
-    "chat": "Chat",
     "contact": "Contact",
     "menu": "Open menu",
     "close": "Close menu",
@@ -121,14 +120,10 @@
     "ctaBody": "Tell me what the problem is. If I'm not the right person for it, I'll say so and point you somewhere better.",
     "ctaPrimary": "Get in touch"
   },
-  "chatPage": {
-    "metaTitle": "Chat",
-    "metaDescription": "Ask about Roya Vosoughi's services, work, and how to get in touch.",
-    "eyebrow": "Chat",
-    "title": "Ask me anything.",
-    "lead": "This assistant knows about my services, background and projects. Ask a question, or tell it what you're working on."
-  },
   "chat": {
+    "bubbleTitle": "Ask me anything",
+    "openChat": "Open chat",
+    "closeChat": "Close chat",
     "inputPlaceholder": "Type a message…",
     "send": "Send",
     "sending": "Sending…",

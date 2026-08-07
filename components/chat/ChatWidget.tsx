@@ -98,15 +98,12 @@ export function ChatWidget({ configured, locale }: { configured: boolean; locale
           : "";
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-3xl border-2 border-forest/15 bg-offwhite">
+    <div className="flex h-full flex-col bg-offwhite">
       <div aria-live="polite" role="status" className="sr-only">
         {liveMessage}
       </div>
 
-      <div
-        ref={listRef}
-        className="flex max-h-[28rem] min-h-[20rem] flex-col gap-3 overflow-y-auto p-5"
-      >
+      <div ref={listRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">
         {messages.length === 0 ? (
           <p className="text-ink/60">{t("emptyState")}</p>
         ) : (
