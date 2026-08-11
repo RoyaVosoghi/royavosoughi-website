@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies } from "next/headers";
 
 /**
  * Solo-owner admin auth: one shared password (env var), no user table.
@@ -67,3 +68,9 @@ export function verifySessionToken(token: string | undefined): boolean {
 }
 
 export const ADMIN_SESSION_MAX_AGE_SECONDS = SESSION_TTL_MS / 1000;
+
+/** For Route Handlers under app/api/admin/* — the (protected) layout's redirect only covers app/admin/* pages, not API routes, so those need this explicit check. */
+export async function hasValidAdminSession(): Promise<boolean> {
+  const cookieStore = await cookies();
+  return verifySessionToken(cookieStore.get(ADMIN_SESSION_COOKIE)?.value);
+}

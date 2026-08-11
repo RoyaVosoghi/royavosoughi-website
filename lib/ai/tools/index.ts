@@ -3,12 +3,14 @@ import "server-only";
 import type { FunctionDeclaration } from "@google/genai";
 
 import type { Locale } from "../types";
+import { requestHumanHandoffDeclaration, executeRequestHumanHandoff } from "./handoff";
 import { captureLeadDeclaration, executeCaptureLead } from "./lead";
 import { checkRegistrationStatusDeclaration, executeCheckRegistrationStatus } from "./registration";
 
 export const toolDeclarations: FunctionDeclaration[] = [
   captureLeadDeclaration,
   checkRegistrationStatusDeclaration,
+  requestHumanHandoffDeclaration,
 ];
 
 export interface ToolContext {
@@ -26,6 +28,8 @@ export async function dispatchTool(
       return executeCaptureLead(args, ctx);
     case "check_registration_status":
       return executeCheckRegistrationStatus(args);
+    case "request_human_handoff":
+      return executeRequestHumanHandoff(args, ctx);
     default:
       return { error: "unknown_tool" };
   }

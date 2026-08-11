@@ -7,6 +7,7 @@ import { projects } from "@/content/projects";
 
 import { chunkText } from "./chunk";
 import { embedText } from "./retrieval";
+import { getBotSettings } from "./settings";
 import type { Locale } from "./types";
 
 export interface IngestSection {
@@ -41,7 +42,16 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
     .filter((s) => s.trim().length > 0)
     .join("\n\n");
 
-  const chunks = text.trim() ? chunkText(text) : [];
+  // Read live from /admin/settings — a chunk-size tweak in the panel takes
+  // effect on the very next `npm run ingest`, no code change or redeploy.
+  const settings = await getBotSettings();
+  const chunks = text.trim()
+    ? chunkText(text, {
+        targetChars: settings.chunkTargetChars,
+        maxChars: settings.chunkMaxChars,
+        overlapChars: settings.chunkOverlapChars,
+      })
+    : [];
 
   const { error: deleteError } = await supabase
     .from("kb_chunks")

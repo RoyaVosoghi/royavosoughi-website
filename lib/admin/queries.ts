@@ -39,10 +39,21 @@ export interface ChatMessageRow {
   createdAt: string;
 }
 
+export interface HandoffRequest {
+  id: string;
+  reason: string;
+  note: string | null;
+  sessionId: string | null;
+  locale: string;
+  resolved: boolean;
+  createdAt: string;
+}
+
 export interface DashboardStats {
   leadsCount: number;
   registrationsCount: number;
   kbChunksCount: number;
+  openHandoffsCount: number;
   sessionsByChannel: Record<string, number>;
 }
 
@@ -55,10 +66,14 @@ function requireClient() {
 export async function getDashboardStats(): Promise<DashboardStats> {
   const supabase = requireClient();
 
-  const [leads, registrations, kbChunks, web, telegram, widget] = await Promise.all([
+  const [leads, registrations, kbChunks, openHandoffs, web, telegram, widget] = await Promise.all([
     supabase.from("leads").select("*", { count: "exact", head: true }),
     supabase.from("registrations").select("*", { count: "exact", head: true }),
     supabase.from("kb_chunks").select("*", { count: "exact", head: true }),
+    supabase
+      .from("handoff_requests")
+      .select("*", { count: "exact", head: true })
+      .eq("resolved", false),
     supabase
       .from("chat_sessions")
       .select("*", { count: "exact", head: true })
@@ -77,12 +92,40 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     leadsCount: leads.count ?? 0,
     registrationsCount: registrations.count ?? 0,
     kbChunksCount: kbChunks.count ?? 0,
+    openHandoffsCount: openHandoffs.count ?? 0,
     sessionsByChannel: {
       web: web.count ?? 0,
       telegram: telegram.count ?? 0,
       widget: widget.count ?? 0,
     },
   };
+}
+
+export async function getHandoffRequests(limit = 100): Promise<HandoffRequest[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("handoff_requests")
+    .select("id, reason, note, session_id, locale, resolved, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    reason: row.reason,
+    note: row.note,
+    sessionId: row.session_id,
+    locale: row.locale,
+    resolved: row.resolved,
+    createdAt: row.created_at,
+  }));
+}
+
+export async function resolveHandoffRequest(id: string, resolved: boolean): Promise<void> {
+  const supabase = requireClient();
+  const { error } = await supabase.from("handoff_requests").update({ resolved }).eq("id", id);
+  if (error) throw error;
 }
 
 export async function getLeads(limit = 100): Promise<Lead[]> {

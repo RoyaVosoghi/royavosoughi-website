@@ -2,6 +2,7 @@ import "server-only";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { EMBEDDING_DIMENSIONS, GEMINI_EMBED_MODEL, getGeminiClient } from "./gemini";
+import { getBotSettings } from "./settings";
 import type { Locale } from "./types";
 
 export async function embedText(text: string): Promise<number[]> {
@@ -25,14 +26,24 @@ export interface RetrievedChunk {
   similarity: number;
 }
 
-/** Returns [] on any failure (misconfiguration, RPC error) — RAG context is an enhancement, not a hard dependency for the brain to respond. */
+/**
+ * top_k and the similarity floor come from /admin/settings by default — pass
+ * an override only when a caller needs to deviate (nothing does today).
+ * Returns [] on any failure (misconfiguration, RPC error, or every match
+ * falling below the threshold) — RAG context is an enhancement, not a hard
+ * dependency for the brain to respond.
+ */
 export async function retrieveContext(
   query: string,
   locale: Locale,
-  k = 6,
+  override?: { k?: number; similarityThreshold?: number },
 ): Promise<RetrievedChunk[]> {
   const supabase = getSupabaseAdminClient();
   if (!supabase) return [];
+
+  const settings = await getBotSettings();
+  const k = override?.k ?? settings.retrievalTopK;
+  const threshold = override?.similarityThreshold ?? settings.similarityThreshold;
 
   let embedding: number[];
   try {
@@ -53,11 +64,11 @@ export async function retrieveContext(
     return [];
   }
 
-  return ((data ?? []) as Array<{ content: string; source_key: string; similarity: number }>).map(
-    (row) => ({
+  return ((data ?? []) as Array<{ content: string; source_key: string; similarity: number }>)
+    .filter((row) => row.similarity >= threshold)
+    .map((row) => ({
       content: row.content,
       sourceKey: row.source_key,
       similarity: row.similarity,
-    }),
-  );
+    }));
 }

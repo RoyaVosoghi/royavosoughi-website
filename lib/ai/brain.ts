@@ -4,10 +4,11 @@ import { ApiError, type Content, type Part } from "@google/genai";
 
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 import { GEMINI_CHAT_MODEL, getGeminiClient, isGeminiConfigured } from "./gemini";
-import { appendMessage, getLongTermFacts, getOrCreateSession, getRecentHistory } from "./memory";
+import { appendMessage, getConversationContext, getLongTermFacts, getOrCreateSession } from "./memory";
 import { buildSystemInstruction } from "./prompt";
 import { checkRateLimit } from "./rate-limit";
 import { retrieveContext } from "./retrieval";
+import { getBotSettings } from "./settings";
 import { dispatchTool, toolDeclarations } from "./tools";
 import { BrainNotConfiguredError, RateLimitError, type BrainTurnInput, type BrainTurnOutput } from "./types";
 
@@ -37,15 +38,20 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
 
   await appendMessage(session.id, "user", userMessage);
 
-  const [context, history, facts] = await Promise.all([
+  const settings = await getBotSettings();
+
+  const [context, { recent, summary }, facts] = await Promise.all([
     retrieveContext(userMessage, locale),
-    getRecentHistory(session.id),
+    getConversationContext(session, settings.summarizeAfterMessages),
     session.leadEmail ? getLongTermFacts(session.leadEmail) : Promise.resolve([]),
   ]);
 
-  const systemInstruction = buildSystemInstruction(locale, context, facts);
+  const systemInstruction = buildSystemInstruction(locale, context, facts, {
+    prompt: locale === "fa" ? settings.systemPromptFa : settings.systemPromptEn,
+    summary,
+  });
 
-  const contents: Content[] = history.map((m) => ({
+  const contents: Content[] = recent.map((m) => ({
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
   }));

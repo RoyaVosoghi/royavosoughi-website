@@ -9,6 +9,8 @@ const LINKS = [
   { href: "/admin/leads", label: "Leads" },
   { href: "/admin/registrations", label: "Registrations" },
   { href: "/admin/conversations", label: "Conversations" },
+  { href: "/admin/handoffs", label: "Handoffs" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

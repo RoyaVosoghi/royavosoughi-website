@@ -4,6 +4,6 @@ import { ADMIN_SESSION_COOKIE } from "@/lib/admin/auth";
 
 export async function POST() {
   const response = NextResponse.json({ ok: true });
-  response.cookies.delete({ name: ADMIN_SESSION_COOKIE, path: "/admin" });
+  response.cookies.delete({ name: ADMIN_SESSION_COOKIE, path: "/" });
   return response;
 }

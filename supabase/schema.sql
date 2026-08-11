@@ -209,6 +209,59 @@ alter table public.rate_limit_hits enable row level security;
 -- No policies: service role only.
 
 
+-- -----------------------------------------------------------------------------
+-- Bot settings, human handoff, conversation summarization (added 2026-08-11)
+-- -----------------------------------------------------------------------------
+
+-- Singleton row of tunable bot behaviour, editable from /admin/settings.
+-- NULL prompt columns mean "use the built-in default in lib/ai/prompt.ts" —
+-- saving from the panel is what turns a column into an explicit override.
+create table if not exists public.bot_settings (
+  id                       int primary key default 1 check (id = 1),
+  system_prompt_en        text,
+  system_prompt_fa        text,
+  chunk_target_chars      int not null default 700,
+  chunk_max_chars         int not null default 900,
+  chunk_overlap_chars     int not null default 120,
+  retrieval_top_k         int not null default 6,
+  similarity_threshold    real not null default 0.25,
+  summarize_after_messages int not null default 16,
+  updated_at              timestamptz not null default now()
+);
+
+insert into public.bot_settings (id) values (1)
+  on conflict (id) do nothing;
+
+alter table public.bot_settings enable row level security;
+-- No policies: service role only (read via lib/ai/settings.ts, written via
+-- the admin panel's server-side API route, both using the service client).
+
+-- Human handoff: recorded by the request_human_handoff tool when a question
+-- is out of scope or the visitor asks to talk to Roya directly.
+create table if not exists public.handoff_requests (
+  id         uuid primary key default gen_random_uuid(),
+  reason     text not null check (reason in ('out_of_scope', 'user_requested', 'other')),
+  note       text,
+  session_id uuid references public.chat_sessions(id) on delete set null,
+  locale     text not null default 'en',
+  resolved   boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists handoff_requests_created_at_idx
+  on public.handoff_requests (created_at desc);
+
+alter table public.handoff_requests enable row level security;
+-- No policies: service role only.
+
+-- Long-conversation summarization: summary covers every message up to
+-- summary_up_to_count, so the brain only needs to re-summarize once new
+-- messages accumulate past that watermark, not on every turn.
+alter table public.chat_sessions
+  add column if not exists summary text,
+  add column if not exists summary_up_to_count int not null default 0;
+
+
 -- =============================================================================
 -- PHASE 2 — booking & payments. Not created yet; documented so the shape is
 -- agreed before it gets built. Uncomment when the consultation goes live.

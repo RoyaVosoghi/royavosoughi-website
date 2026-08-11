@@ -39,7 +39,9 @@ export async function POST(request: Request) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    path: "/admin",
+    // "/" not "/admin": app/api/admin/* route handlers (settings, handoffs)
+    // need this cookie too, and they don't live under the /admin path prefix.
+    path: "/",
     maxAge: ADMIN_SESSION_MAX_AGE_SECONDS,
   });
   return response;
