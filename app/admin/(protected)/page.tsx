@@ -24,11 +24,12 @@ export default async function AdminOverviewPage() {
       <p className="label-eyebrow text-emerald">Dashboard</p>
       <h1 className="text-section mt-3 text-forest">Overview</h1>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard label="Leads" value={stats.leadsCount} />
         <StatCard label="Registrations" value={stats.registrationsCount} />
-        <StatCard label="KB chunks" value={stats.kbChunksCount} hint="Ingested RAG context" />
+        <StatCard label="Documents" value={stats.documentsCount} hint={`${stats.chunksCount} chunks`} />
         <StatCard label="Conversations" value={totalSessions} />
+        <StatCard label="Unique visitors" value={stats.unifiedUsersCount} />
         <StatCard label="Open handoffs" value={stats.openHandoffsCount} hint="Awaiting your follow-up" />
       </div>
 

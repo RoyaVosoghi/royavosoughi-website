@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { hasValidAdminSession } from "@/lib/admin/auth";
-import { resolveHandoffRequest, writeAuditLog } from "@/lib/admin/queries";
+import { closeConversation, writeAuditLog } from "@/lib/admin/queries";
 
-const PatchSchema = z.object({ resolved: z.boolean() });
+const PatchSchema = z.object({ status: z.enum(["active", "closed"]) });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await hasValidAdminSession())) {
@@ -26,10 +26,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const { id } = await params;
 
   try {
-    await resolveHandoffRequest(id, parsed.data.resolved);
-    await writeAuditLog(parsed.data.resolved ? "handoff.resolve" : "handoff.reopen", id);
+    await closeConversation(id, parsed.data.status);
+    await writeAuditLog(`conversation.${parsed.data.status}`, id);
   } catch (err) {
-    console.error("[admin/handoffs] update failed:", err);
+    console.error("[admin/conversations] update failed:", err);
     return NextResponse.json({ error: "storage_failed" }, { status: 500 });
   }
 

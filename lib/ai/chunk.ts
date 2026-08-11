@@ -1,30 +1,28 @@
 import "server-only";
 
-import { DEFAULT_BOT_SETTINGS } from "./settings";
+import { DEFAULT_EMBEDDING_CONFIG } from "./embedding-config";
 
 export interface ChunkConfig {
-  targetChars: number;
-  maxChars: number;
-  overlapChars: number;
+  chunkSize: number;
+  chunkOverlap: number;
 }
 
 export const DEFAULT_CHUNK_CONFIG: ChunkConfig = {
-  targetChars: DEFAULT_BOT_SETTINGS.chunkTargetChars,
-  maxChars: DEFAULT_BOT_SETTINGS.chunkMaxChars,
-  overlapChars: DEFAULT_BOT_SETTINGS.chunkOverlapChars,
+  chunkSize: DEFAULT_EMBEDDING_CONFIG.chunkSize,
+  chunkOverlap: DEFAULT_EMBEDDING_CONFIG.chunkOverlap,
 };
 
 /**
- * Paragraph-aware splitter: groups whole paragraphs up to ~targetChars, only
- * falling back to a hard character cut for a single paragraph that exceeds
- * maxChars on its own. Small overlap keeps context from being severed
- * mid-thought at a chunk boundary. Values come from /admin/settings (via
- * lib/ai/settings.ts) — callers pass a config rather than this module
- * reading settings itself, so a plain unit test can still cover the pure
- * splitting logic without a database.
+ * Paragraph-aware splitter: groups whole paragraphs up to chunkSize, hard-
+ * splitting only a single paragraph that alone exceeds chunkSize. Small
+ * overlap keeps context from being severed mid-thought at a chunk boundary.
+ * Values come from /admin/settings (embedding_config, via
+ * lib/ai/embedding-config.ts) — callers pass a config rather than this
+ * module reading settings itself, so a plain unit test can still cover the
+ * pure splitting logic without a database.
  */
 export function chunkText(text: string, config: ChunkConfig = DEFAULT_CHUNK_CONFIG): string[] {
-  const { targetChars, maxChars, overlapChars } = config;
+  const { chunkSize, chunkOverlap } = config;
 
   const paragraphs = text
     .split(/\n{2,}/)
@@ -37,22 +35,22 @@ export function chunkText(text: string, config: ChunkConfig = DEFAULT_CHUNK_CONF
   for (const paragraph of paragraphs) {
     const candidate = current ? `${current}\n\n${paragraph}` : paragraph;
 
-    if (candidate.length <= targetChars) {
+    if (candidate.length <= chunkSize) {
       current = candidate;
       continue;
     }
 
     if (current) {
       chunks.push(current);
-      current = current.slice(Math.max(0, current.length - overlapChars));
+      current = current.slice(Math.max(0, current.length - chunkOverlap));
       current = current ? `${current}\n\n${paragraph}` : paragraph;
     } else {
       current = paragraph;
     }
 
-    while (current.length > maxChars) {
-      chunks.push(current.slice(0, maxChars));
-      current = current.slice(maxChars - overlapChars);
+    while (current.length > chunkSize) {
+      chunks.push(current.slice(0, chunkSize));
+      current = current.slice(chunkSize - chunkOverlap);
     }
   }
 

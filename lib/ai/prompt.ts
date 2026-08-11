@@ -4,10 +4,10 @@ import type { RetrievedChunk } from "./retrieval";
 import type { Locale } from "./types";
 
 /**
- * Built-in fallback persona — used whenever /admin/settings has no override
- * saved for a locale (bot_settings.system_prompt_en/fa is NULL). Exported so
- * the admin panel can pre-fill its editor with "what's actually running"
- * rather than showing a blank textarea.
+ * Built-in fallback persona — used whenever prompt_versions has no active
+ * row for a locale (see lib/ai/prompt-versions.ts). Exported so the admin
+ * panel can pre-fill its editor with "what's actually running" rather than
+ * showing a blank textarea.
  */
 export const DEFAULT_SYSTEM_PROMPT_EN = `You are the assistant on royavosoughi.com, the site of Roya Vosoughi, an AI engineer and software developer in Turin, Italy. You help visitors understand her services, work, and how to get in touch.
 

@@ -4,8 +4,8 @@ import type { FunctionDeclaration } from "@google/genai";
 import { z } from "zod";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
-import { addLongTermFact, linkSessionToEmail } from "../memory";
-import type { Locale } from "../types";
+import { addLongTermFact, linkConversationToEmail, upsertUnifiedUser } from "../memory";
+import type { ToolContext } from "./index";
 
 export const captureLeadDeclaration: FunctionDeclaration = {
   name: "capture_lead",
@@ -34,7 +34,7 @@ const LeadArgsSchema = z.object({
 
 export async function executeCaptureLead(
   args: unknown,
-  ctx: { sessionId: string; locale: Locale },
+  ctx: ToolContext,
 ): Promise<Record<string, unknown>> {
   const parsed = LeadArgsSchema.safeParse(args);
   if (!parsed.success) {
@@ -49,7 +49,8 @@ export async function executeCaptureLead(
     name,
     email,
     interest: interest || null,
-    session_id: ctx.sessionId,
+    conversation_id: ctx.conversationId,
+    source: ctx.channel,
     locale: ctx.locale,
   });
 
@@ -58,9 +59,10 @@ export async function executeCaptureLead(
     return { error: "storage_failed" };
   }
 
-  await linkSessionToEmail(ctx.sessionId, email);
+  await linkConversationToEmail(ctx.conversationId, email);
+  await upsertUnifiedUser(ctx.channel, ctx.externalUserId, name);
   if (interest) {
-    await addLongTermFact(email, `Interested in: ${interest}`, ctx.sessionId);
+    await addLongTermFact(email, `Interested in: ${interest}`, ctx.conversationId);
   }
 
   return { ok: true };

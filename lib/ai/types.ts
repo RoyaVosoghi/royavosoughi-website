@@ -19,6 +19,8 @@ export interface BrainTurnInput {
 export interface BrainTurnOutput {
   reply: string;
   sessionId: string;
+  /** The assistant reply's message id — channels that support feedback (web, widget) attach thumbs up/down to this. */
+  messageId: string;
 }
 
 /** Thrown by runBrainTurn when the session+IP have exceeded the message quota. */

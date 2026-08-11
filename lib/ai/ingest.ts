@@ -6,8 +6,8 @@ import faMessages from "@/messages/fa.json";
 import { projects } from "@/content/projects";
 
 import { chunkText } from "./chunk";
+import { getEmbeddingConfig } from "./embedding-config";
 import { embedText } from "./retrieval";
-import { getBotSettings } from "./settings";
 import type { Locale } from "./types";
 
 export interface IngestSection {
@@ -17,6 +17,7 @@ export interface IngestSection {
 
 export interface IngestSourceInput {
   sourceType: "site_copy" | "curated_doc";
+  /** Becomes documents.title — the stable dedupe key for re-ingestion. */
   sourceKey: string;
   locale: Locale;
   sections: IngestSection[];
@@ -28,10 +29,17 @@ export interface IngestResult {
   chunks: number;
 }
 
+/** Rough chars-to-tokens estimate (~4 chars/token for English/Persian) — not a real tokenizer, just enough for the admin panel's token_count display. */
+function estimateTokenCount(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
 /**
- * Shared core for both adapters below. Deletes any existing chunks for this
- * (source_key, locale) first, then inserts fresh ones — a full rebuild per
- * source, so re-running after a content edit is always idempotent.
+ * Shared core for both adapters below. Upserts a `documents` row for
+ * (title=sourceKey, locale) — creating it on first ingest, keeping the same
+ * id on every later run — then deletes and re-inserts that document's
+ * `chunks`. A full rebuild per document, so re-running after a content edit
+ * is always idempotent.
  */
 export async function ingestSource(input: IngestSourceInput): Promise<IngestResult> {
   const supabase = getSupabaseAdminClient();
@@ -44,31 +52,35 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
 
   // Read live from /admin/settings — a chunk-size tweak in the panel takes
   // effect on the very next `npm run ingest`, no code change or redeploy.
-  const settings = await getBotSettings();
+  const embeddingConfig = await getEmbeddingConfig();
   const chunks = text.trim()
     ? chunkText(text, {
-        targetChars: settings.chunkTargetChars,
-        maxChars: settings.chunkMaxChars,
-        overlapChars: settings.chunkOverlapChars,
+        chunkSize: embeddingConfig.chunkSize,
+        chunkOverlap: embeddingConfig.chunkOverlap,
       })
     : [];
 
-  const { error: deleteError } = await supabase
-    .from("kb_chunks")
-    .delete()
-    .eq("source_key", input.sourceKey)
-    .eq("locale", input.locale);
+  const { data: document, error: upsertError } = await supabase
+    .from("documents")
+    .upsert(
+      { title: input.sourceKey, locale: input.locale, source_type: input.sourceType, status: "active" },
+      { onConflict: "title,locale" },
+    )
+    .select("id")
+    .single();
+  if (upsertError) throw upsertError;
+
+  const { error: deleteError } = await supabase.from("chunks").delete().eq("document_id", document.id);
   if (deleteError) throw deleteError;
 
   let written = 0;
   for (let i = 0; i < chunks.length; i++) {
     const embedding = await embedText(chunks[i]);
-    const { error } = await supabase.from("kb_chunks").insert({
-      source_type: input.sourceType,
-      source_key: input.sourceKey,
-      locale: input.locale,
+    const { error } = await supabase.from("chunks").insert({
+      document_id: document.id,
       chunk_index: i,
       content: chunks[i],
+      token_count: estimateTokenCount(chunks[i]),
       embedding,
     });
     if (error) throw error;

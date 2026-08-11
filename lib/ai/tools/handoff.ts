@@ -4,7 +4,7 @@ import type { FunctionDeclaration } from "@google/genai";
 import { z } from "zod";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
-import type { Locale } from "../types";
+import type { ToolContext } from "./index";
 
 export const requestHumanHandoffDeclaration: FunctionDeclaration = {
   name: "request_human_handoff",
@@ -34,7 +34,7 @@ const HandoffArgsSchema = z.object({
 
 export async function executeRequestHumanHandoff(
   args: unknown,
-  ctx: { sessionId: string; locale: Locale },
+  ctx: ToolContext,
 ): Promise<Record<string, unknown>> {
   const parsed = HandoffArgsSchema.safeParse(args);
   if (!parsed.success) {
@@ -48,7 +48,7 @@ export async function executeRequestHumanHandoff(
   const { error } = await supabase.from("handoff_requests").insert({
     reason,
     note: note || null,
-    session_id: ctx.sessionId,
+    session_id: ctx.conversationId,
     locale: ctx.locale,
   });
 

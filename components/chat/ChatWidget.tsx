@@ -12,6 +12,9 @@ type Status = "idle" | "sending" | "error" | "rateLimited";
 interface DisplayMessage {
   role: "user" | "assistant";
   content: string;
+  /** Assistant messages only — lets the bubble show/submit feedback for this specific reply. */
+  id?: string;
+  feedback?: 1 | -1 | null;
 }
 
 const SESSION_STORAGE_KEY = "rv_chat_session_id";
@@ -79,11 +82,32 @@ export function ChatWidget({ configured, locale }: { configured: boolean; locale
       }
       if (!response.ok) throw new Error(String(response.status));
 
-      const data = (await response.json()) as { reply: string };
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      const data = (await response.json()) as { reply: string; messageId: string };
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.reply, id: data.messageId, feedback: null },
+      ]);
       setStatus("idle");
     } catch {
       setStatus("error");
+    }
+  }
+
+  async function onRate(index: number, rating: 1 | -1) {
+    const message = messages[index];
+    if (!message.id || message.feedback !== null) return;
+
+    setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, feedback: rating } : m)));
+
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId: message.id, rating }),
+      });
+    } catch {
+      // Best-effort — the button already reflects the visitor's choice; a
+      // failed network call here isn't worth surfacing as a chat error.
     }
   }
 
@@ -108,7 +132,13 @@ export function ChatWidget({ configured, locale }: { configured: boolean; locale
           <p className="text-ink/60">{t("emptyState")}</p>
         ) : (
           messages.map((message, index) => (
-            <MessageBubble key={index} role={message.role} content={message.content} />
+            <MessageBubble
+              key={index}
+              role={message.role}
+              content={message.content}
+              feedback={message.feedback}
+              onRate={message.role === "assistant" ? (rating) => onRate(index, rating) : undefined}
+            />
           ))
         )}
         {status === "sending" ? (

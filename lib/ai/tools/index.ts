@@ -2,7 +2,7 @@ import "server-only";
 
 import type { FunctionDeclaration } from "@google/genai";
 
-import type { Locale } from "../types";
+import type { Channel, Locale } from "../types";
 import { requestHumanHandoffDeclaration, executeRequestHumanHandoff } from "./handoff";
 import { captureLeadDeclaration, executeCaptureLead } from "./lead";
 import { checkRegistrationStatusDeclaration, executeCheckRegistrationStatus } from "./registration";
@@ -14,7 +14,9 @@ export const toolDeclarations: FunctionDeclaration[] = [
 ];
 
 export interface ToolContext {
-  sessionId: string;
+  conversationId: string;
+  channel: Channel;
+  externalUserId: string;
   locale: Locale;
 }
 

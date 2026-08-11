@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ConversationStatusButton } from "@/components/admin/ConversationStatusButton";
 import { EmptyState } from "@/components/admin/EmptyState";
-import { getSession, getSessionMessages } from "@/lib/admin/queries";
+import { getConversation, getConversationMessages } from "@/lib/admin/queries";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Conversation · Admin" };
@@ -28,10 +29,10 @@ export default async function AdminConversationDetailPage({
   }
 
   const { id } = await params;
-  const session = await getSession(id);
-  if (!session) notFound();
+  const conversation = await getConversation(id);
+  if (!conversation) notFound();
 
-  const messages = await getSessionMessages(id);
+  const messages = await getConversationMessages(id);
 
   return (
     <div>
@@ -42,13 +43,14 @@ export default async function AdminConversationDetailPage({
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-forest capitalize">
-            {session.channel} conversation
+            {conversation.channel} conversation
           </h1>
           <p className="mt-1 text-sm text-ink/60">
-            {session.leadEmail ?? "Anonymous"} · {session.locale.toUpperCase()} · started{" "}
-            {new Date(session.createdAt).toLocaleString()}
+            {conversation.leadEmail ?? "Anonymous"} · {conversation.locale.toUpperCase()} · started{" "}
+            {new Date(conversation.startedAt).toLocaleString()}
           </p>
         </div>
+        <ConversationStatusButton id={conversation.id} status={conversation.status} />
       </div>
 
       <div className="mt-8 flex flex-col gap-3 rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
@@ -70,6 +72,10 @@ export default async function AdminConversationDetailPage({
               <p>{message.content}</p>
               <p className="mt-1 text-[11px] opacity-60">
                 {new Date(message.createdAt).toLocaleTimeString()}
+                {message.modelUsed ? ` · ${message.modelUsed}` : ""}
+                {message.tokensIn != null && message.tokensOut != null
+                  ? ` · ${message.tokensIn}→${message.tokensOut} tokens`
+                  : ""}
               </p>
             </div>
           ))

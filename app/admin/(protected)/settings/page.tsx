@@ -1,8 +1,12 @@
-import { SettingsForm } from "@/components/admin/SettingsForm";
-import { DEFAULT_SYSTEM_PROMPT_EN, DEFAULT_SYSTEM_PROMPT_FA } from "@/lib/ai/prompt";
-import { getBotSettings } from "@/lib/ai/settings";
-import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
+import { EmbeddingConfigForm } from "@/components/admin/EmbeddingConfigForm";
 import { EmptyState } from "@/components/admin/EmptyState";
+import { ModelConfigForm } from "@/components/admin/ModelConfigForm";
+import { PersonaSettingsForm } from "@/components/admin/PersonaSettingsForm";
+import { getEmbeddingConfig } from "@/lib/ai/embedding-config";
+import { getAllModelConfigs } from "@/lib/ai/model-config";
+import { DEFAULT_SYSTEM_PROMPT_EN, DEFAULT_SYSTEM_PROMPT_FA } from "@/lib/ai/prompt";
+import { getActivePromptContent, getPromptVersionHistory } from "@/lib/ai/prompt-versions";
+import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Settings · Admin" };
 
@@ -16,29 +20,35 @@ export default async function AdminSettingsPage() {
     );
   }
 
-  const settings = await getBotSettings();
+  const [activeEn, activeFa, history, modelConfigs, embeddingConfig] = await Promise.all([
+    getActivePromptContent("en"),
+    getActivePromptContent("fa"),
+    getPromptVersionHistory(),
+    getAllModelConfigs(),
+    getEmbeddingConfig(),
+  ]);
 
   return (
     <div>
       <p className="label-eyebrow text-emerald">The brain</p>
       <h1 className="text-section mt-3 text-forest">Settings</h1>
       <p className="mt-3 text-ink/70">
-        Tune the chatbot's persona and RAG behavior without a redeploy — every channel (web,
-        widget, Telegram) reads from here.
+        Tune the chatbot's persona, models, and retrieval behavior without a redeploy — every
+        channel (web, widget, Telegram) reads from here.
       </p>
 
-      <SettingsForm
-        initial={{
-          systemPromptEn: settings.systemPromptEn ?? DEFAULT_SYSTEM_PROMPT_EN,
-          systemPromptFa: settings.systemPromptFa ?? DEFAULT_SYSTEM_PROMPT_FA,
-          chunkTargetChars: settings.chunkTargetChars,
-          chunkMaxChars: settings.chunkMaxChars,
-          chunkOverlapChars: settings.chunkOverlapChars,
-          retrievalTopK: settings.retrievalTopK,
-          similarityThreshold: settings.similarityThreshold,
-          summarizeAfterMessages: settings.summarizeAfterMessages,
-        }}
-      />
+      <div className="mt-8 flex flex-col gap-8">
+        <PersonaSettingsForm
+          initialEn={activeEn ?? DEFAULT_SYSTEM_PROMPT_EN}
+          initialFa={activeFa ?? DEFAULT_SYSTEM_PROMPT_FA}
+          historyCountEn={history.filter((v) => v.persona === "en").length}
+          historyCountFa={history.filter((v) => v.persona === "fa").length}
+        />
+
+        <ModelConfigForm initial={modelConfigs} />
+
+        <EmbeddingConfigForm initial={embeddingConfig} />
+      </div>
     </div>
   );
 }

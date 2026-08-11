@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { EmptyState } from "@/components/admin/EmptyState";
-import { getSessions, type ChatSessionSummary } from "@/lib/admin/queries";
+import { getConversations, type ConversationSummary } from "@/lib/admin/queries";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Conversations · Admin" };
@@ -13,7 +13,7 @@ const CHANNEL_STYLES: Record<string, string> = {
   telegram: "bg-forest/10 text-forest",
 };
 
-const columns: Column<ChatSessionSummary>[] = [
+const columns: Column<ConversationSummary>[] = [
   {
     header: "Channel",
     cell: (row) => (
@@ -23,6 +23,14 @@ const columns: Column<ChatSessionSummary>[] = [
         }`}
       >
         {row.channel}
+      </span>
+    ),
+  },
+  {
+    header: "Status",
+    cell: (row) => (
+      <span className={`text-xs font-medium capitalize ${row.status === "closed" ? "text-ink/40" : "text-emerald"}`}>
+        {row.status}
       </span>
     ),
   },
@@ -53,7 +61,7 @@ export default async function AdminConversationsPage() {
     );
   }
 
-  const sessions = await getSessions();
+  const conversations = await getConversations();
 
   return (
     <div>
@@ -62,10 +70,10 @@ export default async function AdminConversationsPage() {
       <p className="mt-3 text-ink/70">Every session across web, the embeddable widget, and Telegram.</p>
 
       <div className="mt-8">
-        {sessions.length === 0 ? (
+        {conversations.length === 0 ? (
           <EmptyState title="No conversations yet" body="They'll appear here as soon as a visitor chats." />
         ) : (
-          <DataTable columns={columns} rows={sessions} />
+          <DataTable columns={columns} rows={conversations} />
         )}
       </div>
     </div>

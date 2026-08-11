@@ -45,97 +45,146 @@ create policy "anon can insert contact messages"
 -- service role key, which bypasses RLS unconditionally. Enabling RLS with no
 -- policies is a deny-all safety net in case the anon/publishable key is ever
 -- accidentally pointed at these tables later.
+--
+-- Data model v2 (2026-08-11) — documents/chunks, conversations/messages,
+-- prompt_versions/model_config/embedding_config replaced the original
+-- kb_chunks/chat_sessions/chat_messages/bot_settings shape. See
+-- .agents/skills/chatbot-brain/SKILL.md for the full architecture writeup.
 -- =============================================================================
 
 create extension if not exists vector with schema extensions;
 
 -- -----------------------------------------------------------------------------
--- RAG knowledge base
+-- RAG knowledge base — documents (one row per source) + chunks (one row per
+-- embedded slice of a document)
 -- -----------------------------------------------------------------------------
 
--- One row per chunk, from either site copy or a curated doc.
--- (source_key, locale, chunk_index) is the natural upsert key, so re-running
--- ingestion is idempotent (delete-by-source_key+locale, re-insert).
-create table if not exists public.kb_chunks (
+-- `title` doubles as the stable dedupe key for idempotent re-ingestion
+-- (e.g. 'site:copy', 'doc:pricing-faq') — `npm run ingest` deletes and
+-- re-inserts a document's chunks by (title, locale). `locale` makes a
+-- document's language explicit: the EN and FA versions of the same source
+-- are two separate document rows, since retrieval always filters by locale.
+create table if not exists public.documents (
   id          uuid primary key default gen_random_uuid(),
-  source_type text not null check (source_type in ('site_copy', 'curated_doc')),
-  source_key  text not null,   -- e.g. 'site:services' or 'doc:pricing-faq'
+  title       text not null,
+  source_type text not null check (source_type in ('site_copy', 'curated_doc', 'pdf', 'docx', 'url')),
+  source_url  text,
+  status      text not null default 'active' check (status in ('active', 'archived')),
+  tags        text[] not null default '{}',
   locale      text not null default 'en' check (locale in ('en', 'fa')),
-  chunk_index int not null,
-  content     text not null,
-  embedding   vector(768) not null,   -- gemini-embedding-001, truncated to 768 dims
-  metadata    jsonb not null default '{}'::jsonb,
   created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now(),
-  unique (source_key, locale, chunk_index)
+  unique (title, locale)
 );
 
-create index if not exists kb_chunks_embedding_idx
-  on public.kb_chunks using hnsw (embedding vector_cosine_ops);
+create table if not exists public.chunks (
+  id          uuid primary key default gen_random_uuid(),
+  document_id uuid not null references public.documents(id) on delete cascade,
+  content     text not null,
+  embedding   vector(768) not null,   -- gemini-embedding-001, truncated to 768 dims
+  token_count int,
+  chunk_index int not null,
+  metadata    jsonb not null default '{}'::jsonb,
+  created_at  timestamptz not null default now(),
+  unique (document_id, chunk_index)
+);
 
-alter table public.kb_chunks enable row level security;
--- No policies: service role only. RAG reads happen exclusively server-side.
+create index if not exists chunks_embedding_idx
+  on public.chunks using hnsw (embedding vector_cosine_ops);
+
+alter table public.documents enable row level security;
+alter table public.chunks enable row level security;
+-- No policies on either: service role only. RAG reads happen exclusively server-side.
 
 -- supabase-js cannot express the `<=>` operator via the query builder, so
 -- retrieval calls this function via .rpc(). Runs only under the service-role
 -- connection, which already has full table access — no extra privilege
 -- escalation from this function. search_path is pinned so it can't be
 -- hijacked by a role-local setting.
-create or replace function public.match_kb_chunks(
+create or replace function public.match_chunks(
   query_embedding vector(768),
   match_locale text,
   match_count int default 6
 ) returns table (
-  id uuid, content text, metadata jsonb, source_key text, similarity float
+  id uuid, content text, metadata jsonb, document_id uuid, document_title text, similarity float
 )
 language sql stable
 set search_path = public, extensions
 as $$
-  select id, content, metadata, source_key,
-         1 - (embedding <=> query_embedding) as similarity
-  from public.kb_chunks
-  where locale = match_locale
-  order by embedding <=> query_embedding
+  select c.id, c.content, c.metadata, c.document_id, d.title,
+         1 - (c.embedding <=> query_embedding) as similarity
+  from public.chunks c
+  join public.documents d on d.id = c.document_id
+  where d.locale = match_locale and d.status = 'active'
+  order by c.embedding <=> query_embedding
   limit match_count;
 $$;
 
 -- -----------------------------------------------------------------------------
--- Memory: sessions + short-term message history + long-term facts
+-- Memory: conversations + short-term message history + long-term facts
 -- -----------------------------------------------------------------------------
 
 -- channel is first-class from day one so telegram/widget are additive later,
--- never a schema change. channel_session_id is whatever the channel calls
--- "one conversation" (web: client-generated UUID; telegram: chat_id; widget:
--- its own generated id).
-create table if not exists public.chat_sessions (
-  id                 uuid primary key default gen_random_uuid(),
-  channel            text not null check (channel in ('web', 'telegram', 'widget')),
-  channel_session_id text not null,
-  locale             text not null default 'en',
-  lead_email         text,   -- set once the lead-gen tool captures an email
-  created_at         timestamptz not null default now(),
-  last_active_at     timestamptz not null default now(),
-  unique (channel, channel_session_id)
+-- never a schema change. external_user_id is whatever the channel calls "one
+-- conversation" (web: client-generated UUID; telegram: chat_id; widget: its
+-- own generated id). summary/summary_up_to_count back long-conversation
+-- summarization (lib/ai/memory.ts): past a configurable message count, older
+-- turns fold into `summary` instead of being sent verbatim.
+create table if not exists public.conversations (
+  id                  uuid primary key default gen_random_uuid(),
+  channel             text not null check (channel in ('web', 'telegram', 'widget')),
+  external_user_id    text not null,
+  status              text not null default 'active' check (status in ('active', 'closed')),
+  summary             text,
+  summary_up_to_count int not null default 0,
+  locale              text not null default 'en',
+  lead_email          text,   -- set once the lead-gen tool captures an email
+  started_at          timestamptz not null default now(),
+  last_active_at      timestamptz not null default now(),
+  unique (channel, external_user_id)
 );
 
-alter table public.chat_sessions enable row level security;
+alter table public.conversations enable row level security;
 -- No policies: service role only.
 
--- Short-term memory: full message history per session.
-create table if not exists public.chat_messages (
-  id           uuid primary key default gen_random_uuid(),
-  session_id   uuid not null references public.chat_sessions(id) on delete cascade,
-  role         text not null check (role in ('user', 'assistant', 'tool')),
-  content      text not null,
-  tool_name    text,
-  tool_payload jsonb,
-  created_at   timestamptz not null default now()
+-- Short-term memory: full message history per conversation. model_used /
+-- tokens_in / tokens_out / retrieved_chunk_ids are populated on assistant
+-- replies only (from the Gemini response's usage metadata and the RAG
+-- context actually used for that turn) — useful for the admin conversation
+-- viewer and for cost/quality auditing later.
+create table if not exists public.messages (
+  id                  uuid primary key default gen_random_uuid(),
+  conversation_id     uuid not null references public.conversations(id) on delete cascade,
+  role                text not null check (role in ('user', 'assistant', 'tool')),
+  content             text not null,
+  model_used          text,
+  tokens_in           int,
+  tokens_out          int,
+  retrieved_chunk_ids uuid[],
+  tool_name           text,
+  tool_payload        jsonb,
+  created_at          timestamptz not null default now()
 );
 
-create index if not exists chat_messages_session_created_idx
-  on public.chat_messages (session_id, created_at);
+create index if not exists messages_conversation_created_idx
+  on public.messages (conversation_id, created_at);
 
-alter table public.chat_messages enable row level security;
+alter table public.messages enable row level security;
+-- No policies: service role only.
+
+-- Cross-channel identity registry: one row per (channel, external_id), name
+-- filled in once known (a captured lead's name, or a Telegram profile name).
+-- Distinct from `leads` — this tracks "we've seen this identity", not
+-- business interest.
+create table if not exists public.unified_users (
+  id          uuid primary key default gen_random_uuid(),
+  channel     text not null check (channel in ('web', 'telegram', 'widget')),
+  external_id text not null,
+  name        text,
+  first_seen  timestamptz not null default now(),
+  unique (channel, external_id)
+);
+
+alter table public.unified_users enable row level security;
 -- No policies: service role only.
 
 -- Long-term memory: durable facts, keyed by email (the only stable identity
@@ -145,7 +194,7 @@ create table if not exists public.memory_facts (
   id                uuid primary key default gen_random_uuid(),
   email             text not null,
   fact              text not null,
-  source_session_id uuid references public.chat_sessions(id) on delete set null,
+  source_session_id uuid references public.conversations(id) on delete set null,
   created_at        timestamptz not null default now()
 );
 
@@ -155,17 +204,18 @@ alter table public.memory_facts enable row level security;
 -- No policies: service role only.
 
 -- -----------------------------------------------------------------------------
--- Tools: lead generation + registration status
+-- Tools: lead generation, registration status, human handoff, feedback
 -- -----------------------------------------------------------------------------
 
 create table if not exists public.leads (
-  id         uuid primary key default gen_random_uuid(),
-  name       text not null,
-  email      text not null,
-  interest   text,
-  session_id uuid references public.chat_sessions(id) on delete set null,
-  locale     text not null default 'en',
-  created_at timestamptz not null default now()
+  id              uuid primary key default gen_random_uuid(),
+  name            text not null,
+  email           text not null,
+  interest        text,
+  conversation_id uuid references public.conversations(id) on delete set null,
+  source          text,   -- the channel the lead came in through (web/telegram/widget)
+  locale          text not null default 'en',
+  created_at      timestamptz not null default now()
 );
 
 create index if not exists leads_email_idx on public.leads (email);
@@ -183,7 +233,7 @@ create table if not exists public.registrations (
   event_type text not null check (event_type in ('webinar', 'online_class')),
   status     text not null default 'pending'
                check (status in ('pending', 'confirmed', 'cancelled')),
-  session_id uuid references public.chat_sessions(id) on delete set null,
+  session_id uuid references public.conversations(id) on delete set null,
   locale     text not null default 'en',
   created_at timestamptz not null default now()
 );
@@ -192,6 +242,37 @@ create index if not exists registrations_email_idx on public.registrations (emai
 
 alter table public.registrations enable row level security;
 -- No policies: service role only.
+
+-- Human handoff: recorded by the request_human_handoff tool when a question
+-- is out of scope or the visitor asks to talk to Roya directly.
+create table if not exists public.handoff_requests (
+  id         uuid primary key default gen_random_uuid(),
+  reason     text not null check (reason in ('out_of_scope', 'user_requested', 'other')),
+  note       text,
+  session_id uuid references public.conversations(id) on delete set null,
+  locale     text not null default 'en',
+  resolved   boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists handoff_requests_created_at_idx
+  on public.handoff_requests (created_at desc);
+
+alter table public.handoff_requests enable row level security;
+-- No policies: service role only.
+
+-- Thumbs up/down on a specific assistant message, from the web/widget UI.
+create table if not exists public.feedback (
+  id         uuid primary key default gen_random_uuid(),
+  message_id uuid not null references public.messages(id) on delete cascade,
+  rating     smallint not null check (rating in (-1, 1)),
+  comment    text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.feedback enable row level security;
+-- No policies: service role only (written via app/api/feedback/route.ts using
+-- the service client, even though the *caller* is an anonymous visitor).
 
 -- Rate limiting for the chat API. A single-purpose hit log, dual-keyed
 -- (session + IP independently) so clearing localStorage alone doesn't reset
@@ -208,58 +289,107 @@ create index if not exists rate_limit_hits_key_created_idx
 alter table public.rate_limit_hits enable row level security;
 -- No policies: service role only.
 
-
 -- -----------------------------------------------------------------------------
--- Bot settings, human handoff, conversation summarization (added 2026-08-11)
+-- Admin: users + audit log
 -- -----------------------------------------------------------------------------
 
--- Singleton row of tunable bot behaviour, editable from /admin/settings.
--- NULL prompt columns mean "use the built-in default in lib/ai/prompt.ts" —
--- saving from the panel is what turns a column into an explicit override.
-create table if not exists public.bot_settings (
-  id                       int primary key default 1 check (id = 1),
-  system_prompt_en        text,
-  system_prompt_fa        text,
-  chunk_target_chars      int not null default 700,
-  chunk_max_chars         int not null default 900,
-  chunk_overlap_chars     int not null default 120,
-  retrieval_top_k         int not null default 6,
-  similarity_threshold    real not null default 0.25,
-  summarize_after_messages int not null default 16,
-  updated_at              timestamptz not null default now()
-);
-
-insert into public.bot_settings (id) values (1)
-  on conflict (id) do nothing;
-
-alter table public.bot_settings enable row level security;
--- No policies: service role only (read via lib/ai/settings.ts, written via
--- the admin panel's server-side API route, both using the service client).
-
--- Human handoff: recorded by the request_human_handoff tool when a question
--- is out of scope or the visitor asks to talk to Roya directly.
-create table if not exists public.handoff_requests (
+-- One row per admin. This does NOT replace the shared-password login in
+-- lib/admin/auth.ts (ADMIN_PASSWORD) — that would need real per-user
+-- credentials, invites, and session-to-user binding, a separate project.
+-- Today there's exactly one row (Roya), and every audit_log write attributes
+-- to it regardless of who's behind the shared password.
+create table if not exists public.admin_users (
   id         uuid primary key default gen_random_uuid(),
-  reason     text not null check (reason in ('out_of_scope', 'user_requested', 'other')),
-  note       text,
-  session_id uuid references public.chat_sessions(id) on delete set null,
-  locale     text not null default 'en',
-  resolved   boolean not null default false,
+  email      text not null unique,
+  role       text not null default 'owner' check (role in ('owner', 'editor')),
   created_at timestamptz not null default now()
 );
 
-create index if not exists handoff_requests_created_at_idx
-  on public.handoff_requests (created_at desc);
-
-alter table public.handoff_requests enable row level security;
+alter table public.admin_users enable row level security;
 -- No policies: service role only.
 
--- Long-conversation summarization: summary covers every message up to
--- summary_up_to_count, so the brain only needs to re-summarize once new
--- messages accumulate past that watermark, not on every turn.
-alter table public.chat_sessions
-  add column if not exists summary text,
-  add column if not exists summary_up_to_count int not null default 0;
+create table if not exists public.audit_log (
+  id            uuid primary key default gen_random_uuid(),
+  admin_user_id uuid references public.admin_users(id) on delete set null,
+  action        text not null,   -- e.g. 'settings.prompt.update', 'handoff.resolve'
+  target        text,            -- free-form: what the action touched (a row id, a channel, ...)
+  created_at    timestamptz not null default now()
+);
+
+create index if not exists audit_log_created_at_idx on public.audit_log (created_at desc);
+
+alter table public.audit_log enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Bot configuration: prompt_versions + model_config + embedding_config
+-- -----------------------------------------------------------------------------
+
+-- Versioned persona, one row per save from /admin/settings. `persona` is
+-- reused as the locale key ('en'/'fa') — only one row per locale may have
+-- is_active = true at a time (enforced below), so "the active prompt" is
+-- always an unambiguous single lookup. If no row is active for a locale, the
+-- brain falls back to DEFAULT_SYSTEM_PROMPT_EN/FA in lib/ai/prompt.ts.
+create table if not exists public.prompt_versions (
+  id         uuid primary key default gen_random_uuid(),
+  content    text not null,
+  persona    text not null check (persona in ('en', 'fa')),
+  is_active  boolean not null default false,
+  created_at timestamptz not null default now(),
+  created_by uuid references public.admin_users(id) on delete set null
+);
+
+create unique index if not exists prompt_versions_one_active_per_persona
+  on public.prompt_versions (persona) where is_active;
+
+alter table public.prompt_versions enable row level security;
+-- No policies: service role only.
+
+-- One row per channel. provider is fixed to 'gemini' for now (see
+-- [[chatbot-architecture]] on why) — temperature/max_tokens/top_p are
+-- actually applied to the Gemini call; fallback_provider/fallback_model/
+-- schedule are stored but not yet evaluated at runtime (no automatic
+-- fallback or time-based model switching is implemented).
+create table if not exists public.model_config (
+  id                uuid primary key default gen_random_uuid(),
+  channel           text not null check (channel in ('web', 'telegram', 'widget')),
+  provider          text not null default 'gemini',
+  active_model      text not null,
+  temperature       real not null default 0.7,
+  max_tokens        int not null default 1024,
+  top_p             real not null default 0.95,
+  fallback_provider text,
+  fallback_model    text,
+  schedule          jsonb,
+  updated_at        timestamptz not null default now(),
+  unique (channel)
+);
+
+alter table public.model_config enable row level security;
+-- No policies: service role only.
+
+-- Singleton row (id fixed to 1). chunk_size/chunk_overlap/top_k/
+-- similarity_threshold are the same knobs the old bot_settings row had —
+-- top_k/similarity_threshold apply on every chat turn (lib/ai/retrieval.ts),
+-- chunk_size/chunk_overlap apply on the next `npm run ingest`.
+-- reranker_enabled/reranker_model are stored but NOT implemented — no
+-- reranking step runs today; changing them has no effect yet.
+create table if not exists public.embedding_config (
+  id                   int primary key default 1 check (id = 1),
+  provider             text not null default 'gemini',
+  model                text not null,
+  dimensions           int not null,
+  chunk_size           int not null,
+  chunk_overlap        int not null,
+  top_k                int not null,
+  similarity_threshold real not null,
+  reranker_enabled     boolean not null default false,
+  reranker_model       text,
+  updated_at           timestamptz not null default now()
+);
+
+alter table public.embedding_config enable row level security;
+-- No policies: service role only.
 
 
 -- =============================================================================

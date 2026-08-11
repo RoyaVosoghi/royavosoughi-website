@@ -17,6 +17,9 @@ type Role = "user" | "assistant";
 interface DisplayMessage {
   role: Role;
   content: string;
+  /** Assistant messages only. */
+  id?: string;
+  feedback?: 1 | -1 | null;
 }
 
 // Guard against the script being included twice on the same page.
@@ -166,6 +169,23 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     .rv-user .rv-bubble { background: ${COLORS.forest}; color: ${COLORS.offwhite}; }
     .rv-assistant .rv-bubble { background: ${COLORS.mint}; color: ${COLORS.ink}; }
+    .rv-feedback { display: flex; gap: 4px; padding: 0 2px; }
+    .rv-feedback-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: rgba(26, 30, 28, 0.35);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .rv-feedback-btn:hover:not(:disabled) { background: rgba(2, 51, 22, 0.06); color: ${COLORS.emerald}; }
+    .rv-feedback-btn:disabled { cursor: default; }
+    .rv-feedback-btn[data-active="true"] { background: rgba(15, 123, 79, 0.15); color: ${COLORS.emerald}; }
+    .rv-feedback-btn[data-active="true"].rv-down { background: rgba(135, 96, 18, 0.15); color: ${COLORS.saffronDeep}; }
     .rv-status {
       padding: 8px 18px;
       font-size: 13px;
@@ -227,6 +247,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
   const CLOSE_ICON =
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+  const THUMB_UP_ICON =
+    '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 22V11M2 13v7a2 2 0 0 0 2 2h12.9a2 2 0 0 0 2-1.7l1.4-8A2 2 0 0 0 18.3 10H14V5a2 2 0 0 0-2-2L7 11"/></svg>';
+  const THUMB_DOWN_ICON =
+    '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(180 12 12)"><path d="M7 22V11M2 13v7a2 2 0 0 0 2 2h12.9a2 2 0 0 0 2-1.7l1.4-8A2 2 0 0 0 18.3 10H14V5a2 2 0 0 0-2-2L7 11"/></svg>';
 
   function el<K extends keyof HTMLElementTagNameMap>(
     tag: K,
@@ -293,6 +317,21 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     let sending = false;
     const messages: DisplayMessage[] = [];
 
+    async function rate(message: DisplayMessage, rating: 1 | -1) {
+      if (!message.id || message.feedback !== null) return;
+      message.feedback = rating;
+      renderMessages();
+      try {
+        await fetch(`${API_BASE}/api/widget/feedback`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messageId: message.id, rating }),
+        });
+      } catch {
+        // Best-effort — the button already reflects the visitor's choice.
+      }
+    }
+
     function renderMessages() {
       messagesEl.innerHTML = "";
       if (messages.length === 0) {
@@ -302,9 +341,36 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       } else {
         for (const message of messages) {
           const row = el("div", `rv-bubble-row rv-${message.role}`);
+          const wrap = el("div");
           const bubble = el("div", "rv-bubble");
           bubble.textContent = message.content;
-          row.appendChild(bubble);
+          wrap.appendChild(bubble);
+
+          if (message.role === "assistant" && message.id) {
+            const feedbackRow = el("div", "rv-feedback");
+
+            const upBtn = el("button", "rv-feedback-btn rv-up");
+            upBtn.type = "button";
+            upBtn.innerHTML = THUMB_UP_ICON;
+            upBtn.setAttribute("aria-label", "Good response");
+            upBtn.disabled = message.feedback !== null;
+            upBtn.dataset.active = String(message.feedback === 1);
+            upBtn.addEventListener("click", () => rate(message, 1));
+
+            const downBtn = el("button", "rv-feedback-btn rv-down");
+            downBtn.type = "button";
+            downBtn.innerHTML = THUMB_DOWN_ICON;
+            downBtn.setAttribute("aria-label", "Bad response");
+            downBtn.disabled = message.feedback !== null;
+            downBtn.dataset.active = String(message.feedback === -1);
+            downBtn.addEventListener("click", () => rate(message, -1));
+
+            feedbackRow.appendChild(upBtn);
+            feedbackRow.appendChild(downBtn);
+            wrap.appendChild(feedbackRow);
+          }
+
+          row.appendChild(wrap);
           messagesEl.appendChild(row);
         }
       }
@@ -353,8 +419,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
         } else if (!response.ok) {
           setStatus(t("errorBody"));
         } else {
-          const data = (await response.json()) as { reply: string };
-          messages.push({ role: "assistant", content: data.reply });
+          const data = (await response.json()) as { reply: string; messageId: string };
+          messages.push({ role: "assistant", content: data.reply, id: data.messageId, feedback: null });
           renderMessages();
           setStatus("");
         }

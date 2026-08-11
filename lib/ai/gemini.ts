@@ -26,7 +26,7 @@ export const GEMINI_EMBED_MODEL = process.env.GEMINI_EMBED_MODEL || "gemini-embe
  * outputDimensionality (Matryoshka representation — the model was trained so
  * a prefix of the full vector is itself a valid, if slightly less precise,
  * embedding). 768 keeps the HNSW index compact for a knowledge base that
- * starts as a few dozen chunks. Must match kb_chunks.embedding's column width.
+ * starts as a few dozen chunks. Must match chunks.embedding's column width.
  */
 export const EMBEDDING_DIMENSIONS = 768;
 

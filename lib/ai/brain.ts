@@ -3,12 +3,13 @@ import "server-only";
 import { ApiError, type Content, type Part } from "@google/genai";
 
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
-import { GEMINI_CHAT_MODEL, getGeminiClient, isGeminiConfigured } from "./gemini";
-import { appendMessage, getConversationContext, getLongTermFacts, getOrCreateSession } from "./memory";
+import { getGeminiClient, isGeminiConfigured } from "./gemini";
+import { appendMessage, getConversationContext, getLongTermFacts, getOrCreateConversation, upsertUnifiedUser } from "./memory";
+import { getModelConfig } from "./model-config";
 import { buildSystemInstruction } from "./prompt";
+import { getActivePromptContent } from "./prompt-versions";
 import { checkRateLimit } from "./rate-limit";
 import { retrieveContext } from "./retrieval";
-import { getBotSettings } from "./settings";
 import { dispatchTool, toolDeclarations } from "./tools";
 import { BrainNotConfiguredError, RateLimitError, type BrainTurnInput, type BrainTurnOutput } from "./types";
 
@@ -20,9 +21,9 @@ const FALLBACK_REPLY: Record<"en" | "fa", string> = {
 };
 
 /**
- * The single entry point every surface calls — web now, Telegram/widget
- * later. Nothing in here or in the modules it calls assumes "website";
- * channel is just a parameter.
+ * The single entry point every surface calls — web, Telegram, widget.
+ * Nothing in here or in the modules it calls assumes "website"; channel is
+ * just a parameter.
  */
 export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutput> {
   if (!isGeminiConfigured() || !isSupabaseServiceConfigured()) {
@@ -34,20 +35,22 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
   const allowed = await checkRateLimit(channel, channelSessionId, ip ?? null);
   if (!allowed) throw new RateLimitError();
 
-  const session = await getOrCreateSession(channel, channelSessionId, locale);
+  const conversation = await getOrCreateConversation(channel, channelSessionId, locale);
+  await upsertUnifiedUser(channel, channelSessionId);
 
-  await appendMessage(session.id, "user", userMessage);
+  await appendMessage(conversation.id, "user", userMessage);
 
-  const settings = await getBotSettings();
+  const modelConfig = await getModelConfig(channel);
 
-  const [context, { recent, summary }, facts] = await Promise.all([
+  const [context, { recent, summary }, facts, promptOverride] = await Promise.all([
     retrieveContext(userMessage, locale),
-    getConversationContext(session, settings.summarizeAfterMessages),
-    session.leadEmail ? getLongTermFacts(session.leadEmail) : Promise.resolve([]),
+    getConversationContext(conversation),
+    conversation.leadEmail ? getLongTermFacts(conversation.leadEmail) : Promise.resolve([]),
+    getActivePromptContent(locale),
   ]);
 
   const systemInstruction = buildSystemInstruction(locale, context, facts, {
-    prompt: locale === "fa" ? settings.systemPromptFa : settings.systemPromptEn,
+    prompt: promptOverride,
     summary,
   });
 
@@ -57,19 +60,29 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
   }));
 
   const ai = getGeminiClient()!;
-  const toolCtx = { sessionId: session.id, locale };
+  const toolCtx = {
+    conversationId: conversation.id,
+    channel,
+    externalUserId: channelSessionId,
+    locale,
+  };
 
   let reply = "";
+  let tokensIn: number | undefined;
+  let tokensOut: number | undefined;
 
   for (let iteration = 0; iteration <= MAX_TOOL_ITERATIONS; iteration++) {
     let response;
     try {
       response = await ai.models.generateContent({
-        model: GEMINI_CHAT_MODEL,
+        model: modelConfig.activeModel,
         contents,
         config: {
           systemInstruction,
           tools: [{ functionDeclarations: toolDeclarations }],
+          temperature: modelConfig.temperature,
+          topP: modelConfig.topP,
+          maxOutputTokens: modelConfig.maxTokens,
         },
       });
     } catch (err) {
@@ -82,6 +95,9 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
       }
       throw err;
     }
+
+    tokensIn = response.usageMetadata?.promptTokenCount ?? tokensIn;
+    tokensOut = response.usageMetadata?.candidatesTokenCount ?? tokensOut;
 
     const calls = response.functionCalls;
 
@@ -105,7 +121,7 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
       const name = call.name ?? "";
       const result = await dispatchTool(name, call.args ?? {}, toolCtx);
 
-      await appendMessage(session.id, "tool", `${name}(${JSON.stringify(call.args ?? {})})`, {
+      await appendMessage(conversation.id, "tool", `${name}(${JSON.stringify(call.args ?? {})})`, {
         toolName: name,
         toolPayload: result,
       });
@@ -120,7 +136,12 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
 
   const finalReply = reply.trim() || FALLBACK_REPLY[locale];
 
-  await appendMessage(session.id, "assistant", finalReply);
+  const messageId = await appendMessage(conversation.id, "assistant", finalReply, {
+    modelUsed: modelConfig.activeModel,
+    tokensIn,
+    tokensOut,
+    retrievedChunkIds: context.map((c) => c.id),
+  });
 
-  return { reply: finalReply, sessionId: session.id };
+  return { reply: finalReply, sessionId: conversation.id, messageId };
 }

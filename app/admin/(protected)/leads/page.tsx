@@ -9,6 +9,7 @@ const columns: Column<Lead>[] = [
   { header: "Name", cell: (row) => row.name },
   { header: "Email", cell: (row) => <a className="text-emerald hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
   { header: "Interest", cell: (row) => row.interest ?? "—" },
+  { header: "Source", cell: (row) => row.source ?? "—" },
   { header: "Locale", cell: (row) => row.locale.toUpperCase() },
   {
     header: "Captured",
