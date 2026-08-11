@@ -135,6 +135,7 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
   }
 
   const finalReply = reply.trim() || FALLBACK_REPLY[locale];
+  const sources = Array.from(new Set(context.map((c) => c.documentTitle)));
 
   const messageId = await appendMessage(conversation.id, "assistant", finalReply, {
     modelUsed: modelConfig.activeModel,
@@ -143,5 +144,5 @@ export async function runBrainTurn(input: BrainTurnInput): Promise<BrainTurnOutp
     retrievedChunkIds: context.map((c) => c.id),
   });
 
-  return { reply: finalReply, sessionId: conversation.id, messageId };
+  return { reply: finalReply, sessionId: conversation.id, messageId, sources };
 }

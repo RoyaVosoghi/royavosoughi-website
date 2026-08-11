@@ -25,18 +25,34 @@ export function isValidTelegramSecret(headerValue: string | null): boolean {
   return Boolean(webhookSecret) && headerValue === webhookSecret;
 }
 
-export async function sendTelegramMessage(chatId: number | string, text: string): Promise<void> {
+export interface InlineButton {
+  text: string;
+  callbackData: string;
+}
+
+export async function sendTelegramMessage(
+  chatId: number | string,
+  text: string,
+  quickReplies?: InlineButton[],
+): Promise<void> {
   if (!botToken) throw new Error("telegram_not_configured");
+
+  const body: Record<string, unknown> = { chat_id: chatId, text };
+  if (quickReplies?.length) {
+    body.reply_markup = {
+      inline_keyboard: [quickReplies.map((b) => ({ text: b.text, callback_data: b.callbackData }))],
+    };
+  }
 
   const response = await fetch(`${TELEGRAM_API_BASE}/bot${botToken}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
-    const body = await response.text().catch(() => "");
-    throw new Error(`telegram_send_failed: ${response.status} ${body}`);
+    const responseBody = await response.text().catch(() => "");
+    throw new Error(`telegram_send_failed: ${response.status} ${responseBody}`);
   }
 }
 
@@ -51,5 +67,19 @@ export async function sendTelegramChatAction(chatId: number | string): Promise<v
     });
   } catch (err) {
     console.error("[telegram] sendChatAction failed:", err);
+  }
+}
+
+/** Dismisses the loading spinner Telegram shows on an inline button after it's tapped. Must be called even on our own failure paths, or the button spins until it times out client-side. */
+export async function answerTelegramCallbackQuery(callbackQueryId: string): Promise<void> {
+  if (!botToken) return;
+  try {
+    await fetch(`${TELEGRAM_API_BASE}/bot${botToken}/answerCallbackQuery`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ callback_query_id: callbackQueryId }),
+    });
+  } catch (err) {
+    console.error("[telegram] answerCallbackQuery failed:", err);
   }
 }

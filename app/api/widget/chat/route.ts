@@ -3,35 +3,32 @@ import { NextResponse } from "next/server";
 import { runBrainTurn } from "@/lib/ai/brain";
 import { ChatRequestSchema, getClientIp } from "@/lib/ai/chat-schema";
 import { BrainNotConfiguredError, RateLimitError } from "@/lib/ai/types";
+import { getWidgetConfig, isOriginAllowed, widgetCorsHeaders } from "@/lib/ai/widget-config";
 
 // Not edge — same reasoning as app/api/chat/route.ts.
 export const runtime = "nodejs";
 
-/**
- * The whole point of an embeddable widget is that it works on ANY site, so
- * this is the one route that intentionally allows every origin — unlike
- * app/api/chat/route.ts, which only the same-origin website ever calls.
- * No cookies/credentials are involved (session id is just a body field),
- * so a wildcard origin carries no auth-bypass risk here.
- */
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
-function corsJson(body: unknown, init?: ResponseInit) {
-  return NextResponse.json(body, {
-    ...init,
-    headers: { ...CORS_HEADERS, ...init?.headers },
-  });
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+export async function OPTIONS(request: Request) {
+  const { allowedDomains } = await getWidgetConfig();
+  const origin = request.headers.get("origin");
+  if (!isOriginAllowed(origin, allowedDomains)) {
+    return new NextResponse(null, { status: 403 });
+  }
+  return new NextResponse(null, { status: 204, headers: widgetCorsHeaders(origin, allowedDomains) });
 }
 
 export async function POST(request: Request) {
+  const { allowedDomains } = await getWidgetConfig();
+  const origin = request.headers.get("origin");
+
+  if (!isOriginAllowed(origin, allowedDomains)) {
+    return NextResponse.json({ error: "origin_not_allowed" }, { status: 403 });
+  }
+
+  const corsHeaders = widgetCorsHeaders(origin, allowedDomains);
+  const corsJson = (body: unknown, init?: ResponseInit) =>
+    NextResponse.json(body, { ...init, headers: { ...corsHeaders, ...init?.headers } });
+
   let body: unknown;
   try {
     body = await request.json();

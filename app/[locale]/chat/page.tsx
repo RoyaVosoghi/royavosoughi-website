@@ -43,7 +43,12 @@ export default async function ChatPage({
         <p className="mt-6 text-lg text-ink/80">{t("lead")}</p>
 
         <div className="mt-10 h-[34rem] overflow-hidden rounded-3xl border-2 border-forest/15">
-          <ChatWidget configured={configured} locale={locale as Locale} />
+          <ChatWidget
+            configured={configured}
+            locale={locale as Locale}
+            showStarters
+            showConsultationButton
+          />
         </div>
       </div>
     </Section>

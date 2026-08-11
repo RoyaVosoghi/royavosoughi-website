@@ -31,10 +31,12 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   const currentScript = document.currentScript as HTMLScriptElement | null;
   const API_BASE = currentScript ? new URL(currentScript.src).origin : "";
 
+  const DEFAULT_ACCENT = "#0f7b4f";
+
   const COLORS = {
     forest: "#023316",
     forestSoft: "#0a4a24",
-    emerald: "#0f7b4f",
+    emerald: DEFAULT_ACCENT, // overwritten below once /api/widget/config resolves
     mint: "#dff5e9",
     offwhite: "#f7faf8",
     ink: "#1a1e1c",
@@ -89,13 +91,24 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   }
   const sessionId = getOrCreateSessionId();
 
-  const STYLES = `
+  /**
+   * Built lazily (not a top-level const) because primaryColor/position come
+   * from /api/widget/config, fetched async before mount() draws anything —
+   * a template literal evaluated at module load would freeze in the
+   * hardcoded defaults instead.
+   */
+  function buildStyles(positionSide: "start" | "end"): string {
+    // Logical "end" is physically right in LTR, left in RTL — and vice
+    // versa for "start". Panel grows from whichever corner the launcher sits in.
+    const physicalSide = (positionSide === "end") === (dir === "ltr") ? "right" : "left";
+
+    return `
     :host { all: initial; }
     * { box-sizing: border-box; }
     .rv-root {
       position: fixed;
       bottom: 20px;
-      inset-inline-end: 20px;
+      inset-inline-${positionSide}: 20px;
       z-index: 2147483000;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       display: flex;
@@ -113,7 +126,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transform-origin: bottom ${dir === "rtl" ? "left" : "right"};
+      transform-origin: bottom ${physicalSide};
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
     .rv-panel[data-open="false"] {
@@ -241,7 +254,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     .rv-launcher:hover { background: ${COLORS.forest}; transform: translateY(-2px); }
     .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
-  `;
+    `;
+  }
 
   const CHAT_ICON =
     '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
@@ -261,14 +275,43 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     return node;
   }
 
-  function mount() {
+  interface WidgetConfig {
+    primaryColor: string;
+    position: "bottom-end" | "bottom-start";
+    welcomeMessageEn: string | null;
+    welcomeMessageFa: string | null;
+    allowedDomains: string[];
+  }
+
+  async function fetchConfig(): Promise<WidgetConfig | null> {
+    if (!API_BASE) return null;
+    try {
+      const response = await fetch(`${API_BASE}/api/widget/config`);
+      if (!response.ok) return null;
+      return (await response.json()) as WidgetConfig;
+    } catch {
+      return null;
+    }
+  }
+
+  async function mount() {
+    // Best-effort: a fetch failure (offline, misconfigured API_BASE) falls
+    // straight back to the hardcoded defaults already in COLORS/STRINGS —
+    // the widget must never fail to render just because /api/widget/config
+    // is unreachable.
+    const config = await fetchConfig();
+    if (config?.primaryColor) COLORS.emerald = config.primaryColor;
+    const positionSide = config?.position === "bottom-start" ? "start" : "end";
+    const welcomeOverride = locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn;
+    if (welcomeOverride) STRINGS[locale].emptyState = welcomeOverride;
+
     const host = document.createElement("div");
     host.setAttribute("dir", dir);
     document.body.appendChild(host);
     const shadow = host.attachShadow({ mode: "open" });
 
     const style = document.createElement("style");
-    style.textContent = STYLES;
+    style.textContent = buildStyles(positionSide);
     shadow.appendChild(style);
 
     const root = el("div", "rv-root");

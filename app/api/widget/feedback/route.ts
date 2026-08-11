@@ -2,20 +2,16 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { submitFeedback } from "@/lib/ai/feedback";
+import { getWidgetConfig, isOriginAllowed, widgetCorsHeaders } from "@/lib/ai/widget-config";
 
-/** Same CORS story as app/api/widget/chat/route.ts — the widget runs on third-party origins, so this is the one feedback route that must accept every origin. */
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
-function corsJson(body: unknown, init?: ResponseInit) {
-  return NextResponse.json(body, { ...init, headers: { ...CORS_HEADERS, ...init?.headers } });
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+/** Same origin-restriction story as app/api/widget/chat/route.ts. */
+export async function OPTIONS(request: Request) {
+  const { allowedDomains } = await getWidgetConfig();
+  const origin = request.headers.get("origin");
+  if (!isOriginAllowed(origin, allowedDomains)) {
+    return new NextResponse(null, { status: 403 });
+  }
+  return new NextResponse(null, { status: 204, headers: widgetCorsHeaders(origin, allowedDomains) });
 }
 
 const FeedbackSchema = z.object({
@@ -25,6 +21,17 @@ const FeedbackSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const { allowedDomains } = await getWidgetConfig();
+  const origin = request.headers.get("origin");
+
+  if (!isOriginAllowed(origin, allowedDomains)) {
+    return NextResponse.json({ error: "origin_not_allowed" }, { status: 403 });
+  }
+
+  const corsHeaders = widgetCorsHeaders(origin, allowedDomains);
+  const corsJson = (body: unknown, init?: ResponseInit) =>
+    NextResponse.json(body, { ...init, headers: { ...corsHeaders, ...init?.headers } });
+
   let body: unknown;
   try {
     body = await request.json();

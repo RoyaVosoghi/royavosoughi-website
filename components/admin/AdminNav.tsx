@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/admin/registrations", label: "Registrations" },
   { href: "/admin/conversations", label: "Conversations" },
   { href: "/admin/handoffs", label: "Handoffs" },
+  { href: "/admin/broadcast", label: "Broadcast" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/audit-log", label: "Audit log" },

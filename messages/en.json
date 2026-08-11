@@ -141,7 +141,16 @@
     "emptyState": "Say hello, or ask about services, projects, or booking a consultation.",
     "disclaimer": "This assistant can make mistakes. For anything important, confirm by email.",
     "rateLimited": "You've sent a lot of messages in a short time — please wait a few minutes and try again.",
-    "notConfigured": "Chat isn't switched on yet. Email me directly — I read every message."
+    "notConfigured": "Chat isn't switched on yet. Email me directly — I read every message.",
+    "starters": [
+      "What services does Roya offer?",
+      "Can you tell me about a recent project?",
+      "How does a consultation work?",
+      "Is Roya available for new projects?"
+    ],
+    "sourcesLabel": "Sources",
+    "requestConsultation": "Request a consultation",
+    "consultationMessage": "I'd like to book a consultation."
   },
   "contact": {
     "eyebrow": "Contact",

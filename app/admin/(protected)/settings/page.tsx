@@ -2,10 +2,12 @@ import { EmbeddingConfigForm } from "@/components/admin/EmbeddingConfigForm";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { ModelConfigForm } from "@/components/admin/ModelConfigForm";
 import { PersonaSettingsForm } from "@/components/admin/PersonaSettingsForm";
+import { WidgetConfigForm } from "@/components/admin/WidgetConfigForm";
 import { getEmbeddingConfig } from "@/lib/ai/embedding-config";
 import { getAllModelConfigs } from "@/lib/ai/model-config";
 import { DEFAULT_SYSTEM_PROMPT_EN, DEFAULT_SYSTEM_PROMPT_FA } from "@/lib/ai/prompt";
 import { getActivePromptContent, getPromptVersionHistory } from "@/lib/ai/prompt-versions";
+import { getWidgetConfig } from "@/lib/ai/widget-config";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Settings · Admin" };
@@ -20,12 +22,13 @@ export default async function AdminSettingsPage() {
     );
   }
 
-  const [activeEn, activeFa, history, modelConfigs, embeddingConfig] = await Promise.all([
+  const [activeEn, activeFa, history, modelConfigs, embeddingConfig, widgetConfig] = await Promise.all([
     getActivePromptContent("en"),
     getActivePromptContent("fa"),
     getPromptVersionHistory(),
     getAllModelConfigs(),
     getEmbeddingConfig(),
+    getWidgetConfig(),
   ]);
 
   return (
@@ -48,6 +51,16 @@ export default async function AdminSettingsPage() {
         <ModelConfigForm initial={modelConfigs} />
 
         <EmbeddingConfigForm initial={embeddingConfig} />
+
+        <WidgetConfigForm
+          initial={{
+            primaryColor: widgetConfig.primaryColor,
+            position: widgetConfig.position,
+            welcomeMessageEn: widgetConfig.welcomeMessageEn ?? "",
+            welcomeMessageFa: widgetConfig.welcomeMessageFa ?? "",
+            allowedDomains: widgetConfig.allowedDomains,
+          }}
+        />
       </div>
     </div>
   );

@@ -12,10 +12,11 @@ export interface Conversation {
   leadEmail: string | null;
   summary: string | null;
   summaryUpToCount: number;
+  contextResetAt: string | null;
 }
 
 const CONVERSATION_COLUMNS =
-  "id, channel, external_user_id, locale, lead_email, summary, summary_up_to_count";
+  "id, channel, external_user_id, locale, lead_email, summary, summary_up_to_count, context_reset_at";
 
 type ConversationRow = {
   id: string;
@@ -25,6 +26,7 @@ type ConversationRow = {
   lead_email: string | null;
   summary: string | null;
   summary_up_to_count: number;
+  context_reset_at: string | null;
 };
 
 function toConversation(row: ConversationRow): Conversation {
@@ -36,7 +38,27 @@ function toConversation(row: ConversationRow): Conversation {
     leadEmail: row.lead_email,
     summary: row.summary,
     summaryUpToCount: row.summary_up_to_count,
+    contextResetAt: row.context_reset_at,
   };
+}
+
+/** Read-only lookup — unlike getOrCreateConversation, never creates a row. Used to restore chat history on page load without conjuring an empty conversation for a session id nobody's used yet. */
+export async function findConversation(
+  channel: Channel,
+  externalUserId: string,
+): Promise<Conversation | null> {
+  const supabase = getSupabaseAdminClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("conversations")
+    .select(CONVERSATION_COLUMNS)
+    .eq("channel", channel)
+    .eq("external_user_id", externalUserId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? toConversation(data as ConversationRow) : null;
 }
 
 export async function getOrCreateConversation(
@@ -140,26 +162,72 @@ export async function appendMessage(
 }
 
 /**
- * Full history, oldest-first. Excludes "tool" rows on purpose — those are an
- * audit trail of what a tool was called with, not something Gemini's
- * function-call/response pairing can be reconstructed from out of a flat
- * message list. The tool's effect shows up in the assistant's next
- * natural-language reply instead.
+ * Full history, oldest-first, since `since` if given (Telegram's /reset sets
+ * conversations.context_reset_at — everything before it is excluded from
+ * what the model sees, though still visible in the admin conversation
+ * viewer, which reads messages directly rather than through this function).
+ * Excludes "tool" rows on purpose — those are an audit trail of what a tool
+ * was called with, not something Gemini's function-call/response pairing can
+ * be reconstructed from out of a flat message list. The tool's effect shows
+ * up in the assistant's next natural-language reply instead.
  */
-async function getAllHistory(conversationId: string): Promise<ChatMessage[]> {
+export async function getAllHistory(conversationId: string, since?: string | null): Promise<ChatMessage[]> {
   const supabase = getSupabaseAdminClient();
   if (!supabase) return [];
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("messages")
     .select("role, content")
     .eq("conversation_id", conversationId)
-    .in("role", ["user", "assistant"])
-    .order("created_at", { ascending: true });
+    .in("role", ["user", "assistant"]);
+
+  if (since) query = query.gt("created_at", since);
+
+  const { data, error } = await query.order("created_at", { ascending: true });
 
   if (error) throw error;
 
   return (data ?? []) as ChatMessage[];
+}
+
+export interface PublicMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
+/** Like getAllHistory, but includes each message's id — needed by app/api/chat/history/route.ts so restored assistant messages can still take feedback (ChatMessage, used for the model's own context, deliberately omits id since Gemini's contents array has no use for it). */
+export async function getPublicMessageHistory(
+  conversationId: string,
+  since?: string | null,
+): Promise<PublicMessage[]> {
+  const supabase = getSupabaseAdminClient();
+  if (!supabase) return [];
+
+  let query = supabase
+    .from("messages")
+    .select("id, role, content")
+    .eq("conversation_id", conversationId)
+    .in("role", ["user", "assistant"]);
+
+  if (since) query = query.gt("created_at", since);
+
+  const { data, error } = await query.order("created_at", { ascending: true });
+  if (error) throw error;
+
+  return (data ?? []) as PublicMessage[];
+}
+
+/** Backs Telegram's /reset command. Doesn't delete anything — see getAllHistory. */
+export async function resetConversationContext(conversationId: string): Promise<void> {
+  const supabase = getSupabaseAdminClient();
+  if (!supabase) throw new Error("supabase_not_configured");
+
+  const { error } = await supabase
+    .from("conversations")
+    .update({ context_reset_at: new Date().toISOString(), summary: null, summary_up_to_count: 0 })
+    .eq("id", conversationId);
+  if (error) throw error;
 }
 
 /** How many of the most recent messages stay verbatim in the model's context, never summarized away. */
@@ -200,7 +268,7 @@ export async function getConversationContext(
   conversation: Conversation,
   summarizeAfterMessages: number = DEFAULT_SUMMARIZE_AFTER_MESSAGES,
 ): Promise<{ recent: ChatMessage[]; summary: string | null }> {
-  const all = await getAllHistory(conversation.id);
+  const all = await getAllHistory(conversation.id, conversation.contextResetAt);
 
   if (all.length <= summarizeAfterMessages) {
     return { recent: all, summary: null };

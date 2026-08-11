@@ -21,6 +21,8 @@ export interface BrainTurnOutput {
   sessionId: string;
   /** The assistant reply's message id — channels that support feedback (web, widget) attach thumbs up/down to this. */
   messageId: string;
+  /** Distinct document titles the reply was grounded in, if any — surfaced on the full chat page as "Sources". */
+  sources: string[];
 }
 
 /** Thrown by runBrainTurn when the session+IP have exceeded the message quota. */

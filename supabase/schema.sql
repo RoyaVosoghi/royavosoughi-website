@@ -136,6 +136,10 @@ create table if not exists public.conversations (
   status              text not null default 'active' check (status in ('active', 'closed')),
   summary             text,
   summary_up_to_count int not null default 0,
+  -- Set by Telegram's /reset command — messages before this timestamp are
+  -- excluded from what the brain sends the model as context (not deleted;
+  -- the admin conversation viewer still shows everything).
+  context_reset_at    timestamptz,
   locale              text not null default 'en',
   lead_email          text,   -- set once the lead-gen tool captures an email
   started_at          timestamptz not null default now(),
@@ -390,6 +394,25 @@ create table if not exists public.embedding_config (
 
 alter table public.embedding_config enable row level security;
 -- No policies: service role only.
+
+-- Singleton row (id fixed to 1) — embeddable widget appearance + domain
+-- allowlist, editable from /admin/settings. Empty allowed_domains means
+-- "allow every origin" (today's behavior); a non-empty list restricts
+-- app/api/widget/* to those origins only.
+create table if not exists public.widget_config (
+  id                 int primary key default 1 check (id = 1),
+  primary_color      text not null default '#0f7b4f',
+  position           text not null default 'bottom-end' check (position in ('bottom-end', 'bottom-start')),
+  welcome_message_en text,
+  welcome_message_fa text,
+  allowed_domains    text[] not null default '{}',
+  updated_at         timestamptz not null default now()
+);
+
+alter table public.widget_config enable row level security;
+-- No policies: service role for writes (admin panel). Reads happen via
+-- app/api/widget/config/route.ts, a public GET endpoint that deliberately
+-- re-exposes this row's non-secret fields to any origin.
 
 
 -- =============================================================================

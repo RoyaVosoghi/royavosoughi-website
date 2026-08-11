@@ -334,6 +334,13 @@ export async function getAuditLog(limit = 100): Promise<AuditLogRow[]> {
   });
 }
 
+export async function getTelegramRecipients(): Promise<string[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase.from("unified_users").select("external_id").eq("channel", "telegram");
+  if (error) throw error;
+  return (data ?? []).map((row) => row.external_id as string);
+}
+
 /** There's no per-admin login yet (one shared password), so every /admin action attributes to whichever admin_users row was seeded first. */
 export async function getSeededAdminUserId(): Promise<string | null> {
   const supabase = getSupabaseAdminClient();
