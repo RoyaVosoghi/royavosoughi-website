@@ -108,6 +108,15 @@ deployed, open source and documented. Right now both entries are drafts with
 empty links, so the live site shows an honest "first projects are being built"
 message instead.
 
+### Admin panel
+
+`/admin` is an internal dashboard — leads, registrations, and every chatbot
+conversation across web/widget/Telegram, all reading the same tables the
+brain writes to. Password-gated: set `ADMIN_PASSWORD` and
+`ADMIN_SESSION_SECRET` in the environment (see `.env.local.example`), then
+sign in at `/admin/login`. It's deliberately outside `app/[locale]/` — one
+operator, one language, no visitor ever needs to land there.
+
 ### Adding photos
 
 Drop images in `public/` and replace the placeholder frame in
@@ -125,9 +134,11 @@ app/[locale]/          pages — layout sets <html lang dir>
   about/page.tsx       full bio
   [...rest]/page.tsx   catch-all so bad URLs 404 in the right language
 app/api/contact/       form endpoint: Zod validation → Supabase
+app/admin/             internal dashboard (leads, registrations, conversations) — outside [locale]
 components/sections/   one file per homepage section
 components/layout/     Header, Footer, LocaleSwitch
 components/ui/         Button, Section, Logo
+components/admin/      admin panel UI (nav, tables, login form)
 i18n/                  routing, navigation helpers, request config
 messages/              en.json, fa.json — all visible copy
 content/projects.ts    portfolio data
