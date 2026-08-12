@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -12,6 +13,7 @@ export interface WidgetConfigValues {
 }
 
 export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
+  const t = useTranslations("channels.widgetConfig");
   const router = useRouter();
   const [values, setValues] = useState(initial);
   const [domainsText, setDomainsText] = useState(initial.allowedDomains.join("\n"));
@@ -35,15 +37,12 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
 
   return (
     <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">Embeddable widget</h2>
-      <p className="mt-1 text-sm text-ink/60">
-        Appearance and domain restriction for the third-party embed script. Applies on the
-        visitor's next page load.
-      </p>
+      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
+      <p className="mt-1 text-sm text-ink/60">{t("subtitle")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="text-xs font-medium text-ink/70">
-          Accent color
+          {t("accentColorLabel")}
           <div className="mt-1 flex items-center gap-2">
             <input
               type="color"
@@ -60,18 +59,18 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
           </div>
         </label>
         <label className="text-xs font-medium text-ink/70">
-          Position
+          {t("positionLabel")}
           <select
             value={values.position}
             onChange={(e) => setValues({ ...values, position: e.target.value as "bottom-end" | "bottom-start" })}
             className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
           >
-            <option value="bottom-end">Trailing corner (right in EN, left in FA)</option>
-            <option value="bottom-start">Leading corner (left in EN, right in FA)</option>
+            <option value="bottom-end">{t("positionTrailing")}</option>
+            <option value="bottom-start">{t("positionLeading")}</option>
           </select>
         </label>
         <label className="text-xs font-medium text-ink/70">
-          Welcome message — English
+          {t("welcomeEnLabel")}
           <input
             type="text"
             value={values.welcomeMessageEn}
@@ -81,7 +80,7 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
           />
         </label>
         <label className="text-xs font-medium text-ink/70">
-          Welcome message — Persian
+          {t("welcomeFaLabel")}
           <input
             type="text"
             dir="rtl"
@@ -92,12 +91,12 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
           />
         </label>
         <label className="sm:col-span-2 text-xs font-medium text-ink/70">
-          Allowed domains (one per line — empty means any site can embed it)
+          {t("allowedDomainsLabel")}
           <textarea
             value={domainsText}
             onChange={(e) => setDomainsText(e.target.value)}
             rows={4}
-            placeholder={"example.com\nanother-client-site.com"}
+            placeholder={t("allowedDomainsPlaceholder")}
             className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
           />
         </label>
@@ -110,10 +109,10 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
           disabled={status === "saving"}
           className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
         >
-          {status === "saving" ? "Saving…" : "Save"}
+          {status === "saving" ? t("saving") : t("save")}
         </button>
-        {status === "saved" ? <span className="text-sm font-medium text-emerald">Saved.</span> : null}
-        {status === "error" ? <span className="text-sm font-medium text-saffron-deep">Couldn't save.</span> : null}
+        {status === "saved" ? <span className="text-sm font-medium text-emerald">{t("saved")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-saffron-deep">{t("saveError")}</span> : null}
       </div>
     </section>
   );

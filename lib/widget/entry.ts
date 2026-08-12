@@ -56,6 +56,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       emptyState: "Say hello, or ask a question.",
       rateLimited: "You've sent a lot of messages in a short time — please wait a few minutes.",
       notConfigured: "Chat isn't available right now.",
+      waitingForHuman: "A team member will reply here shortly.",
     },
     fa: {
       bubbleTitle: "هر چیزی بپرسید",
@@ -69,6 +70,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       emptyState: "سلام کنید یا سوالی بپرسید.",
       rateLimited: "در مدت کوتاهی پیام‌های زیادی فرستادید — لطفا چند دقیقه صبر کنید.",
       notConfigured: "گفتگو الان در دسترس نیست.",
+      waitingForHuman: "به‌زودی یکی از اعضای تیم همین‌جا پاسخ می‌دهد.",
     },
   };
 
@@ -168,7 +170,19 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       flex-direction: column;
       gap: 10px;
     }
-    .rv-empty { color: rgba(26, 30, 28, 0.6); font-size: 14px; }
+    .rv-empty { color: rgba(26, 30, 28, 0.6); font-size: 14px; margin: 0 0 12px; }
+    .rv-starters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rv-starter-btn {
+      border: 2px solid rgba(2, 51, 22, 0.15);
+      background: ${COLORS.offwhite};
+      color: rgba(26, 30, 28, 0.8);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .rv-starter-btn:hover { border-color: ${COLORS.emerald}; color: ${COLORS.emerald}; }
     .rv-bubble-row { display: flex; }
     .rv-bubble-row.rv-user { justify-content: flex-end; }
     .rv-bubble-row.rv-assistant { justify-content: flex-start; }
@@ -281,6 +295,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     welcomeMessageEn: string | null;
     welcomeMessageFa: string | null;
     allowedDomains: string[];
+    quickRepliesEn: string[];
+    quickRepliesFa: string[];
   }
 
   async function fetchConfig(): Promise<WidgetConfig | null> {
@@ -304,6 +320,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     const positionSide = config?.position === "bottom-start" ? "start" : "end";
     const welcomeOverride = locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn;
     if (welcomeOverride) STRINGS[locale].emptyState = welcomeOverride;
+    const starters = (locale === "fa" ? config?.quickRepliesFa : config?.quickRepliesEn) ?? [];
 
     const host = document.createElement("div");
     host.setAttribute("dir", dir);
@@ -381,6 +398,18 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
         const empty = el("p", "rv-empty");
         empty.textContent = t("emptyState");
         messagesEl.appendChild(empty);
+
+        if (starters.length > 0) {
+          const startersRow = el("div", "rv-starters");
+          for (const starter of starters) {
+            const btn = el("button", "rv-starter-btn");
+            btn.type = "button";
+            btn.textContent = starter;
+            btn.addEventListener("click", () => send(starter));
+            startersRow.appendChild(btn);
+          }
+          messagesEl.appendChild(startersRow);
+        }
       } else {
         for (const message of messages) {
           const row = el("div", `rv-bubble-row rv-${message.role}`);
@@ -436,8 +465,30 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     launcher.addEventListener("click", () => setOpen(!open));
     closeBtn.addEventListener("click", () => setOpen(false));
 
-    async function send() {
-      const text = input.value.trim();
+    // Splits an SSE byte stream into {event, data} frames, same logic as
+    // ChatWidget.tsx's parseSseChunk — duplicated rather than shared per this
+    // file's header comment (no imports across the React/vanilla boundary).
+    function parseSseChunk(buffer: string, raw: string): { events: Array<{ event: string; data: unknown }>; buffer: string } {
+      const combined = buffer + raw;
+      const frames = combined.split("\n\n");
+      const rest = frames.pop() ?? "";
+
+      const events: Array<{ event: string; data: unknown }> = [];
+      for (const frame of frames) {
+        const eventLine = frame.split("\n").find((line) => line.startsWith("event: "));
+        const dataLine = frame.split("\n").find((line) => line.startsWith("data: "));
+        if (!eventLine || !dataLine) continue;
+        try {
+          events.push({ event: eventLine.slice("event: ".length).trim(), data: JSON.parse(dataLine.slice("data: ".length)) });
+        } catch {
+          // malformed frame — skip it rather than crash the reader loop
+        }
+      }
+      return { events, buffer: rest };
+    }
+
+    async function send(presetText?: string) {
+      const text = (presetText ?? input.value).trim();
       if (!text || sending) return;
 
       messages.push({ role: "user", content: text });
@@ -461,11 +512,56 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
           setStatus(t("notConfigured"));
         } else if (!response.ok) {
           setStatus(t("errorBody"));
+        } else if (!response.body || !(response.headers.get("content-type") ?? "").includes("text/event-stream")) {
+          const data = (await response.json()) as { reply: string; messageId: string; paused?: boolean };
+          if (data.paused) {
+            setStatus(t("waitingForHuman"));
+            pollForHumanReply();
+          } else {
+            messages.push({ role: "assistant", content: data.reply, id: data.messageId, feedback: null });
+            renderMessages();
+            setStatus("");
+          }
         } else {
-          const data = (await response.json()) as { reply: string; messageId: string };
-          messages.push({ role: "assistant", content: data.reply, id: data.messageId, feedback: null });
-          renderMessages();
-          setStatus("");
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let streamMessage: DisplayMessage | null = null;
+          let streamFailed = false;
+
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const parsed = parseSseChunk(buffer, decoder.decode(value, { stream: true }));
+            buffer = parsed.buffer;
+
+            for (const { event, data } of parsed.events) {
+              if (event === "chunk") {
+                const { text: delta } = data as { text: string };
+                if (!streamMessage) {
+                  streamMessage = { role: "assistant", content: "", feedback: null };
+                  messages.push(streamMessage);
+                  setStatus("");
+                }
+                streamMessage.content += delta;
+                renderMessages();
+              } else if (event === "done") {
+                const result = data as { reply: string; messageId: string };
+                if (streamMessage) {
+                  streamMessage.content = streamMessage.content || result.reply;
+                  streamMessage.id = result.messageId;
+                } else {
+                  messages.push({ role: "assistant", content: result.reply, id: result.messageId, feedback: null });
+                }
+                renderMessages();
+              } else if (event === "error") {
+                streamFailed = true;
+              }
+            }
+          }
+
+          if (streamFailed && !streamMessage) setStatus(t("errorBody"));
         }
       } catch {
         setStatus(t("errorBody"));
@@ -476,7 +572,51 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       }
     }
 
-    sendBtn.addEventListener("click", send);
+    let pollTimer: ReturnType<typeof setInterval> | null = null;
+
+    // Mirrors ChatWidget.tsx's polling: while paused for human handoff,
+    // there's no push channel into the widget's shadow DOM, so this is the
+    // only way an operator's manual reply shows up without a page reload.
+    function pollForHumanReply() {
+      if (pollTimer) return;
+      const seenCount = messages.length;
+      let attempts = 0;
+      const MAX_ATTEMPTS = 60;
+      pollTimer = setInterval(async () => {
+        attempts++;
+        if (attempts > MAX_ATTEMPTS) {
+          if (pollTimer) clearInterval(pollTimer);
+          pollTimer = null;
+          return;
+        }
+        try {
+          const response = await fetch(`${API_BASE}/api/widget/history?channelSessionId=${sessionId}`);
+          if (!response.ok) return;
+          const data = (await response.json()) as {
+            messages: Array<{ id: string; role: Role; content: string }>;
+          };
+          if (data.messages.length > seenCount) {
+            messages.length = 0;
+            for (const m of data.messages) {
+              messages.push({
+                role: m.role,
+                content: m.content,
+                id: m.role === "assistant" ? m.id : undefined,
+                feedback: m.role === "assistant" ? null : undefined,
+              });
+            }
+            renderMessages();
+            setStatus("");
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = null;
+          }
+        } catch {
+          // keep polling — a transient network error shouldn't end the wait
+        }
+      }, 5000);
+    }
+
+    sendBtn.addEventListener("click", () => send());
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") send();
     });

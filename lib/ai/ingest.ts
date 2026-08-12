@@ -16,17 +16,20 @@ export interface IngestSection {
 }
 
 export interface IngestSourceInput {
-  sourceType: "site_copy" | "curated_doc";
+  sourceType: "site_copy" | "curated_doc" | "pdf" | "docx" | "url";
   /** Becomes documents.title — the stable dedupe key for re-ingestion. */
   sourceKey: string;
   locale: Locale;
   sections: IngestSection[];
+  sourceUrl?: string;
+  tags?: string[];
 }
 
 export interface IngestResult {
   sourceKey: string;
   locale: Locale;
   chunks: number;
+  documentId: string;
 }
 
 /** Rough chars-to-tokens estimate (~4 chars/token for English/Persian) — not a real tokenizer, just enough for the admin panel's token_count display. */
@@ -63,7 +66,14 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
   const { data: document, error: upsertError } = await supabase
     .from("documents")
     .upsert(
-      { title: input.sourceKey, locale: input.locale, source_type: input.sourceType, status: "active" },
+      {
+        title: input.sourceKey,
+        locale: input.locale,
+        source_type: input.sourceType,
+        source_url: input.sourceUrl ?? null,
+        tags: input.tags ?? [],
+        status: "active",
+      },
       { onConflict: "title,locale" },
     )
     .select("id")
@@ -75,7 +85,7 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
 
   let written = 0;
   for (let i = 0; i < chunks.length; i++) {
-    const embedding = await embedText(chunks[i]);
+    const embedding = await embedText(chunks[i], "document");
     const { error } = await supabase.from("chunks").insert({
       document_id: document.id,
       chunk_index: i,
@@ -87,7 +97,7 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
     written++;
   }
 
-  return { sourceKey: input.sourceKey, locale: input.locale, chunks: written };
+  return { sourceKey: input.sourceKey, locale: input.locale, chunks: written, documentId: document.id as string };
 }
 
 // -----------------------------------------------------------------------------

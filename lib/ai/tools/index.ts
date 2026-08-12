@@ -1,17 +1,36 @@
 import "server-only";
 
 import type { FunctionDeclaration } from "@google/genai";
+import type { ChatCompletionTool } from "openai/resources/chat/completions";
 
 import type { Channel, Locale } from "../types";
 import { requestHumanHandoffDeclaration, executeRequestHumanHandoff } from "./handoff";
 import { captureLeadDeclaration, executeCaptureLead } from "./lead";
 import { checkRegistrationStatusDeclaration, executeCheckRegistrationStatus } from "./registration";
 
-export const toolDeclarations: FunctionDeclaration[] = [
+/**
+ * Tool declarations are still authored once, in Gemini's FunctionDeclaration
+ * shape (name/description/parametersJsonSchema) — brain.ts talks to models
+ * exclusively through OpenRouter's OpenAI-compatible API now, so this
+ * adapter is the only place that shape needs converting, rather than
+ * rewriting every tool file.
+ */
+const geminiDeclarations: FunctionDeclaration[] = [
   captureLeadDeclaration,
   checkRegistrationStatusDeclaration,
   requestHumanHandoffDeclaration,
 ];
+
+export const toolDeclarations: FunctionDeclaration[] = geminiDeclarations;
+
+export const openAiToolDeclarations: ChatCompletionTool[] = geminiDeclarations.map((decl) => ({
+  type: "function",
+  function: {
+    name: decl.name!,
+    description: decl.description,
+    parameters: decl.parametersJsonSchema as Record<string, unknown>,
+  },
+}));
 
 export interface ToolContext {
   conversationId: string;

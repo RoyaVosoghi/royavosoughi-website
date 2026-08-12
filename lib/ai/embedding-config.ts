@@ -4,27 +4,32 @@ import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 
 /**
  * Singleton row (id=1) — retrieval + chunking knobs, editable from
- * /admin/settings. provider/model/dimensions are read-only in the panel:
- * changing the embedding model would invalidate every vector already stored
- * in `chunks`, so that's a re-ingest-from-scratch decision, not a live edit.
+ * /admin/settings. provider/model/dimensions are shown with an explicit
+ * "changing this requires a full re-embed" confirm flow in the UI (see
+ * components/admin/EmbeddingConfigForm.tsx + the rebuild action at
+ * app/api/admin/embedding-config/rebuild/route.ts): switching invalidates
+ * every vector already stored in `chunks`, since a document's chunks can
+ * only be compared against a query embedded by the SAME model.
  */
 export interface EmbeddingConfig {
   provider: string;
   model: string;
   dimensions: number;
+  /** Cohere/Voyage distinguish "this text will be searched for" vs. "this text will be searched against" — null for providers that don't (OpenAI, Google). */
+  inputType: string | null;
   chunkSize: number;
   chunkOverlap: number;
   topK: number;
   similarityThreshold: number;
-  /** Stored but not implemented — no reranking step runs today. */
   rerankerEnabled: boolean;
   rerankerModel: string | null;
 }
 
 export const DEFAULT_EMBEDDING_CONFIG: EmbeddingConfig = {
-  provider: "gemini",
+  provider: "google",
   model: "gemini-embedding-001",
   dimensions: 768,
+  inputType: null,
   chunkSize: 700,
   chunkOverlap: 120,
   topK: 6,
@@ -45,7 +50,7 @@ export async function getEmbeddingConfig(): Promise<EmbeddingConfig> {
   const { data, error } = await supabase
     .from("embedding_config")
     .select(
-      "provider, model, dimensions, chunk_size, chunk_overlap, top_k, similarity_threshold, reranker_enabled, reranker_model",
+      "provider, model, dimensions, input_type, chunk_size, chunk_overlap, top_k, similarity_threshold, reranker_enabled, reranker_model",
     )
     .eq("id", 1)
     .maybeSingle();
@@ -59,6 +64,7 @@ export async function getEmbeddingConfig(): Promise<EmbeddingConfig> {
     provider: data.provider,
     model: data.model,
     dimensions: data.dimensions,
+    inputType: data.input_type,
     chunkSize: data.chunk_size,
     chunkOverlap: data.chunk_overlap,
     topK: data.top_k,
@@ -71,10 +77,16 @@ export async function getEmbeddingConfig(): Promise<EmbeddingConfig> {
 }
 
 export interface EmbeddingConfigUpdate {
+  provider?: string;
+  model?: string;
+  dimensions?: number;
+  inputType?: string | null;
   chunkSize?: number;
   chunkOverlap?: number;
   topK?: number;
   similarityThreshold?: number;
+  rerankerEnabled?: boolean;
+  rerankerModel?: string | null;
 }
 
 export async function updateEmbeddingConfig(update: EmbeddingConfigUpdate): Promise<void> {
@@ -82,10 +94,16 @@ export async function updateEmbeddingConfig(update: EmbeddingConfigUpdate): Prom
   if (!supabase) throw new Error("supabase_not_configured");
 
   const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (update.provider !== undefined) patch.provider = update.provider;
+  if (update.model !== undefined) patch.model = update.model;
+  if (update.dimensions !== undefined) patch.dimensions = update.dimensions;
+  if (update.inputType !== undefined) patch.input_type = update.inputType;
   if (update.chunkSize !== undefined) patch.chunk_size = update.chunkSize;
   if (update.chunkOverlap !== undefined) patch.chunk_overlap = update.chunkOverlap;
   if (update.topK !== undefined) patch.top_k = update.topK;
   if (update.similarityThreshold !== undefined) patch.similarity_threshold = update.similarityThreshold;
+  if (update.rerankerEnabled !== undefined) patch.reranker_enabled = update.rerankerEnabled;
+  if (update.rerankerModel !== undefined) patch.reranker_model = update.rerankerModel;
 
   const { error } = await supabase.from("embedding_config").update(patch).eq("id", 1);
   if (error) throw error;

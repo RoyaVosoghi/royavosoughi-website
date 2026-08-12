@@ -24,7 +24,7 @@ export function DataTable<T extends { id: string }>({
     <div className="overflow-x-auto rounded-3xl border-2 border-forest/10 bg-offwhite">
       <table className="w-full min-w-[640px] border-collapse text-sm">
         <thead>
-          <tr className="border-b-2 border-forest/10 text-left">
+          <tr className="border-b-2 border-forest/10 text-start">
             {columns.map((col) => (
               <th
                 key={col.header}

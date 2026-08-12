@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function ResolveHandoffButton({ id, resolved }: { id: string; resolved: boolean }) {
   const router = useRouter();
+  const t = useTranslations("handoffs.resolveButton");
   const [pending, setPending] = useState(false);
 
   async function toggle() {
@@ -29,7 +31,7 @@ export function ResolveHandoffButton({ id, resolved }: { id: string; resolved: b
           : "bg-saffron/20 text-saffron-deep hover:bg-saffron/30"
       }`}
     >
-      {resolved ? "Resolved" : "Mark resolved"}
+      {resolved ? t("resolved") : t("markResolved")}
     </button>
   );
 }

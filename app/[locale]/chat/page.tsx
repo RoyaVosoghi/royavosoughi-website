@@ -3,9 +3,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Section } from "@/components/ui/Section";
-import { isGeminiConfigured } from "@/lib/ai/gemini";
+import { isBrainConfigured } from "@/lib/ai/brain";
+import { getChannelGreeting } from "@/lib/ai/channel-greetings";
 import type { Locale } from "@/lib/ai/types";
-import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export async function generateMetadata({
   params,
@@ -33,7 +33,8 @@ export default async function ChatPage({
   setRequestLocale(locale);
   const t = await getTranslations("chatPage");
 
-  const configured = isGeminiConfigured() && isSupabaseServiceConfigured();
+  const configured = isBrainConfigured();
+  const greeting = await getChannelGreeting("web", locale as Locale);
 
   return (
     <Section tone="light" className="pt-14 md:pt-20">
@@ -48,6 +49,8 @@ export default async function ChatPage({
             locale={locale as Locale}
             showStarters
             showConsultationButton
+            welcomeOverride={greeting.welcomeMessage}
+            startersOverride={greeting.quickReplies}
           />
         </div>
       </div>

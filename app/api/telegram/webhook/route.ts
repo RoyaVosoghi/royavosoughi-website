@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { runBrainTurn } from "@/lib/ai/brain";
+import { getChannelGreeting } from "@/lib/ai/channel-greetings";
 import { getOrCreateConversation, resetConversationContext, upsertUnifiedUser } from "@/lib/ai/memory";
 import { BrainNotConfiguredError, RateLimitError, type Locale } from "@/lib/ai/types";
 import {
@@ -64,18 +65,19 @@ const RESET_DONE: Record<Locale, string> = {
   fa: "انجام شد — تاریخچه گفتگویمان پاک شد. چه چیزی می‌خواهید بدانید؟",
 };
 
-const CANNED_REPLIES: Record<string, Record<Locale, string>> = {
-  services: { en: "What services do you offer?", fa: "چه خدماتی ارائه می‌دهید؟" },
-  consult: { en: "I'd like to book a consultation.", fa: "می‌خواهم یک مشاوره رزرو کنم." },
-  human: { en: "I'd like to talk to a real person.", fa: "می‌خواهم با یک انسان واقعی صحبت کنم." },
+const DEFAULT_QUICK_REPLIES: Record<Locale, string[]> = {
+  en: ["Services", "Book a call", "Talk to a human"],
+  fa: ["خدمات", "رزرو مشاوره", "صحبت با انسان"],
 };
 
-function quickReplyButtons(locale: Locale): InlineButton[] {
-  return [
-    { text: locale === "fa" ? "خدمات" : "Services", callbackData: "qr:services" },
-    { text: locale === "fa" ? "رزرو مشاوره" : "Book a call", callbackData: "qr:consult" },
-    { text: locale === "fa" ? "صحبت با انسان" : "Talk to a human", callbackData: "qr:human" },
-  ];
+/** DB-editable (see /admin/settings) with a hardcoded fallback — resolved fresh per message since getChannelGreeting is cached, not to avoid a DB round trip on every reply. */
+async function getQuickReplies(locale: Locale): Promise<string[]> {
+  const greeting = await getChannelGreeting("telegram", locale);
+  return greeting.quickReplies.length ? greeting.quickReplies : DEFAULT_QUICK_REPLIES[locale];
+}
+
+function toInlineButtons(replies: string[]): InlineButton[] {
+  return replies.map((text, i) => ({ text, callbackData: `qr:${i}` }));
 }
 
 /** Shared by both a typed message and a quick-reply button tap — same brain call, same reply shape. */
@@ -89,7 +91,9 @@ async function handleUserText(chatId: number, locale: Locale, text: string): Pro
       locale,
       userMessage: text,
     });
-    await sendTelegramMessage(chatId, result.reply, quickReplyButtons(locale));
+    if (!result.paused) {
+      await sendTelegramMessage(chatId, result.reply, toInlineButtons(await getQuickReplies(locale)));
+    }
   } catch (err) {
     const reply =
       err instanceof RateLimitError
@@ -115,13 +119,16 @@ async function handleCommand(command: string, chatId: number, locale: Locale): P
   const conversation = await getOrCreateConversation("telegram", String(chatId), locale);
   await upsertUnifiedUser("telegram", String(chatId));
 
+  const buttons = toInlineButtons(await getQuickReplies(locale));
+
   if (command === "/start") {
-    await sendTelegramMessage(chatId, WELCOME[locale], quickReplyButtons(locale));
+    const greeting = await getChannelGreeting("telegram", locale);
+    await sendTelegramMessage(chatId, greeting.welcomeMessage || WELCOME[locale], buttons);
   } else if (command === "/help") {
-    await sendTelegramMessage(chatId, HELP[locale], quickReplyButtons(locale));
+    await sendTelegramMessage(chatId, HELP[locale], buttons);
   } else {
     await resetConversationContext(conversation.id);
-    await sendTelegramMessage(chatId, RESET_DONE[locale], quickReplyButtons(locale));
+    await sendTelegramMessage(chatId, RESET_DONE[locale], buttons);
   }
 
   return true;
@@ -130,12 +137,12 @@ async function handleCommand(command: string, chatId: number, locale: Locale): P
 export async function POST(request: Request) {
   // Nothing usable without both a token and a webhook secret. Ack with 200
   // so Telegram doesn't treat this as a delivery failure and keep retrying.
-  if (!isTelegramConfigured()) {
+  if (!(await isTelegramConfigured())) {
     return NextResponse.json({ ok: true });
   }
 
   const secretHeader = request.headers.get("x-telegram-bot-api-secret-token");
-  if (!isValidTelegramSecret(secretHeader)) {
+  if (!(await isValidTelegramSecret(secretHeader))) {
     return NextResponse.json({ error: "invalid_secret" }, { status: 401 });
   }
 
@@ -156,11 +163,13 @@ export async function POST(request: Request) {
   if (callbackQuery?.message) {
     const chatId = callbackQuery.message.chat.id;
     const locale = detectLocale(callbackQuery.from?.language_code);
-    const canned = callbackQuery.data ? CANNED_REPLIES[callbackQuery.data.replace(/^qr:/, "")] : undefined;
+    const match = callbackQuery.data?.match(/^qr:(\d+)$/);
 
     await answerTelegramCallbackQuery(callbackQuery.id);
-    if (canned) {
-      await handleUserText(chatId, locale, canned[locale]);
+    if (match) {
+      const replies = await getQuickReplies(locale);
+      const text = replies[Number(match[1])];
+      if (text) await handleUserText(chatId, locale, text);
     }
     return NextResponse.json({ ok: true });
   }

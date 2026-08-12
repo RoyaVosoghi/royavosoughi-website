@@ -1,15 +1,17 @@
 import "server-only";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
-import { GEMINI_CHAT_MODEL } from "./gemini";
+import { MODEL_CATALOG } from "./model-catalog";
 import type { Channel } from "./types";
 
 /**
  * One row per channel — which model + generation params to use, editable
- * from /admin/settings. provider is fixed to 'gemini' (see
- * [[chatbot-architecture]] for why); fallback_provider/fallback_model/
- * schedule are stored but NOT evaluated at runtime — no automatic
- * provider fallback or time-based model switching happens today.
+ * from /admin/settings. Every model in model-catalog.ts is an OpenRouter
+ * slug, so `provider` is always 'openrouter' here — kept as a column (not
+ * hardcoded) only so a future non-OpenRouter provider isn't a schema change.
+ * `schedule` (day-of-week → model override) and `fallback_model` (used on a
+ * provider error/429) are both evaluated at call time by
+ * resolveEffectiveModel() below.
  */
 export interface ModelConfig {
   provider: string;
@@ -17,16 +19,32 @@ export interface ModelConfig {
   temperature: number;
   maxTokens: number;
   topP: number;
+  fallbackModel: string | null;
+  schedule: WeekdaySchedule | null;
 }
+
+/** Keys are JS Date#getDay() (0=Sunday..6=Saturday) as strings, so lookups don't need a day-name table. Value is an OpenRouter slug that overrides activeModel for that day; a day with no key uses activeModel as usual. */
+export type WeekdaySchedule = Partial<Record<"0" | "1" | "2" | "3" | "4" | "5" | "6", string>>;
+
+const DEFAULT_MODEL = MODEL_CATALOG[0].slug;
 
 export function defaultModelConfig(): ModelConfig {
   return {
-    provider: "gemini",
-    activeModel: GEMINI_CHAT_MODEL,
+    provider: "openrouter",
+    activeModel: DEFAULT_MODEL,
     temperature: 0.7,
     maxTokens: 1024,
     topP: 0.95,
+    fallbackModel: null,
+    schedule: null,
   };
+}
+
+/** Today's scheduled override, if any — otherwise activeModel. Pure function of (config, now) so it's trivially testable and the admin UI can preview "what runs today" without a network call. */
+export function resolveScheduledModel(config: ModelConfig, now: Date = new Date()): string {
+  if (!config.schedule) return config.activeModel;
+  const key = String(now.getDay()) as keyof WeekdaySchedule;
+  return config.schedule[key] || config.activeModel;
 }
 
 const CACHE_TTL_MS = 60_000;
@@ -41,7 +59,7 @@ export async function getModelConfig(channel: Channel): Promise<ModelConfig> {
 
   const { data, error } = await supabase
     .from("model_config")
-    .select("provider, active_model, temperature, max_tokens, top_p")
+    .select("provider, active_model, temperature, max_tokens, top_p, fallback_model, schedule")
     .eq("channel", channel)
     .maybeSingle();
 
@@ -56,6 +74,8 @@ export async function getModelConfig(channel: Channel): Promise<ModelConfig> {
     temperature: data.temperature,
     maxTokens: data.max_tokens,
     topP: data.top_p,
+    fallbackModel: data.fallback_model,
+    schedule: (data.schedule as WeekdaySchedule) ?? null,
   };
   cache.set(channel, { value, expiresAt: Date.now() + CACHE_TTL_MS });
   return value;
@@ -66,17 +86,21 @@ export interface ModelConfigUpdate {
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  fallbackModel?: string | null;
+  schedule?: WeekdaySchedule | null;
 }
 
 export async function updateModelConfig(channel: Channel, update: ModelConfigUpdate): Promise<void> {
   const supabase = getSupabaseAdminClient();
   if (!supabase) throw new Error("supabase_not_configured");
 
-  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString(), provider: "openrouter" };
   if (update.activeModel !== undefined) patch.active_model = update.activeModel;
   if (update.temperature !== undefined) patch.temperature = update.temperature;
   if (update.maxTokens !== undefined) patch.max_tokens = update.maxTokens;
   if (update.topP !== undefined) patch.top_p = update.topP;
+  if (update.fallbackModel !== undefined) patch.fallback_model = update.fallbackModel;
+  if (update.schedule !== undefined) patch.schedule = update.schedule;
 
   const { error } = await supabase.from("model_config").update(patch).eq("channel", channel);
   if (error) throw error;
@@ -92,7 +116,7 @@ export async function getAllModelConfigs(): Promise<Array<{ channel: Channel } &
 
   const { data, error } = await supabase
     .from("model_config")
-    .select("channel, provider, active_model, temperature, max_tokens, top_p")
+    .select("channel, provider, active_model, temperature, max_tokens, top_p, fallback_model, schedule")
     .order("channel");
 
   if (error || !data) {
@@ -107,5 +131,7 @@ export async function getAllModelConfigs(): Promise<Array<{ channel: Channel } &
     temperature: row.temperature,
     maxTokens: row.max_tokens,
     topP: row.top_p,
+    fallbackModel: row.fallback_model,
+    schedule: (row.schedule as WeekdaySchedule) ?? null,
   }));
 }

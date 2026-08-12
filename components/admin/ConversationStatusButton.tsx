@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function ConversationStatusButton({ id, status }: { id: string; status: string }) {
   const router = useRouter();
+  const t = useTranslations("conversations.statusButton");
   const [pending, setPending] = useState(false);
   const isClosed = status === "closed";
 
@@ -30,7 +32,7 @@ export function ConversationStatusButton({ id, status }: { id: string; status: s
           : "border-forest text-forest hover:bg-forest hover:text-offwhite"
       }`}
     >
-      {isClosed ? "Reopen conversation" : "Close conversation"}
+      {isClosed ? t("reopen") : t("close")}
     </button>
   );
 }

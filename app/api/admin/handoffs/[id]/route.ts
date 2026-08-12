@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { hasValidAdminSession } from "@/lib/admin/auth";
+import { requireRole } from "@/lib/admin/auth";
 import { resolveHandoffRequest, writeAuditLog } from "@/lib/admin/queries";
 
 const PatchSchema = z.object({ resolved: z.boolean() });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await hasValidAdminSession())) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const gate = await requireRole("operator");
+  if (!gate.ok) {
+    return NextResponse.json({ error: "unauthorized" }, { status: gate.status });
   }
 
   let body: unknown;

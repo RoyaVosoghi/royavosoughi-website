@@ -1,6 +1,9 @@
 import "server-only";
 
+import { getCurrentAdmin, hashPassword, type AdminRole } from "@/lib/admin/auth";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
+
+export type LeadStatus = "new" | "contacted" | "qualified" | "converted" | "lost";
 
 export interface Lead {
   id: string;
@@ -10,6 +13,8 @@ export interface Lead {
   source: string | null;
   conversationId: string | null;
   locale: string;
+  status: LeadStatus;
+  notes: string | null;
   createdAt: string;
 }
 
@@ -32,6 +37,8 @@ export interface ConversationSummary {
   leadEmail: string | null;
   startedAt: string;
   lastActiveAt: string;
+  botPaused: boolean;
+  flagged: boolean;
 }
 
 export interface MessageRow {
@@ -42,7 +49,14 @@ export interface MessageRow {
   modelUsed: string | null;
   tokensIn: number | null;
   tokensOut: number | null;
+  retrievedChunkIds: string[] | null;
   createdAt: string;
+}
+
+export interface RetrievedSource {
+  id: string;
+  documentTitle: string;
+  content: string;
 }
 
 export interface HandoffRequest {
@@ -158,7 +172,7 @@ export async function getLeads(limit = 100): Promise<Lead[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
     .from("leads")
-    .select("id, name, email, interest, source, conversation_id, locale, created_at")
+    .select("id, name, email, interest, source, conversation_id, locale, status, notes, created_at")
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -172,8 +186,19 @@ export async function getLeads(limit = 100): Promise<Lead[]> {
     source: row.source,
     conversationId: row.conversation_id,
     locale: row.locale,
+    status: (row.status ?? "new") as LeadStatus,
+    notes: row.notes,
     createdAt: row.created_at,
   }));
+}
+
+export async function updateLead(id: string, update: { status?: LeadStatus; notes?: string | null }): Promise<void> {
+  const supabase = requireClient();
+  const patch: Record<string, unknown> = {};
+  if (update.status !== undefined) patch.status = update.status;
+  if (update.notes !== undefined) patch.notes = update.notes;
+  const { error } = await supabase.from("leads").update(patch).eq("id", id);
+  if (error) throw error;
 }
 
 export async function getRegistrations(limit = 100): Promise<Registration[]> {
@@ -197,17 +222,22 @@ export async function getRegistrations(limit = 100): Promise<Registration[]> {
   }));
 }
 
-export async function getConversations(limit = 100): Promise<ConversationSummary[]> {
-  const supabase = requireClient();
-  const { data, error } = await supabase
-    .from("conversations")
-    .select("id, channel, external_user_id, status, locale, lead_email, started_at, last_active_at")
-    .order("last_active_at", { ascending: false })
-    .limit(limit);
+const CONVERSATION_SUMMARY_COLUMNS =
+  "id, channel, external_user_id, status, locale, lead_email, started_at, last_active_at, bot_paused, flagged";
 
-  if (error) throw error;
-
-  return (data ?? []).map((row) => ({
+function toConversationSummary(row: {
+  id: string;
+  channel: string;
+  external_user_id: string;
+  status: string;
+  locale: string;
+  lead_email: string | null;
+  started_at: string;
+  last_active_at: string;
+  bot_paused: boolean;
+  flagged: boolean;
+}): ConversationSummary {
+  return {
     id: row.id,
     channel: row.channel,
     externalUserId: row.external_user_id,
@@ -216,30 +246,50 @@ export async function getConversations(limit = 100): Promise<ConversationSummary
     leadEmail: row.lead_email,
     startedAt: row.started_at,
     lastActiveAt: row.last_active_at,
-  }));
+    botPaused: row.bot_paused,
+    flagged: row.flagged,
+  };
+}
+
+export interface ConversationFilters {
+  channel?: "web" | "telegram" | "widget";
+  status?: "active" | "closed";
+  flagged?: boolean;
+  /** Matches against lead_email or external_user_id. */
+  search?: string;
+}
+
+export async function getConversations(filters: ConversationFilters = {}, limit = 200): Promise<ConversationSummary[]> {
+  const supabase = requireClient();
+  let query = supabase.from("conversations").select(CONVERSATION_SUMMARY_COLUMNS);
+
+  if (filters.channel) query = query.eq("channel", filters.channel);
+  if (filters.status) query = query.eq("status", filters.status);
+  if (filters.flagged !== undefined) query = query.eq("flagged", filters.flagged);
+  if (filters.search) {
+    const term = filters.search.trim();
+    query = query.or(`lead_email.ilike.%${term}%,external_user_id.ilike.%${term}%`);
+  }
+
+  const { data, error } = await query.order("last_active_at", { ascending: false }).limit(limit);
+
+  if (error) throw error;
+
+  return (data ?? []).map(toConversationSummary);
 }
 
 export async function getConversation(id: string): Promise<ConversationSummary | null> {
   const supabase = requireClient();
   const { data, error } = await supabase
     .from("conversations")
-    .select("id, channel, external_user_id, status, locale, lead_email, started_at, last_active_at")
+    .select(CONVERSATION_SUMMARY_COLUMNS)
     .eq("id", id)
     .maybeSingle();
 
   if (error) throw error;
   if (!data) return null;
 
-  return {
-    id: data.id,
-    channel: data.channel,
-    externalUserId: data.external_user_id,
-    status: data.status,
-    locale: data.locale,
-    leadEmail: data.lead_email,
-    startedAt: data.started_at,
-    lastActiveAt: data.last_active_at,
-  };
+  return toConversationSummary(data);
 }
 
 export async function closeConversation(id: string, status: "active" | "closed"): Promise<void> {
@@ -248,11 +298,23 @@ export async function closeConversation(id: string, status: "active" | "closed")
   if (error) throw error;
 }
 
+export async function setConversationPaused(id: string, paused: boolean): Promise<void> {
+  const supabase = requireClient();
+  const { error } = await supabase.from("conversations").update({ bot_paused: paused }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function setConversationFlagged(id: string, flagged: boolean): Promise<void> {
+  const supabase = requireClient();
+  const { error } = await supabase.from("conversations").update({ flagged }).eq("id", id);
+  if (error) throw error;
+}
+
 export async function getConversationMessages(conversationId: string): Promise<MessageRow[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
     .from("messages")
-    .select("id, role, content, tool_name, model_used, tokens_in, tokens_out, created_at")
+    .select("id, role, content, tool_name, model_used, tokens_in, tokens_out, retrieved_chunk_ids, created_at")
     .eq("conversation_id", conversationId)
     .order("created_at", { ascending: true });
 
@@ -266,8 +328,42 @@ export async function getConversationMessages(conversationId: string): Promise<M
     modelUsed: row.model_used,
     tokensIn: row.tokens_in,
     tokensOut: row.tokens_out,
+    retrievedChunkIds: row.retrieved_chunk_ids,
     createdAt: row.created_at,
   }));
+}
+
+/** Resolves a batch of chunk ids to their content + document title, for the conversation detail view's "sources used" panel. */
+export async function getSourcesForChunkIds(chunkIds: string[]): Promise<Map<string, RetrievedSource>> {
+  const map = new Map<string, RetrievedSource>();
+  if (chunkIds.length === 0) return map;
+
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("chunks")
+    .select("id, content, documents(title)")
+    .in("id", chunkIds);
+
+  if (error) throw error;
+
+  for (const row of (data ?? []) as Array<{ id: string; content: string; documents: { title: string } | { title: string }[] | null }>) {
+    const doc = Array.isArray(row.documents) ? row.documents[0] : row.documents;
+    map.set(row.id, { id: row.id, documentTitle: doc?.title ?? "unknown", content: row.content });
+  }
+
+  return map;
+}
+
+/** Appends a manual reply from a human operator — persisted the same as a model reply (model_used records who/what actually answered), and pushed out over the channel's own delivery mechanism (Telegram needs an explicit send; web/widget are picked up by the client's poll against /api/chat/history or /api/widget/history). */
+export async function sendManualReply(conversationId: string, content: string): Promise<string> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({ conversation_id: conversationId, role: "assistant", content, model_used: "human-operator" })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id as string;
 }
 
 export async function getUnifiedUsers(limit = 100): Promise<UnifiedUser[]> {
@@ -312,6 +408,60 @@ export async function getFeedback(limit = 100): Promise<FeedbackRow[]> {
   });
 }
 
+export interface UnansweredQuestion {
+  messageId: string;
+  conversationId: string;
+  question: string | null;
+  reply: string;
+  createdAt: string;
+}
+
+/** Assistant replies where retrieval found nothing to ground the answer in — the clearest available signal that the knowledge base is missing something, short of a real "I don't know" classifier. Scans the most recent 300 assistant messages and resolves each candidate's preceding question with a follow-up query, which is fine at this site's traffic but wouldn't scale to a high-volume bot. */
+export async function getUnansweredQuestions(limit = 30): Promise<UnansweredQuestion[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("messages")
+    .select("id, conversation_id, content, retrieved_chunk_ids, created_at")
+    .eq("role", "assistant")
+    .order("created_at", { ascending: false })
+    .limit(300);
+  if (error) throw error;
+
+  const candidates = (
+    (data ?? []) as Array<{
+      id: string;
+      conversation_id: string;
+      content: string;
+      retrieved_chunk_ids: string[] | null;
+      created_at: string;
+    }>
+  )
+    .filter((row) => !row.retrieved_chunk_ids || row.retrieved_chunk_ids.length === 0)
+    .slice(0, limit);
+
+  const results: UnansweredQuestion[] = [];
+  for (const c of candidates) {
+    const { data: prevUser } = await supabase
+      .from("messages")
+      .select("content")
+      .eq("conversation_id", c.conversation_id)
+      .eq("role", "user")
+      .lt("created_at", c.created_at)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    results.push({
+      messageId: c.id,
+      conversationId: c.conversation_id,
+      question: prevUser?.content ?? null,
+      reply: c.content,
+      createdAt: c.created_at,
+    });
+  }
+  return results;
+}
+
 export async function getAuditLog(limit = 100): Promise<AuditLogRow[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
@@ -341,22 +491,69 @@ export async function getTelegramRecipients(): Promise<string[]> {
   return (data ?? []).map((row) => row.external_id as string);
 }
 
-/** There's no per-admin login yet (one shared password), so every /admin action attributes to whichever admin_users row was seeded first. */
-export async function getSeededAdminUserId(): Promise<string | null> {
-  const supabase = getSupabaseAdminClient();
-  if (!supabase) return null;
-  const { data } = await supabase.from("admin_users").select("id").limit(1).maybeSingle();
-  return data?.id ?? null;
+/** Attributes to whichever admin is behind the current session cookie — call from within a request (route handler/server action), never from a background job. */
+export interface AdminUserRow {
+  id: string;
+  email: string;
+  role: AdminRole;
+  hasPassword: boolean;
+  createdAt: string;
+}
+
+export async function getAdminUsers(): Promise<AdminUserRow[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("admin_users")
+    .select("id, email, role, password_hash, created_at")
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    email: row.email,
+    role: row.role as AdminRole,
+    hasPassword: Boolean(row.password_hash),
+    createdAt: row.created_at,
+  }));
+}
+
+export async function createAdminUser(email: string, password: string, role: AdminRole): Promise<void> {
+  const supabase = requireClient();
+  const passwordHash = await hashPassword(password);
+  const { error } = await supabase
+    .from("admin_users")
+    .insert({ email: email.trim(), role, password_hash: passwordHash });
+  if (error) throw error;
+}
+
+export async function updateAdminUserRole(id: string, role: AdminRole): Promise<void> {
+  const supabase = requireClient();
+  const { error } = await supabase.from("admin_users").update({ role }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function resetAdminUserPassword(id: string, password: string): Promise<void> {
+  const supabase = requireClient();
+  const passwordHash = await hashPassword(password);
+  const { error } = await supabase.from("admin_users").update({ password_hash: passwordHash }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteAdminUser(id: string): Promise<void> {
+  const supabase = requireClient();
+  const { error } = await supabase.from("admin_users").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function writeAuditLog(action: string, target?: string | null): Promise<void> {
   const supabase = getSupabaseAdminClient();
   if (!supabase) return;
 
-  const adminUserId = await getSeededAdminUserId();
+  const admin = await getCurrentAdmin();
 
   const { error } = await supabase.from("audit_log").insert({
-    admin_user_id: adminUserId,
+    admin_user_id: admin?.id ?? null,
     action,
     target: target ?? null,
   });

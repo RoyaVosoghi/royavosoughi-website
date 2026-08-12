@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { runBrainTurn } from "@/lib/ai/brain";
-import { ChatRequestSchema, getClientIp } from "@/lib/ai/chat-schema";
+import { prepareBrainTurn, streamBrainTurn } from "@/lib/ai/brain";
+import { ChatRequestSchema } from "@/lib/ai/chat-schema";
+import { createChatStreamResponse } from "@/lib/ai/sse";
 import { BrainNotConfiguredError, RateLimitError } from "@/lib/ai/types";
 import { getWidgetConfig, isOriginAllowed, widgetCorsHeaders } from "@/lib/ai/widget-config";
+import { getClientIp } from "@/lib/http";
 
 // Not edge — same reasoning as app/api/chat/route.ts.
 export const runtime = "nodejs";
@@ -50,15 +52,15 @@ export async function POST(request: Request) {
     return corsJson({ reply: "", sessionId: channelSessionId });
   }
 
+  let prepared;
   try {
-    const result = await runBrainTurn({
+    prepared = await prepareBrainTurn({
       channel: "widget",
       channelSessionId,
       locale,
       userMessage: message,
       ip: getClientIp(request),
     });
-    return corsJson(result);
   } catch (err) {
     if (err instanceof BrainNotConfiguredError) {
       return corsJson({ error: "not_configured" }, { status: 503 });
@@ -66,7 +68,13 @@ export async function POST(request: Request) {
     if (err instanceof RateLimitError) {
       return corsJson({ error: "rate_limited" }, { status: 429 });
     }
-    console.error("[widget chat] runBrainTurn failed:", err);
+    console.error("[widget chat] prepareBrainTurn failed:", err);
     return corsJson({ error: "upstream_failed" }, { status: 500 });
   }
+
+  if (prepared.paused) {
+    return corsJson({ reply: "", sessionId: prepared.sessionId, messageId: "", sources: [], paused: true });
+  }
+
+  return createChatStreamResponse(streamBrainTurn(prepared.turn), corsHeaders);
 }

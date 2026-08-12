@@ -3,67 +3,67 @@ import Link from "next/link";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { ResolveHandoffButton } from "@/components/admin/ResolveHandoffButton";
+import { getAdminTranslator } from "@/lib/admin/i18n/server";
 import { getHandoffRequests, type HandoffRequest } from "@/lib/admin/queries";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Handoffs · Admin" };
 
-const REASON_LABELS: Record<string, string> = {
-  out_of_scope: "Out of scope",
-  user_requested: "Asked for a human",
-  other: "Other",
-};
+function buildColumns(
+  t: Awaited<ReturnType<typeof getAdminTranslator<"handoffs">>>,
+): Column<HandoffRequest>[] {
+  const REASON_LABELS: Record<string, string> = {
+    out_of_scope: t("reasonOutOfScope"),
+    user_requested: t("reasonUserRequested"),
+    other: t("reasonOther"),
+  };
 
-const columns: Column<HandoffRequest>[] = [
-  { header: "Reason", cell: (row) => REASON_LABELS[row.reason] ?? row.reason },
-  { header: "Note", cell: (row) => row.note ?? "—" },
-  { header: "Locale", cell: (row) => row.locale.toUpperCase() },
-  {
-    header: "Conversation",
-    cell: (row) =>
-      row.sessionId ? (
-        <Link href={`/admin/conversations/${row.sessionId}`} className="text-emerald hover:underline">
-          View →
-        </Link>
-      ) : (
-        "—"
-      ),
-  },
-  {
-    header: "Flagged",
-    numeric: true,
-    cell: (row) => new Date(row.createdAt).toLocaleString(),
-  },
-  {
-    header: "",
-    cell: (row) => <ResolveHandoffButton id={row.id} resolved={row.resolved} />,
-  },
-];
+  return [
+    { header: t("columnReason"), cell: (row) => REASON_LABELS[row.reason] ?? row.reason },
+    { header: t("columnNote"), cell: (row) => row.note ?? "—" },
+    { header: t("columnLocale"), cell: (row) => row.locale.toUpperCase() },
+    {
+      header: t("columnConversation"),
+      cell: (row) =>
+        row.sessionId ? (
+          <Link href={`/admin/conversations/${row.sessionId}`} className="text-emerald hover:underline">
+            {t("viewLink")}
+          </Link>
+        ) : (
+          "—"
+        ),
+    },
+    {
+      header: t("columnFlagged"),
+      numeric: true,
+      cell: (row) => new Date(row.createdAt).toLocaleString(),
+    },
+    {
+      header: "",
+      cell: (row) => <ResolveHandoffButton id={row.id} resolved={row.resolved} />,
+    },
+  ];
+}
 
 export default async function AdminHandoffsPage() {
+  const t = await getAdminTranslator("handoffs");
+
   if (!isSupabaseServiceConfigured()) {
-    return (
-      <EmptyState
-        title="Supabase isn't configured"
-        body="Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to see handoff requests here."
-      />
-    );
+    return <EmptyState title={t("notConfiguredTitle")} body={t("notConfiguredBody")} />;
   }
 
   const handoffs = await getHandoffRequests();
+  const columns = buildColumns(t);
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">The brain</p>
-      <h1 className="text-section mt-3 text-forest">Handoffs</h1>
-      <p className="mt-3 text-ink/70">
-        Flagged by the chatbot's request_human_handoff tool — out-of-scope questions or a visitor
-        asking to talk to you directly.
-      </p>
+      <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
+      <p className="mt-3 text-ink/70">{t("subtitle")}</p>
 
       <div className="mt-8">
         {handoffs.length === 0 ? (
-          <EmptyState title="Nothing flagged" body="The bot hasn't needed to hand anyone off yet." />
+          <EmptyState title={t("emptyTitle")} body={t("emptyBody")} />
         ) : (
           <DataTable columns={columns} rows={handoffs} />
         )}

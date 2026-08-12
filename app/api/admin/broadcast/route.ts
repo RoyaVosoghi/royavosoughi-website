@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { hasValidAdminSession } from "@/lib/admin/auth";
+import { requireRole } from "@/lib/admin/auth";
 import { getTelegramRecipients, writeAuditLog } from "@/lib/admin/queries";
 import { sendTelegramMessage } from "@/lib/telegram";
 
@@ -19,8 +19,9 @@ function sleep(ms: number) {
 }
 
 export async function POST(request: Request) {
-  if (!(await hasValidAdminSession())) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const gate = await requireRole("editor");
+  if (!gate.ok) {
+    return NextResponse.json({ error: "unauthorized" }, { status: gate.status });
   }
 
   let body: unknown;

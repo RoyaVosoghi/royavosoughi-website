@@ -297,11 +297,9 @@ alter table public.rate_limit_hits enable row level security;
 -- Admin: users + audit log
 -- -----------------------------------------------------------------------------
 
--- One row per admin. This does NOT replace the shared-password login in
--- lib/admin/auth.ts (ADMIN_PASSWORD) — that would need real per-user
--- credentials, invites, and session-to-user binding, a separate project.
--- Today there's exactly one row (Roya), and every audit_log write attributes
--- to it regardless of who's behind the shared password.
+-- One row per admin. password_hash (added in V3, see below) makes this a
+-- real per-admin login — ADMIN_PASSWORD is only a break-glass bootstrap for
+-- the first 'owner' row, see lib/admin/auth.ts.
 create table if not exists public.admin_users (
   id         uuid primary key default gen_random_uuid(),
   email      text not null unique,
@@ -413,6 +411,187 @@ alter table public.widget_config enable row level security;
 -- No policies: service role for writes (admin panel). Reads happen via
 -- app/api/widget/config/route.ts, a public GET endpoint that deliberately
 -- re-exposes this row's non-secret fields to any origin.
+
+
+-- =============================================================================
+-- V3: full chatbot admin panel — multi-provider routing, real roles, RAG
+-- management, human handoff, leads pipeline, channel config, security.
+-- Same convention as V2: run manually in the Supabase SQL Editor. Additive
+-- except the `chunks.embedding` widen below, which is a BREAKING change —
+-- see the comment on that block before running it.
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- Real per-admin auth + roles (replaces "one shared password, one seeded row")
+-- -----------------------------------------------------------------------------
+
+alter table public.admin_users
+  add column if not exists password_hash text;
+
+alter table public.admin_users
+  drop constraint if exists admin_users_role_check;
+alter table public.admin_users
+  add constraint admin_users_role_check
+  check (role in ('owner', 'editor', 'operator', 'viewer'));
+
+-- -----------------------------------------------------------------------------
+-- Embeddings: provider input_type (Cohere/Voyage distinguish query vs.
+-- document embeddings) + widen the vector column to fit every provider in
+-- the catalog.
+--
+-- Capped at 2000, not OpenAI text-embedding-3-large's native 3072 — pgvector
+-- enforces a hard 2000-dimension ceiling on HNSW (and ivfflat) indexes, full
+-- stop, regardless of Postgres/pgvector version. text-embedding-3-large's
+-- `dimensions` API param (already used in lib/ai/providers/embeddings/openai.ts)
+-- natively truncates below 3072 with minimal quality loss, so the embedding
+-- catalog caps that model's selectable dimensions at 2000 to match.
+--
+-- BREAKING: existing rows in `chunks` were embedded at 768 dims (Gemini).
+-- pgvector can't reinterpret a stored 768-dim vector as a zero-padded
+-- 2000-dim one in place, so this block truncates `chunks` — re-run the
+-- knowledge base ingest / use the admin "rebuild index" action immediately
+-- after applying this migration. Every chunk is re-embedded into the new
+-- 2000-wide column with the app-level zero-pad helper
+-- (lib/ai/providers/embeddings/pad.ts), so cosine similarity is unaffected
+-- once re-embedded — see plan doc for why zero-padding preserves cosine sim.
+-- The HNSW index must be dropped before widening the column (an in-place
+-- type change tries to rebuild the existing index against the new width
+-- first, which fails the same 2000-dim check) and recreated after.
+-- -----------------------------------------------------------------------------
+
+alter table public.embedding_config
+  add column if not exists input_type text;
+
+-- lib/ai/embedding-catalog.ts uses provider id 'google' (the Gemini
+-- Developer API client), not the old free-text 'gemini' the V2 default used.
+update public.embedding_config set provider = 'google' where provider = 'gemini';
+alter table public.embedding_config alter column provider set default 'google';
+alter table public.model_config alter column provider set default 'openrouter';
+update public.model_config set provider = 'openrouter';
+
+truncate table public.chunks;
+
+drop function if exists public.match_chunks(vector(768), text, int);
+drop function if exists public.match_chunks(vector(3072), text, int);
+drop index if exists public.chunks_embedding_idx;
+
+alter table public.chunks
+  alter column embedding type vector(2000);
+
+create index if not exists chunks_embedding_idx
+  on public.chunks using hnsw (embedding vector_cosine_ops);
+
+create or replace function public.match_chunks(
+  query_embedding vector(2000),
+  match_locale text,
+  match_count int default 6
+) returns table (
+  id uuid, content text, metadata jsonb, document_id uuid, document_title text, similarity float
+)
+language sql stable
+set search_path = public, extensions
+as $$
+  select c.id, c.content, c.metadata, c.document_id, d.title,
+         1 - (c.embedding <=> query_embedding) as similarity
+  from public.chunks c
+  join public.documents d on d.id = c.document_id
+  where d.locale = match_locale and d.status = 'active'
+  order by c.embedding <=> query_embedding
+  limit match_count;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- Human handoff: pause the bot for a conversation while an operator is live;
+-- flag a conversation for review (set manually or via negative feedback).
+-- -----------------------------------------------------------------------------
+
+alter table public.conversations
+  add column if not exists bot_paused boolean not null default false;
+alter table public.conversations
+  add column if not exists flagged boolean not null default false;
+
+-- -----------------------------------------------------------------------------
+-- Leads pipeline
+-- -----------------------------------------------------------------------------
+
+alter table public.leads
+  add column if not exists status text not null default 'new'
+    check (status in ('new', 'contacted', 'qualified', 'converted', 'lost'));
+alter table public.leads
+  add column if not exists notes text;
+
+-- -----------------------------------------------------------------------------
+-- AI spend cap — a soft alert, not an enforced hard stop (no payment/metering
+-- infra exists to guarantee a hard stop is even accurate).
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.ai_budget_config (
+  id                  int primary key default 1 check (id = 1),
+  monthly_cap_usd     numeric(10, 2),
+  alert_threshold_pct int not null default 80,
+  updated_at          timestamptz not null default now()
+);
+
+insert into public.ai_budget_config (id) values (1) on conflict (id) do nothing;
+
+alter table public.ai_budget_config enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Security/retention config — DB-editable mirror of what used to be
+-- env-only (CHAT_RATE_LIMIT_*), plus a retention window for the
+-- "run cleanup now" admin action.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.security_config (
+  id                        int primary key default 1 check (id = 1),
+  rate_limit_window_minutes int not null default 10,
+  rate_limit_max_messages   int not null default 20,
+  retention_days            int,
+  updated_at                timestamptz not null default now()
+);
+
+insert into public.security_config (id) values (1) on conflict (id) do nothing;
+
+alter table public.security_config enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Per-channel welcome message + quick replies (persona is per-locale;
+-- greetings are per-channel-and-locale since Telegram/widget/web copy differs)
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.channel_greetings (
+  id            uuid primary key default gen_random_uuid(),
+  channel       text not null check (channel in ('web', 'telegram', 'widget')),
+  locale        text not null check (locale in ('en', 'fa')),
+  welcome_message text,
+  quick_replies text[] not null default '{}',
+  updated_at    timestamptz not null default now(),
+  unique (channel, locale)
+);
+
+alter table public.channel_greetings enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Channel secrets — today just Telegram (bot token + webhook secret), the one
+-- credential the panel needs to actively USE (call setWebhook), not just
+-- store. Same protection boundary as every other table here: service-role
+-- key only, never exposed to the browser. Masked in the admin UI.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.channel_secrets (
+  id         uuid primary key default gen_random_uuid(),
+  channel    text not null,
+  key        text not null,
+  value      text not null,
+  updated_at timestamptz not null default now(),
+  unique (channel, key)
+);
+
+alter table public.channel_secrets enable row level security;
+-- No policies: service role only.
 
 
 -- =============================================================================

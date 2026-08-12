@@ -13,7 +13,17 @@ import { ChatWidget } from "./ChatWidget";
  * only its visibility/scale is toggled — so the conversation (held inside
  * ChatWidget's state) survives closing and reopening the bubble.
  */
-export function ChatBubble({ configured, locale }: { configured: boolean; locale: Locale }) {
+export function ChatBubble({
+  configured,
+  locale,
+  welcomeOverride,
+  startersOverride,
+}: {
+  configured: boolean;
+  locale: Locale;
+  welcomeOverride?: string | null;
+  startersOverride?: string[];
+}) {
   const t = useTranslations("chat");
   const [open, setOpen] = useState(false);
 
@@ -47,7 +57,12 @@ export function ChatBubble({ configured, locale }: { configured: boolean; locale
             </button>
           </div>
           <div className="min-h-0 flex-1">
-            <ChatWidget configured={configured} locale={locale} />
+            <ChatWidget
+              configured={configured}
+              locale={locale}
+              welcomeOverride={welcomeOverride}
+              startersOverride={startersOverride}
+            />
           </div>
         </div>
       </div>

@@ -150,7 +150,8 @@
     ],
     "sourcesLabel": "منابع",
     "requestConsultation": "درخواست مشاوره",
-    "consultationMessage": "می‌خواهم یک مشاوره رزرو کنم."
+    "consultationMessage": "می‌خواهم یک مشاوره رزرو کنم.",
+    "waitingForHuman": "رویا به‌زودی شخصاً همین‌جا پاسخ می‌دهد."
   },
   "contact": {
     "eyebrow": "تماس",

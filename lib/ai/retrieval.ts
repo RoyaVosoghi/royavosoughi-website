@@ -2,22 +2,16 @@ import "server-only";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { getEmbeddingConfig } from "./embedding-config";
-import { EMBEDDING_DIMENSIONS, GEMINI_EMBED_MODEL, getGeminiClient } from "./gemini";
+import { embed, isCohereEmbeddingConfigured, rerankCohere } from "./providers/embeddings";
+import type { EmbeddingInputType } from "./providers/embeddings";
 import type { Locale } from "./types";
 
-export async function embedText(text: string): Promise<number[]> {
-  const ai = getGeminiClient();
-  if (!ai) throw new Error("gemini_not_configured");
+export { isEmbeddingProviderConfigured } from "./providers/embeddings";
 
-  const response = await ai.models.embedContent({
-    model: GEMINI_EMBED_MODEL,
-    contents: text,
-    config: { outputDimensionality: EMBEDDING_DIMENSIONS },
-  });
-
-  const values = response.embeddings?.[0]?.values;
-  if (!values) throw new Error("embedding_failed");
-  return values;
+/** Embeds against whatever provider/model embedding_config currently points at — the one place every caller (ingest, retrieval, the admin test-search box, the playground) goes through, so a provider switch takes effect everywhere at once. */
+export async function embedText(text: string, inputType: EmbeddingInputType = "query"): Promise<number[]> {
+  const config = await getEmbeddingConfig();
+  return embed(text, config.provider, config.model, config.dimensions, inputType);
 }
 
 export interface RetrievedChunk {
@@ -29,10 +23,11 @@ export interface RetrievedChunk {
 
 /**
  * top_k and the similarity floor come from /admin/settings (embedding_config)
- * by default — pass an override only when a caller needs to deviate (nothing
- * does today). Returns [] on any failure (misconfiguration, RPC error, or
- * every match falling below the threshold) — RAG context is an enhancement,
- * never a hard dependency for the brain to respond.
+ * by default — pass an override only when a caller needs to deviate (the
+ * admin test-search box and playground do). Returns [] on any failure
+ * (misconfiguration, RPC error, or every match falling below the threshold)
+ * — RAG context is an enhancement, never a hard dependency for the brain to
+ * respond.
  */
 export async function retrieveContext(
   query: string,
@@ -48,16 +43,20 @@ export async function retrieveContext(
 
   let embedding: number[];
   try {
-    embedding = await embedText(query);
+    embedding = await embed(query, embeddingConfig.provider, embeddingConfig.model, embeddingConfig.dimensions, "query");
   } catch (err) {
-    console.error("[retrieval] embedText failed:", err);
+    console.error("[retrieval] embed failed:", err);
     return [];
   }
+
+  // Overfetch when reranking so the reranker has a real candidate pool to
+  // reorder, not just the same k results back.
+  const fetchCount = embeddingConfig.rerankerEnabled ? Math.max(k * 3, k + 10) : k;
 
   const { data, error } = await supabase.rpc("match_chunks", {
     query_embedding: embedding,
     match_locale: locale,
-    match_count: k,
+    match_count: fetchCount,
   });
 
   if (error) {
@@ -65,19 +64,34 @@ export async function retrieveContext(
     return [];
   }
 
-  return (
+  let results = (
     (data ?? []) as Array<{
       id: string;
       content: string;
       document_title: string;
       similarity: number;
     }>
-  )
-    .filter((row) => row.similarity >= threshold)
-    .map((row) => ({
-      id: row.id,
-      content: row.content,
-      documentTitle: row.document_title,
-      similarity: row.similarity,
-    }));
+  ).map((row) => ({
+    id: row.id,
+    content: row.content,
+    documentTitle: row.document_title,
+    similarity: row.similarity,
+  }));
+
+  if (embeddingConfig.rerankerEnabled && isCohereEmbeddingConfigured() && results.length > 0) {
+    try {
+      const reranked = await rerankCohere(
+        query,
+        results.map((r) => r.content),
+        embeddingConfig.rerankerModel || undefined,
+      );
+      results = reranked
+        .map((r) => ({ ...results[r.index], similarity: r.relevanceScore }))
+        .filter((r): r is RetrievedChunk => Boolean(r.id));
+    } catch (err) {
+      console.error("[retrieval] rerank failed, using vector order:", err);
+    }
+  }
+
+  return results.filter((row) => row.similarity >= threshold).slice(0, k);
 }

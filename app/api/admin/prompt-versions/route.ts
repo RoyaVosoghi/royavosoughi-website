@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { hasValidAdminSession } from "@/lib/admin/auth";
-import { getSeededAdminUserId, writeAuditLog } from "@/lib/admin/queries";
+import { requireRole } from "@/lib/admin/auth";
+import { writeAuditLog } from "@/lib/admin/queries";
 import { clearActivePromptVersion, createPromptVersion } from "@/lib/ai/prompt-versions";
 
 const BodySchema = z.object({
@@ -13,8 +13,9 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  if (!(await hasValidAdminSession())) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const gate = await requireRole("editor");
+  if (!gate.ok) {
+    return NextResponse.json({ error: "unauthorized" }, { status: gate.status });
   }
 
   let body: unknown;
@@ -36,8 +37,7 @@ export async function POST(request: Request) {
       await clearActivePromptVersion(locale);
       await writeAuditLog("prompt.reset", locale);
     } else {
-      const adminUserId = await getSeededAdminUserId();
-      await createPromptVersion(locale, content, adminUserId);
+      await createPromptVersion(locale, content, gate.admin.id);
       await writeAuditLog("prompt.create", locale);
     }
   } catch (err) {

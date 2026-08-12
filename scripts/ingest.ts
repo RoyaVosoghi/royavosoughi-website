@@ -8,8 +8,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
-import { isGeminiConfigured } from "@/lib/ai/gemini";
+import { getEmbeddingConfig } from "@/lib/ai/embedding-config";
 import { ingestCuratedDocs, ingestSiteCopy, type CuratedDoc } from "@/lib/ai/ingest";
+import { isEmbeddingProviderConfigured } from "@/lib/ai/retrieval";
 import type { Locale } from "@/lib/ai/types";
 
 const KNOWLEDGE_DIR = join(process.cwd(), "content", "knowledge");
@@ -38,9 +39,15 @@ function readCuratedDocs(): CuratedDoc[] {
 }
 
 async function main() {
-  if (!isGeminiConfigured() || !isSupabaseServiceConfigured()) {
+  if (!isSupabaseServiceConfigured()) {
+    console.error("Missing SUPABASE_SERVICE_ROLE_KEY — fill in .env.local first.");
+    process.exit(1);
+  }
+
+  const embeddingConfig = await getEmbeddingConfig();
+  if (!isEmbeddingProviderConfigured(embeddingConfig.provider)) {
     console.error(
-      "Missing GEMINI_API_KEY or SUPABASE_SERVICE_ROLE_KEY — fill in .env.local first.",
+      `embedding_config.provider is '${embeddingConfig.provider}' but its API key isn't set in .env.local.`,
     );
     process.exit(1);
   }

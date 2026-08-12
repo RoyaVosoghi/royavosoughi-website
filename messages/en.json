@@ -150,7 +150,8 @@
     ],
     "sourcesLabel": "Sources",
     "requestConsultation": "Request a consultation",
-    "consultationMessage": "I'd like to book a consultation."
+    "consultationMessage": "I'd like to book a consultation.",
+    "waitingForHuman": "Roya will reply here personally shortly."
   },
   "contact": {
     "eyebrow": "Contact",

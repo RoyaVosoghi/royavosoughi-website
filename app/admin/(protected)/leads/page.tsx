@@ -1,44 +1,59 @@
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { EmptyState } from "@/components/admin/EmptyState";
+import { LeadStatusSelect } from "@/components/admin/LeadStatusSelect";
+import { getAdminTranslator } from "@/lib/admin/i18n/server";
 import { getLeads, type Lead } from "@/lib/admin/queries";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Leads · Admin" };
 
-const columns: Column<Lead>[] = [
-  { header: "Name", cell: (row) => row.name },
-  { header: "Email", cell: (row) => <a className="text-emerald hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
-  { header: "Interest", cell: (row) => row.interest ?? "—" },
-  { header: "Source", cell: (row) => row.source ?? "—" },
-  { header: "Locale", cell: (row) => row.locale.toUpperCase() },
-  {
-    header: "Captured",
-    numeric: true,
-    cell: (row) => new Date(row.createdAt).toLocaleString(),
-  },
-];
+function buildColumns(
+  t: Awaited<ReturnType<typeof getAdminTranslator<"leads">>>,
+): Column<Lead>[] {
+  return [
+    { header: t("columnName"), cell: (row) => row.name },
+    { header: t("columnEmail"), cell: (row) => <a className="text-emerald hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
+    { header: t("columnInterest"), cell: (row) => row.interest ?? "—" },
+    { header: t("columnSource"), cell: (row) => row.source ?? "—" },
+    { header: t("columnLocale"), cell: (row) => row.locale.toUpperCase() },
+    { header: t("columnStatus"), cell: (row) => <LeadStatusSelect id={row.id} status={row.status} /> },
+    {
+      header: t("columnCaptured"),
+      numeric: true,
+      cell: (row) => new Date(row.createdAt).toLocaleString(),
+    },
+  ];
+}
 
 export default async function AdminLeadsPage() {
+  const t = await getAdminTranslator("leads");
+
   if (!isSupabaseServiceConfigured()) {
-    return (
-      <EmptyState
-        title="Supabase isn't configured"
-        body="Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to see leads here."
-      />
-    );
+    return <EmptyState title={t("notConfiguredTitle")} body={t("notConfiguredBody")} />;
   }
 
   const leads = await getLeads();
+  const columns = buildColumns(t);
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">CRM</p>
-      <h1 className="text-section mt-3 text-forest">Leads</h1>
-      <p className="mt-3 text-ink/70">Captured by the chatbot's capture_lead tool, across every channel.</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
+          <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
+          <p className="mt-3 text-ink/70">{t("subtitle")}</p>
+        </div>
+        <a
+          href="/api/admin/leads/export"
+          className="rounded-full border-2 border-forest/20 px-5 py-2 text-sm font-semibold text-forest transition-colors hover:bg-mint/40"
+        >
+          {t("exportCsv")}
+        </a>
+      </div>
 
       <div className="mt-8">
         {leads.length === 0 ? (
-          <EmptyState title="No leads yet" body="They'll show up here the moment the chatbot captures one." />
+          <EmptyState title={t("emptyTitle")} body={t("emptyBody")} />
         ) : (
           <DataTable columns={columns} rows={leads} />
         )}

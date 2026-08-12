@@ -13,10 +13,12 @@ export interface Conversation {
   summary: string | null;
   summaryUpToCount: number;
   contextResetAt: string | null;
+  /** Set from the admin inbox (see app/api/admin/conversations/[id]/pause) — while true, runBrainTurn stores the visitor's message but never calls a model, so a human operator's manual replies are the only thing that comes back. */
+  botPaused: boolean;
 }
 
 const CONVERSATION_COLUMNS =
-  "id, channel, external_user_id, locale, lead_email, summary, summary_up_to_count, context_reset_at";
+  "id, channel, external_user_id, locale, lead_email, summary, summary_up_to_count, context_reset_at, bot_paused";
 
 type ConversationRow = {
   id: string;
@@ -27,6 +29,7 @@ type ConversationRow = {
   summary: string | null;
   summary_up_to_count: number;
   context_reset_at: string | null;
+  bot_paused: boolean;
 };
 
 function toConversation(row: ConversationRow): Conversation {
@@ -39,6 +42,7 @@ function toConversation(row: ConversationRow): Conversation {
     summary: row.summary,
     summaryUpToCount: row.summary_up_to_count,
     contextResetAt: row.context_reset_at,
+    botPaused: row.bot_paused,
   };
 }
 

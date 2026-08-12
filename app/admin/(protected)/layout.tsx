@@ -14,9 +14,9 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   }
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh lg:flex">
       <AdminNav />
-      <main className="container-page py-10">{children}</main>
+      <main className="min-w-0 flex-1 px-5 py-8 lg:ms-64 lg:px-10 lg:py-10">{children}</main>
     </div>
   );
 }

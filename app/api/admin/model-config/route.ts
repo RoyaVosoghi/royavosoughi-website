@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { hasValidAdminSession } from "@/lib/admin/auth";
+import { requireRole } from "@/lib/admin/auth";
 import { writeAuditLog } from "@/lib/admin/queries";
 import { updateModelConfig } from "@/lib/ai/model-config";
+
+const WeekdayScheduleSchema = z.record(z.enum(["0", "1", "2", "3", "4", "5", "6"]), z.string().trim().min(1).max(100));
 
 const BodySchema = z.object({
   channel: z.enum(["web", "telegram", "widget"]),
@@ -11,11 +13,14 @@ const BodySchema = z.object({
   temperature: z.number().min(0).max(2),
   maxTokens: z.number().int().min(64).max(8192),
   topP: z.number().min(0).max(1),
+  fallbackModel: z.string().trim().min(1).max(100).nullable().optional(),
+  schedule: WeekdayScheduleSchema.nullable().optional(),
 });
 
 export async function POST(request: Request) {
-  if (!(await hasValidAdminSession())) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const gate = await requireRole("editor");
+  if (!gate.ok) {
+    return NextResponse.json({ error: "unauthorized" }, { status: gate.status });
   }
 
   let body: unknown;

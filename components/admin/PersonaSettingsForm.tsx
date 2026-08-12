@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -19,6 +20,7 @@ export function PersonaSettingsForm({
   historyCountEn: number;
   historyCountFa: number;
 }) {
+  const t = useTranslations("settings");
   const router = useRouter();
   const [en, setEn] = useState<LocaleState>({ content: initialEn, status: "idle" });
   const [fa, setFa] = useState<LocaleState>({ content: initialFa, status: "idle" });
@@ -53,24 +55,20 @@ export function PersonaSettingsForm({
 
   return (
     <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">Persona</h2>
-      <p className="mt-1 text-sm text-ink/60">
-        The system prompt run before every reply, per locale. Saving creates a new version and
-        activates it immediately — old versions stay in history. Clear a field and save to revert
-        to the built-in default.
-      </p>
+      <h2 className="font-display text-lg font-bold text-forest">{t("persona.heading")}</h2>
+      <p className="mt-1 text-sm text-ink/60">{t("persona.description")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {(
           [
-            { key: "en" as const, label: "English", state: en, setState: setEn, historyCount: historyCountEn },
-            { key: "fa" as const, label: "Persian", state: fa, setState: setFa, historyCount: historyCountFa },
+            { key: "en" as const, label: t("persona.localeEnglish"), state: en, setState: setEn, historyCount: historyCountEn },
+            { key: "fa" as const, label: t("persona.localeFa"), state: fa, setState: setFa, historyCount: historyCountFa },
           ]
         ).map(({ key, label, state, setState, historyCount }) => (
           <div key={key}>
             <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-medium text-ink/80">System prompt — {label}</label>
-              <span className="text-xs text-ink/40">{historyCount} saved version{historyCount === 1 ? "" : "s"}</span>
+              <label className="text-sm font-medium text-ink/80">{t("persona.systemPromptLabel", { locale: label })}</label>
+              <span className="text-xs text-ink/40">{t("persona.historyCount", { count: historyCount })}</span>
             </div>
             <textarea
               dir={key === "fa" ? "rtl" : "ltr"}
@@ -86,7 +84,7 @@ export function PersonaSettingsForm({
                 disabled={state.status === "saving"}
                 className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
               >
-                {state.status === "saving" ? "Saving…" : "Save & activate"}
+                {state.status === "saving" ? t("persona.saving") : t("persona.save")}
               </button>
               <button
                 type="button"
@@ -94,11 +92,11 @@ export function PersonaSettingsForm({
                 disabled={state.status === "saving"}
                 className="rounded-full border-2 border-forest/15 px-5 py-2 text-sm font-medium text-ink/70 transition-colors hover:bg-forest/5 disabled:opacity-50"
               >
-                Reset to default
+                {t("persona.reset")}
               </button>
-              {state.status === "saved" ? <span className="text-sm font-medium text-emerald">Saved.</span> : null}
+              {state.status === "saved" ? <span className="text-sm font-medium text-emerald">{t("persona.saved")}</span> : null}
               {state.status === "error" ? (
-                <span className="text-sm font-medium text-saffron-deep">Couldn't save.</span>
+                <span className="text-sm font-medium text-saffron-deep">{t("persona.error")}</span>
               ) : null}
             </div>
           </div>

@@ -6,15 +6,19 @@ import {
   ADMIN_SESSION_MAX_AGE_SECONDS,
   createSessionToken,
   isAdminConfigured,
-  verifyAdminPassword,
+  verifyAdminCredentials,
 } from "@/lib/admin/auth";
+import { isLoginLocked, recordFailedLogin } from "@/lib/admin/login-rate-limit";
+import { getClientIp } from "@/lib/http";
+import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 const LoginSchema = z.object({
+  email: z.string().trim().min(1).max(200),
   password: z.string().min(1).max(500),
 });
 
 export async function POST(request: Request) {
-  if (!isAdminConfigured()) {
+  if (!isAdminConfigured() || !isSupabaseServiceConfigured()) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
@@ -30,12 +34,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "validation_failed" }, { status: 400 });
   }
 
-  if (!verifyAdminPassword(parsed.data.password)) {
-    return NextResponse.json({ error: "invalid_password" }, { status: 401 });
+  const ip = getClientIp(request);
+
+  if (await isLoginLocked(parsed.data.email, ip)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
+  const admin = await verifyAdminCredentials(parsed.data.email, parsed.data.password);
+  if (!admin) {
+    await recordFailedLogin(parsed.data.email, ip);
+    return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
   }
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, createSessionToken(), {
+  response.cookies.set(ADMIN_SESSION_COOKIE, createSessionToken(admin.id), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
