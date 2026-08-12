@@ -28,7 +28,7 @@ export function getOpenRouterClient(): OpenAI | null {
         // OpenRouter uses these to attribute usage in its own dashboard —
         // optional, but free and useful for debugging which deploy called what.
         "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://royavosoughi.com",
-        "X-Title": "Roya Vosoughi — chatbot",
+        "X-Title": "Roya Vosoughi - chatbot",
       },
     });
   }
