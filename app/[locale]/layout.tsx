@@ -10,6 +10,7 @@ import { site } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SocialRail } from "@/components/layout/SocialRail";
+import { ElevenLabsVoiceWidget } from "@/components/chat/ElevenLabsVoiceWidget";
 import "../globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -113,6 +114,7 @@ export default async function LocaleLayout({
           </main>
           <Footer />
         </NextIntlClientProvider>
+        <ElevenLabsVoiceWidget />
       </body>
     </html>
   );

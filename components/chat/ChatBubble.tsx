@@ -7,11 +7,16 @@ import type { Locale } from "@/lib/ai/types";
 import { ChatWidget } from "./ChatWidget";
 
 /**
- * Homepage-only floating launcher. Fixed to the trailing corner via logical
- * end-6/bottom-6 (not left/right), so it lands in the correct corner under
- * RTL without any dir-specific code. The panel stays mounted at all times —
- * only its visibility/scale is toggled — so the conversation (held inside
- * ChatWidget's state) survives closing and reopening the bubble.
+ * Homepage-only floating launcher. Fixed to the LEADING corner via logical
+ * start-6/bottom-6 — the mirror image of the original design (which used
+ * end-6). The ElevenLabs voice widget (see ElevenLabsVoiceWidget.tsx,
+ * rendered site-wide) inherits page direction too and always claims the
+ * logical *trailing* corner (bottom-right in English, bottom-left in
+ * Farsi), so putting this one on the opposite logical corner keeps them
+ * apart in both languages without any locale branching. The panel stays
+ * mounted at all times — only its visibility/scale is toggled — so the
+ * conversation (held inside ChatWidget's state) survives closing and
+ * reopening the bubble.
  */
 export function ChatBubble({
   configured,
@@ -28,9 +33,9 @@ export function ChatBubble({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 end-6 z-50 flex flex-col items-end gap-4">
+    <div className="fixed bottom-6 start-6 z-50 flex flex-col items-start gap-4">
       <div
-        className={`h-[32rem] max-h-[70vh] w-[calc(100vw-3rem)] max-w-sm origin-bottom-end overflow-hidden rounded-3xl border-2 border-forest/15 bg-offwhite shadow-2xl transition-all duration-200 ${
+        className={`h-[32rem] max-h-[70vh] w-[calc(100vw-3rem)] max-w-sm origin-bottom-start overflow-hidden rounded-3xl border-2 border-forest/15 bg-offwhite shadow-2xl transition-all duration-200 ${
           open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
         }`}
       >
