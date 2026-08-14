@@ -56,6 +56,7 @@ const WIDGET_CONFIG_OVERRIDE = {
   strip_audio_tags: true,
   syntax_highlight_theme: null,
   styles: {
+    base_primary: brandColors.emerald,
     accent: brandColors.forest,
     accent_hover: brandColors.emerald,
     accent_active: brandColors.emerald,
