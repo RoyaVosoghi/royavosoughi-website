@@ -9,7 +9,9 @@ declare module "react" {
       "elevenlabs-convai": DetailedHTMLProps<
         HTMLAttributes<HTMLElement> & {
           "agent-id": string;
-          variant?: "compact" | "expanded";
+          variant?: "tiny" | "compact" | "full";
+          "avatar-orb-color-1"?: string;
+          "avatar-orb-color-2"?: string;
         },
         HTMLElement
       >;
