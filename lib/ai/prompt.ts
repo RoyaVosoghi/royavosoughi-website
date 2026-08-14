@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { RetrievedChunk } from "./retrieval";
-import type { Locale } from "./types";
+import type { Channel, Locale } from "./types";
 
 /**
  * Built-in fallback persona — used whenever prompt_versions has no active
@@ -62,14 +62,26 @@ export const DEFAULT_SYSTEM_PROMPT_FA = `شما دستیار گفتگوی وب�
 - هرگز نتیجه، بازه‌زمانی یا دستاورد مشخصی را که به شما گفته نشده، تضمین نکنید.
 - اگر بازدیدکننده صریحاً خواست با یک انسان واقعی صحبت کند، یا گفتگو به جایی رسید که واقعاً نمی‌توانید کمک کنید، از ابزار request_human_handoff استفاده کنید و بگویید خود رویا پیگیری می‌کند.`;
 
+const CHANNEL_DISPLAY_NAME: Record<Channel, string> = {
+  web: "web_page",
+  widget: "widget",
+  telegram: "telegram",
+};
+
 export function buildSystemInstruction(
   locale: Locale,
   context: RetrievedChunk[],
   facts: string[],
-  overrides?: { prompt?: string | null; summary?: string | null },
+  overrides?: { prompt?: string | null; summary?: string | null; channel?: Channel },
 ): string {
   const defaultBase = locale === "fa" ? DEFAULT_SYSTEM_PROMPT_FA : DEFAULT_SYSTEM_PROMPT_EN;
   const base = overrides?.prompt?.trim() || defaultBase;
+
+  const channelName = CHANNEL_DISPLAY_NAME[overrides?.channel ?? "web"];
+  const channelLine =
+    locale === "fa"
+      ? `کانال فعلی این گفتگو: ${channelName}. اگر پرامپت پایه بخش «تفاوت‌های کانالی» دارد، راهنمای مربوط به همین کانال را از آن اعمال کن.`
+      : `Current channel for this conversation: ${channelName}. If the base prompt above has a "Channel Differences" section, apply the guidance for this specific channel.`;
 
   const contextLabel = locale === "fa" ? "اطلاعات شناخته‌شده" : "Known context";
   const contextBlock = context.length
@@ -90,5 +102,5 @@ export function buildSystemInstruction(
     ? `\n\n${summaryLabel}:\n${overrides.summary.trim()}`
     : "";
 
-  return `${base}\n\n${contextLabel}:\n${contextBlock}\n\n${factsLabel}:\n${factsBlock}${summaryBlock}`;
+  return `${base}\n\n${channelLine}\n\n${contextLabel}:\n${contextBlock}\n\n${factsLabel}:\n${factsBlock}${summaryBlock}`;
 }

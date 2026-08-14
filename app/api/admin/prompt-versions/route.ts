@@ -7,7 +7,7 @@ import { clearActivePromptVersion, createPromptVersion } from "@/lib/ai/prompt-v
 
 const BodySchema = z.object({
   locale: z.enum(["en", "fa"]),
-  content: z.string().trim().max(8000),
+  content: z.string().trim().max(24000),
   /** Empty content means "revert to the built-in default" — deactivates whatever's active without creating a new version. */
   reset: z.boolean().optional(),
 });

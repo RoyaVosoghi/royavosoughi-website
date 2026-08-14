@@ -82,6 +82,7 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
   const systemInstruction = buildSystemInstruction(locale, context, facts, {
     prompt: promptOverride,
     summary,
+    channel,
   });
 
   const messages: ChatCompletionMessageParam[] = [
