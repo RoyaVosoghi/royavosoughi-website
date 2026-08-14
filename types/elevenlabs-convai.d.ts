@@ -12,6 +12,7 @@ declare module "react" {
           variant?: "tiny" | "compact" | "full";
           "avatar-orb-color-1"?: string;
           "avatar-orb-color-2"?: string;
+          "override-config"?: string;
         },
         HTMLElement
       >;
