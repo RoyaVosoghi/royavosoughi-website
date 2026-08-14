@@ -129,9 +129,6 @@
     "lead": "This assistant knows about my services, background and projects. Ask a question, or tell it what you're working on."
   },
   "chat": {
-    "bubbleTitle": "Ask me anything",
-    "openChat": "Open chat",
-    "closeChat": "Close chat",
     "inputPlaceholder": "Type a message…",
     "send": "Send",
     "sending": "Sending…",
