@@ -126,6 +126,19 @@ type StreamParams = {
  * visitor already saw, so a mid-stream failure just ends the turn with
  * whatever text arrived.
  */
+/**
+ * OpenRouter-specific extension, not in the OpenAI SDK's request types.
+ * `exclude: true` keeps the model's internal reasoning pass (for models that
+ * have one, e.g. NVIDIA's Nemotron nano/reasoning line) but drops it from
+ * the response — without this, some reasoning-capable models return their
+ * chain-of-thought as ordinary `content` (visible chat text) instead of the
+ * separate `reasoning` field, which showed up live as the visitor-facing
+ * reply starting with things like "The user asks..." or reciting raw prompt
+ * sections. Harmless to send to non-reasoning models; OpenRouter ignores
+ * parameters a given model doesn't support.
+ */
+const REASONING_PARAMS = { reasoning: { exclude: true } };
+
 async function openStreamWithFallback(
   client: OpenAI,
   primaryModel: string,
@@ -138,7 +151,8 @@ async function openStreamWithFallback(
       stream: true,
       stream_options: { include_usage: true },
       ...params,
-    });
+      ...REASONING_PARAMS,
+    } as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming);
     return { stream, modelUsed: primaryModel };
   } catch (err) {
     if (fallbackModel && fallbackModel !== primaryModel) {
@@ -149,7 +163,8 @@ async function openStreamWithFallback(
           stream: true,
           stream_options: { include_usage: true },
           ...params,
-        });
+          ...REASONING_PARAMS,
+        } as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming);
         return { stream, modelUsed: fallbackModel };
       } catch (fallbackErr) {
         if (isRateLimitError(fallbackErr)) throw new RateLimitError();
