@@ -58,6 +58,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       bubbleTitle: "Ask me anything",
       openChat: "Open chat",
       closeChat: "Close chat",
+      launcherLabel: "Chat",
       inputPlaceholder: "Type a message…",
       send: "Send",
       sending: "Sending…",
@@ -76,6 +77,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       bubbleTitle: "هر چیزی بپرسید",
       openChat: "باز کردن گفتگو",
       closeChat: "بستن گفتگو",
+      launcherLabel: "گفتگو",
       inputPlaceholder: "پیامی بنویسید…",
       send: "ارسال",
       sending: "در حال ارسال…",
@@ -275,19 +277,26 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-send:hover:not(:disabled) { background: ${COLORS.forest}; }
     .rv-send:disabled { opacity: 0.5; cursor: default; }
     .rv-launcher {
-      width: 60px;
-      height: 60px;
+      height: 48px;
+      padding: 0 20px;
       border-radius: 999px;
       background: ${COLORS.emerald};
       color: ${COLORS.offwhite};
       border: none;
       cursor: pointer;
-      display: grid;
-      place-items: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
       box-shadow: 0 8px 24px rgba(2, 51, 22, 0.35);
       transition: background 0.2s ease, transform 0.2s ease;
     }
     .rv-launcher:hover { background: ${COLORS.forest}; transform: translateY(-2px); }
+    .rv-launcher-icon { display: grid; place-items: center; flex-shrink: 0; }
+    .rv-launcher-label[data-open="true"] { display: none; }
     .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
     .rv-end-screen {
       display: none;
@@ -472,7 +481,12 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     const launcher = el("button", "rv-launcher");
     launcher.type = "button";
-    launcher.innerHTML = CHAT_ICON;
+    const launcherIcon = el("span", "rv-launcher-icon");
+    launcherIcon.innerHTML = CHAT_ICON;
+    const launcherLabel = el("span", "rv-launcher-label");
+    launcherLabel.textContent = t("launcherLabel");
+    launcher.appendChild(launcherIcon);
+    launcher.appendChild(launcherLabel);
     launcher.setAttribute("aria-label", t("openChat"));
     root.appendChild(launcher);
 
@@ -616,7 +630,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
       open = next;
       panel.dataset.open = String(open);
-      launcher.innerHTML = open ? CLOSE_ICON : CHAT_ICON;
+      launcherIcon.innerHTML = open ? CLOSE_ICON : CHAT_ICON;
+      launcherLabel.dataset.open = String(open);
       launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
 
       if (open) {
