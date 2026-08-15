@@ -24,7 +24,14 @@ interface DisplayMessage {
   synthetic?: boolean;
 }
 
-/** How long the panel waits for a reply after the assistant's last message before treating the visitor as gone. ElevenLabs has no working equivalent for text sessions (confirmed: max_duration_seconds_after_last_agent_message doesn't enforce there), so this widget owns it entirely client-side. */
+/**
+ * How long the panel waits for a reply before acting — used twice: once
+ * after the assistant's last real message (triggers a check-in nudge, not
+ * an immediate close), and again after that nudge (this one actually ends
+ * the conversation). ElevenLabs has no working equivalent for text sessions
+ * (confirmed: max_duration_seconds_after_last_agent_message doesn't enforce
+ * there), so this widget owns the whole thing client-side.
+ */
 const IDLE_CLOSE_MS = 10_000;
 
 // Guard against the script being included twice on the same page.
@@ -72,6 +79,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       endedBody: "Have a great day.",
       rateQuestion: "How was this conversation?",
       thanksForRating: "Thanks for your feedback!",
+      checkInNudge: "Still there? Is there anything else I can help you with?",
     },
     fa: {
       bubbleTitle: "هر چیزی بپرسید",
@@ -91,6 +99,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       endedBody: "روز خوبی داشته باشید.",
       rateQuestion: "این گفتگو چطور بود؟",
       thanksForRating: "بابت بازخوردتان ممنونیم!",
+      checkInNudge: "هنوز آنجا هستید؟ کار دیگری هست که بتوانم کمکتان کنم؟",
     },
   };
 
@@ -580,7 +589,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     function scheduleIdleClose() {
       cancelIdleClose();
-      idleTimer = setTimeout(handleIdleTimeout, IDLE_CLOSE_MS);
+      idleTimer = setTimeout(handleIdleNudge, IDLE_CLOSE_MS);
     }
 
     /** Undoes everything a prior conversation left behind, so the next open starts clean rather than resuming a closed one. */
@@ -596,13 +605,16 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
 
     /**
-     * Fires 10s after the assistant's last message with no reply — the
-     * text-mode equivalent of the voice agent's silence-triggered end_call.
-     * Nothing to end if the visitor never actually said anything back (just
-     * opened the panel and walked away): that case quietly collapses instead
-     * of asking for a rating on a conversation that never happened.
+     * Fires 10s after the assistant's last message with no reply. Mirrors
+     * the voice agent's own behavior — it checks in once before hanging up,
+     * it doesn't just cut the call — rather than ending outright, this sends
+     * one check-in nudge and gives the visitor another 10s to respond before
+     * handleIdleTimeout actually closes things out. Nothing to check in on
+     * if the visitor never said anything back in the first place (just
+     * opened the panel and walked away): that case quietly collapses
+     * instead of nudging a conversation that never happened.
      */
-    function handleIdleTimeout() {
+    function handleIdleNudge() {
       idleTimer = null;
       const hadRealExchange = messages.some((m) => m.role === "user");
 
@@ -612,6 +624,14 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
         return;
       }
 
+      messages.push({ role: "assistant", content: t("checkInNudge"), feedback: null, synthetic: true });
+      renderMessages();
+      idleTimer = setTimeout(handleIdleTimeout, IDLE_CLOSE_MS);
+    }
+
+    /** Fires 10s after the check-in nudge above with still no reply — this is the one that actually ends the conversation and shows the rating screen. */
+    function handleIdleTimeout() {
+      idleTimer = null;
       ended = true;
       messagesEl.style.display = "none";
       inputRow.style.display = "none";
