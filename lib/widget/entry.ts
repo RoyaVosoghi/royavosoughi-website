@@ -32,7 +32,7 @@ interface DisplayMessage {
  * (confirmed: max_duration_seconds_after_last_agent_message doesn't enforce
  * there), so this widget owns the whole thing client-side.
  */
-const IDLE_CLOSE_MS = 60_000;
+const IDLE_CLOSE_MS = 30_000;
 
 // Guard against the script being included twice on the same page.
 if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidgetLoaded) {
@@ -215,9 +215,9 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       transition: border-color 0.15s ease, color 0.15s ease;
     }
     .rv-starter-btn:hover { border-color: ${COLORS.emerald}; color: ${COLORS.emerald}; }
-    .rv-bubble-row { display: flex; }
-    .rv-bubble-row.rv-user { justify-content: flex-end; }
-    .rv-bubble-row.rv-assistant { justify-content: flex-start; }
+    .rv-bubble-row { display: flex; flex-direction: column; gap: 4px; }
+    .rv-bubble-row.rv-user { align-items: flex-end; }
+    .rv-bubble-row.rv-assistant { align-items: flex-start; }
     .rv-bubble {
       max-width: 80%;
       border-radius: 16px;
@@ -524,11 +524,23 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       messagesEl.innerHTML = "";
 
       for (const message of messages) {
+        // Bubble + feedback icons are appended straight into the row (itself
+        // flex-direction:column with align-items set per role below) rather
+        // than into an intermediate wrapper div. A wrapper div's own width is
+        // computed via shrink-to-fit against its children's *unconstrained*
+        // max-content size (percentages like .rv-bubble's max-width:80% are
+        // ignored during that pass to avoid a circular dependency) — so for
+        // long messages the wrapper silently stretched to the row's full
+        // width, which broke right-alignment for wrapped user bubbles and
+        // detached the feedback icons from the assistant bubble's actual
+        // footprint. The row's own width instead comes from align-items:
+        // stretch on its outer container (.rv-messages), which has no such
+        // circularity, so align-items: flex-start/flex-end on the row aligns
+        // both children tightly and reliably regardless of message length.
         const row = el("div", `rv-bubble-row rv-${message.role}`);
-        const wrap = el("div");
         const bubble = el("div", "rv-bubble");
         bubble.textContent = message.content;
-        wrap.appendChild(bubble);
+        row.appendChild(bubble);
 
         if (message.role === "assistant" && message.id) {
           const feedbackRow = el("div", "rv-feedback");
@@ -551,10 +563,9 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
           feedbackRow.appendChild(upBtn);
           feedbackRow.appendChild(downBtn);
-          wrap.appendChild(feedbackRow);
+          row.appendChild(feedbackRow);
         }
 
-        row.appendChild(wrap);
         messagesEl.appendChild(row);
       }
 
