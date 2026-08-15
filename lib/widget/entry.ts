@@ -71,7 +71,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       sending: "Sending…",
       thinking: "Thinking…",
       errorBody: "That didn't go through. Please try again in a moment.",
-      emptyState: "Say hello, or ask a question.",
       rateLimited: "You've sent a lot of messages in a short time — please wait a few minutes.",
       notConfigured: "Chat isn't available right now.",
       waitingForHuman: "A team member will reply here shortly.",
@@ -91,7 +90,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       sending: "در حال ارسال…",
       thinking: "در حال فکر کردن…",
       errorBody: "ارسال نشد. لطفا کمی بعد دوباره امتحان کنید.",
-      emptyState: "سلام کنید یا سوالی بپرسید.",
       rateLimited: "در مدت کوتاهی پیام‌های زیادی فرستادید — لطفا چند دقیقه صبر کنید.",
       notConfigured: "گفتگو الان در دسترس نیست.",
       waitingForHuman: "به‌زودی یکی از اعضای تیم همین‌جا پاسخ می‌دهد.",
@@ -386,8 +384,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     const config = await fetchConfig();
     if (config?.primaryColor) COLORS.emerald = config.primaryColor;
     const positionSide = config?.position === "bottom-start" ? "start" : "end";
-    const welcomeOverride = locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn;
-    if (welcomeOverride) STRINGS[locale].emptyState = welcomeOverride;
     const starters = (locale === "fa" ? config?.quickRepliesFa : config?.quickRepliesEn) ?? [];
 
     const host = document.createElement("div");
@@ -667,10 +663,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
       if (open) {
         input.focus();
-        if (messages.length === 0) {
-          messages.push({ role: "assistant", content: t("emptyState"), feedback: null, synthetic: true });
-          renderMessages();
-        }
         scheduleIdleClose();
       } else {
         cancelIdleClose();

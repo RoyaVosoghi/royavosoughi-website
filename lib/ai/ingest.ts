@@ -107,14 +107,30 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
 /** Only these namespaces carry knowledge worth answering questions from — nav/footer/form labels aren't. */
 const KNOWLEDGE_NAMESPACES = ["about", "aboutPage", "services"] as const;
 
-function flattenStrings(value: unknown, path: string[], out: IngestSection[]): void {
+/** Human-readable heading per namespace — shown to the model as context, unlike the raw i18n key paths (see flattenStrings below). */
+const NAMESPACE_HEADINGS: Record<(typeof KNOWLEDGE_NAMESPACES)[number], string> = {
+  about: "About Roya",
+  aboutPage: "About page",
+  services: "Services",
+};
+
+/**
+ * Collects every leaf string under `value` in JSON key order. Deliberately
+ * drops the i18n key path (e.g. "about.readMore") — earlier this was kept as
+ * a per-string "heading" and joined straight into the chunked text, so the
+ * model would sometimes quote raw fragments like "about.readMore\nMore about
+ * me" back to visitors instead of writing a real sentence. Grouping by
+ * namespace (see siteCopySections) keeps enough structure for retrieval
+ * without exposing CMS internals in what gets embedded.
+ */
+function flattenStrings(value: unknown, out: string[]): void {
   if (typeof value === "string") {
-    if (value.trim()) out.push({ heading: path.join("."), body: value });
+    if (value.trim()) out.push(value.trim());
     return;
   }
   if (value && typeof value === "object") {
-    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
-      flattenStrings(child, [...path, key], out);
+    for (const child of Object.values(value as Record<string, unknown>)) {
+      flattenStrings(child, out);
     }
   }
 }
@@ -123,7 +139,11 @@ function siteCopySections(messages: Record<string, unknown>, locale: Locale): In
   const sections: IngestSection[] = [];
 
   for (const namespace of KNOWLEDGE_NAMESPACES) {
-    flattenStrings(messages[namespace], [namespace], sections);
+    const strings: string[] = [];
+    flattenStrings(messages[namespace], strings);
+    if (strings.length > 0) {
+      sections.push({ heading: NAMESPACE_HEADINGS[namespace], body: strings.join("\n\n") });
+    }
   }
 
   // Filtered the same way the site itself filters: draft projects never
