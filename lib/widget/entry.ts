@@ -32,7 +32,7 @@ interface DisplayMessage {
  * (confirmed: max_duration_seconds_after_last_agent_message doesn't enforce
  * there), so this widget owns the whole thing client-side.
  */
-const IDLE_CLOSE_MS = 10_000;
+const IDLE_CLOSE_MS = 60_000;
 
 // Guard against the script being included twice on the same page.
 if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidgetLoaded) {
@@ -837,6 +837,16 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     sendBtn.addEventListener("click", () => send());
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") send();
+    });
+
+    // Actively composing a reply isn't silence — every keystroke pushes the
+    // idle window out another full IDLE_CLOSE_MS, so the timer only ever
+    // fires that long after the visitor's last keystroke (or last message),
+    // whichever came later. Only matters once there's actually a live idle
+    // cycle running (`idleTimer` set) — no point restarting a clock that
+    // isn't ticking (before the first message, or once the panel's ended).
+    input.addEventListener("input", () => {
+      if (open && idleTimer) scheduleIdleClose();
     });
 
     renderMessages();
