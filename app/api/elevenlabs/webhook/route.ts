@@ -56,7 +56,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "missing_signature" }, { status: 401 });
   }
 
-  const elevenlabs = new ElevenLabsClient();
+  // A real apiKey isn't needed here — constructEvent only verifies the HMAC
+  // locally, no network call — but the SDK's constructor still requires a
+  // non-empty string. Using a placeholder keeps the actual management key
+  // (agent write access) out of this publicly-reachable endpoint entirely.
+  const elevenlabs = new ElevenLabsClient({ apiKey: "unused-webhook-only" });
   let event: { type?: string; data?: PostCallTranscriptionData };
   try {
     event = (await elevenlabs.webhooks.constructEvent(body, signature, WEBHOOK_SECRET)) as typeof event;
