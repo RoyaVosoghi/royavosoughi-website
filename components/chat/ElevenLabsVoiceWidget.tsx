@@ -105,6 +105,14 @@ export async function ElevenLabsVoiceWidget() {
     avatar: { type: "orb", color_1: brandColors.emerald, color_2: brandColors.spring },
     btn_color: brandColors.forest,
     focus_color: brandColors.forest,
+    // Voice-only: text chat is handled by our own widget (lib/widget/entry.ts)
+    // now, which we fully control — greeting-on-open, idle-close, and a
+    // satisfaction rating all need real implementation ElevenLabs' text/chat
+    // mode doesn't support yet (confirmed: no proactive greeting before the
+    // visitor's first message, and max_duration_seconds_after_last_agent_message
+    // doesn't enforce in text sessions). Keeping both text entry points on
+    // the same page would just be confusing.
+    text_input_enabled: false,
     styles: {
       ...styles,
       base_primary: brandColors.emerald,

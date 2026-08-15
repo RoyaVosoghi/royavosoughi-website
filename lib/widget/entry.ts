@@ -20,7 +20,12 @@ interface DisplayMessage {
   /** Assistant messages only. */
   id?: string;
   feedback?: 1 | -1 | null;
+  /** The client-rendered greeting bubble — never sent to/from the backend, never eligible for thumbs feedback. */
+  synthetic?: boolean;
 }
+
+/** How long the panel waits for a reply after the assistant's last message before treating the visitor as gone. ElevenLabs has no working equivalent for text sessions (confirmed: max_duration_seconds_after_last_agent_message doesn't enforce there), so this widget owns it entirely client-side. */
+const IDLE_CLOSE_MS = 10_000;
 
 // Guard against the script being included twice on the same page.
 if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidgetLoaded) {
@@ -30,6 +35,11 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   // which origin to call, so an embedding site never has to configure it.
   const currentScript = document.currentScript as HTMLScriptElement | null;
   const API_BASE = currentScript ? new URL(currentScript.src).origin : "";
+  // Lets our own site (see ElevenLabsVoiceWidget.tsx's sibling launcher) stack
+  // this bubble above the ElevenLabs call button instead of overlapping it,
+  // via <script data-bottom-offset="96">. Third-party embeds never set this,
+  // so they keep the normal 20px.
+  const BOTTOM_OFFSET = Number(currentScript?.dataset.bottomOffset) || 20;
 
   const DEFAULT_ACCENT = "#0f7b4f";
 
@@ -57,6 +67,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       rateLimited: "You've sent a lot of messages in a short time — please wait a few minutes.",
       notConfigured: "Chat isn't available right now.",
       waitingForHuman: "A team member will reply here shortly.",
+      endedTitle: "Thanks for reaching out!",
+      endedBody: "Have a great day.",
+      rateQuestion: "How was this conversation?",
+      thanksForRating: "Thanks for your feedback!",
     },
     fa: {
       bubbleTitle: "هر چیزی بپرسید",
@@ -71,6 +85,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       rateLimited: "در مدت کوتاهی پیام‌های زیادی فرستادید — لطفا چند دقیقه صبر کنید.",
       notConfigured: "گفتگو الان در دسترس نیست.",
       waitingForHuman: "به‌زودی یکی از اعضای تیم همین‌جا پاسخ می‌دهد.",
+      endedTitle: "ممنون که پیام دادید!",
+      endedBody: "روز خوبی داشته باشید.",
+      rateQuestion: "این گفتگو چطور بود؟",
+      thanksForRating: "بابت بازخوردتان ممنونیم!",
     },
   };
 
@@ -87,11 +105,15 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   function getOrCreateSessionId(): string {
     const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
     if (existing) return existing;
+    return rotateSessionId();
+  }
+  /** A fresh id starts a brand-new conversation server-side (getOrCreateConversation keys on channel+external_user_id) — used once the previous one has ended, so reopening the widget never resumes a closed conversation. */
+  function rotateSessionId(): string {
     const id = crypto.randomUUID();
     window.localStorage.setItem(SESSION_STORAGE_KEY, id);
     return id;
   }
-  const sessionId = getOrCreateSessionId();
+  let sessionId = getOrCreateSessionId();
 
   /**
    * Built lazily (not a top-level const) because primaryColor/position come
@@ -109,7 +131,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     * { box-sizing: border-box; }
     .rv-root {
       position: fixed;
-      bottom: 20px;
+      bottom: ${BOTTOM_OFFSET}px;
       inset-inline-${positionSide}: 20px;
       z-index: 2147483000;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -170,7 +192,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       flex-direction: column;
       gap: 10px;
     }
-    .rv-empty { color: rgba(26, 30, 28, 0.6); font-size: 14px; margin: 0 0 12px; }
     .rv-starters { display: flex; flex-wrap: wrap; gap: 8px; }
     .rv-starter-btn {
       border: 2px solid rgba(2, 51, 22, 0.15);
@@ -268,6 +289,33 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     .rv-launcher:hover { background: ${COLORS.forest}; transform: translateY(-2px); }
     .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
+    .rv-end-screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    .rv-end-screen[data-visible="true"] { display: flex; }
+    .rv-end-title { font-size: 16px; font-weight: 700; color: ${COLORS.forest}; margin: 0; }
+    .rv-end-body { font-size: 14px; color: rgba(26, 30, 28, 0.65); margin: 0 0 8px; }
+    .rv-rate-question { font-size: 13px; font-weight: 600; color: ${COLORS.ink}; margin: 0; }
+    .rv-stars { display: flex; gap: 6px; }
+    .rv-star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: rgba(2, 51, 22, 0.25);
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .rv-star-btn:hover:not(:disabled) { color: ${COLORS.emerald}; transform: scale(1.1); }
+    .rv-star-btn[data-active="true"] { color: ${COLORS.emerald}; }
+    .rv-star-btn:disabled { cursor: default; }
+    .rv-thanks { display: none; font-size: 13px; color: ${COLORS.emerald}; font-weight: 600; margin: 0; }
     `;
   }
 
@@ -279,6 +327,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 22V11M2 13v7a2 2 0 0 0 2 2h12.9a2 2 0 0 0 2-1.7l1.4-8A2 2 0 0 0 18.3 10H14V5a2 2 0 0 0-2-2L7 11"/></svg>';
   const THUMB_DOWN_ICON =
     '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(180 12 12)"><path d="M7 22V11M2 13v7a2 2 0 0 0 2 2h12.9a2 2 0 0 0 2-1.7l1.4-8A2 2 0 0 0 18.3 10H14V5a2 2 0 0 0-2-2L7 11"/></svg>';
+  const STAR_ICON =
+    '<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" stroke="none"><path d="M12 2.5l2.95 6.28 6.92.86-5.13 4.75 1.4 6.86L12 17.77l-6.14 3.48 1.4-6.86-5.13-4.75 6.92-.86L12 2.5z"/></svg>';
 
   function el<K extends keyof HTMLElementTagNameMap>(
     tag: K,
@@ -367,6 +417,59 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     inputRow.appendChild(sendBtn);
     panel.appendChild(inputRow);
 
+    const endScreen = el("div", "rv-end-screen");
+    const endTitle = el("p", "rv-end-title");
+    endTitle.textContent = t("endedTitle");
+    const endBody = el("p", "rv-end-body");
+    endBody.textContent = t("endedBody");
+    const rateQuestion = el("p", "rv-rate-question");
+    rateQuestion.textContent = t("rateQuestion");
+    const starsRow = el("div", "rv-stars");
+    const starButtons: HTMLButtonElement[] = [];
+    const thanksEl = el("p", "rv-thanks");
+    thanksEl.textContent = t("thanksForRating");
+
+    for (let i = 1; i <= 5; i++) {
+      const starBtn = el("button", "rv-star-btn");
+      starBtn.type = "button";
+      starBtn.innerHTML = STAR_ICON;
+      starBtn.setAttribute("aria-label", String(i));
+      starBtn.addEventListener("click", async () => {
+        if (starButtons.some((b) => b.disabled)) return; // already rated
+        starButtons.forEach((btn, idx) => {
+          btn.disabled = true;
+          btn.dataset.active = String(idx < i);
+        });
+        thanksEl.style.display = "block";
+        try {
+          await fetch(`${API_BASE}/api/widget/rate-conversation`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ channelSessionId: sessionId, rating: i }),
+          });
+        } catch {
+          // best-effort — the stars already reflect the visitor's choice
+        }
+      });
+      starButtons.push(starBtn);
+      starsRow.appendChild(starBtn);
+    }
+
+    endScreen.appendChild(endTitle);
+    endScreen.appendChild(endBody);
+    endScreen.appendChild(rateQuestion);
+    endScreen.appendChild(starsRow);
+    endScreen.appendChild(thanksEl);
+    panel.appendChild(endScreen);
+
+    function resetStars() {
+      for (const btn of starButtons) {
+        btn.disabled = false;
+        btn.dataset.active = "false";
+      }
+      thanksEl.style.display = "none";
+    }
+
     const launcher = el("button", "rv-launcher");
     launcher.type = "button";
     launcher.innerHTML = CHAT_ICON;
@@ -375,6 +478,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     let open = false;
     let sending = false;
+    let ended = false;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
     const messages: DisplayMessage[] = [];
 
     async function rate(message: DisplayMessage, rating: 1 | -1) {
@@ -394,58 +499,56 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     function renderMessages() {
       messagesEl.innerHTML = "";
-      if (messages.length === 0) {
-        const empty = el("p", "rv-empty");
-        empty.textContent = t("emptyState");
-        messagesEl.appendChild(empty);
 
-        if (starters.length > 0) {
-          const startersRow = el("div", "rv-starters");
-          for (const starter of starters) {
-            const btn = el("button", "rv-starter-btn");
-            btn.type = "button";
-            btn.textContent = starter;
-            btn.addEventListener("click", () => send(starter));
-            startersRow.appendChild(btn);
-          }
-          messagesEl.appendChild(startersRow);
+      for (const message of messages) {
+        const row = el("div", `rv-bubble-row rv-${message.role}`);
+        const wrap = el("div");
+        const bubble = el("div", "rv-bubble");
+        bubble.textContent = message.content;
+        wrap.appendChild(bubble);
+
+        if (message.role === "assistant" && message.id) {
+          const feedbackRow = el("div", "rv-feedback");
+
+          const upBtn = el("button", "rv-feedback-btn rv-up");
+          upBtn.type = "button";
+          upBtn.innerHTML = THUMB_UP_ICON;
+          upBtn.setAttribute("aria-label", "Good response");
+          upBtn.disabled = message.feedback !== null;
+          upBtn.dataset.active = String(message.feedback === 1);
+          upBtn.addEventListener("click", () => rate(message, 1));
+
+          const downBtn = el("button", "rv-feedback-btn rv-down");
+          downBtn.type = "button";
+          downBtn.innerHTML = THUMB_DOWN_ICON;
+          downBtn.setAttribute("aria-label", "Bad response");
+          downBtn.disabled = message.feedback !== null;
+          downBtn.dataset.active = String(message.feedback === -1);
+          downBtn.addEventListener("click", () => rate(message, -1));
+
+          feedbackRow.appendChild(upBtn);
+          feedbackRow.appendChild(downBtn);
+          wrap.appendChild(feedbackRow);
         }
-      } else {
-        for (const message of messages) {
-          const row = el("div", `rv-bubble-row rv-${message.role}`);
-          const wrap = el("div");
-          const bubble = el("div", "rv-bubble");
-          bubble.textContent = message.content;
-          wrap.appendChild(bubble);
 
-          if (message.role === "assistant" && message.id) {
-            const feedbackRow = el("div", "rv-feedback");
-
-            const upBtn = el("button", "rv-feedback-btn rv-up");
-            upBtn.type = "button";
-            upBtn.innerHTML = THUMB_UP_ICON;
-            upBtn.setAttribute("aria-label", "Good response");
-            upBtn.disabled = message.feedback !== null;
-            upBtn.dataset.active = String(message.feedback === 1);
-            upBtn.addEventListener("click", () => rate(message, 1));
-
-            const downBtn = el("button", "rv-feedback-btn rv-down");
-            downBtn.type = "button";
-            downBtn.innerHTML = THUMB_DOWN_ICON;
-            downBtn.setAttribute("aria-label", "Bad response");
-            downBtn.disabled = message.feedback !== null;
-            downBtn.dataset.active = String(message.feedback === -1);
-            downBtn.addEventListener("click", () => rate(message, -1));
-
-            feedbackRow.appendChild(upBtn);
-            feedbackRow.appendChild(downBtn);
-            wrap.appendChild(feedbackRow);
-          }
-
-          row.appendChild(wrap);
-          messagesEl.appendChild(row);
-        }
+        row.appendChild(wrap);
+        messagesEl.appendChild(row);
       }
+
+      // Quick-reply starters stay useful only before the visitor has actually said anything themselves.
+      const hasRealExchange = messages.some((m) => m.role === "user");
+      if (!hasRealExchange && starters.length > 0) {
+        const startersRow = el("div", "rv-starters");
+        for (const starter of starters) {
+          const btn = el("button", "rv-starter-btn");
+          btn.type = "button";
+          btn.textContent = starter;
+          btn.addEventListener("click", () => send(starter));
+          startersRow.appendChild(btn);
+        }
+        messagesEl.appendChild(startersRow);
+      }
+
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
@@ -454,12 +557,89 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       statusEl.style.display = text ? "block" : "none";
     }
 
+    function cancelIdleClose() {
+      if (idleTimer) {
+        clearTimeout(idleTimer);
+        idleTimer = null;
+      }
+    }
+
+    function scheduleIdleClose() {
+      cancelIdleClose();
+      idleTimer = setTimeout(handleIdleTimeout, IDLE_CLOSE_MS);
+    }
+
+    /** Undoes everything a prior conversation left behind, so the next open starts clean rather than resuming a closed one. */
+    function resetToFresh() {
+      ended = false;
+      messages.length = 0;
+      endScreen.dataset.visible = "false";
+      messagesEl.style.display = "";
+      inputRow.style.display = "";
+      resetStars();
+      setStatus("");
+      sessionId = rotateSessionId();
+    }
+
+    /**
+     * Fires 10s after the assistant's last message with no reply — the
+     * text-mode equivalent of the voice agent's silence-triggered end_call.
+     * Nothing to end if the visitor never actually said anything back (just
+     * opened the panel and walked away): that case quietly collapses instead
+     * of asking for a rating on a conversation that never happened.
+     */
+    function handleIdleTimeout() {
+      idleTimer = null;
+      const hadRealExchange = messages.some((m) => m.role === "user");
+
+      if (!hadRealExchange) {
+        setOpen(false);
+        resetToFresh();
+        return;
+      }
+
+      ended = true;
+      messagesEl.style.display = "none";
+      inputRow.style.display = "none";
+      setStatus("");
+      endScreen.dataset.visible = "true";
+
+      void fetch(`${API_BASE}/api/widget/close-conversation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channelSessionId: sessionId, reason: "idle_timeout" }),
+      }).catch(() => {});
+    }
+
     function setOpen(next: boolean) {
+      if (next && ended) resetToFresh();
+
       open = next;
       panel.dataset.open = String(open);
       launcher.innerHTML = open ? CLOSE_ICON : CHAT_ICON;
       launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
-      if (open) input.focus();
+
+      if (open) {
+        input.focus();
+        if (messages.length === 0) {
+          messages.push({ role: "assistant", content: t("emptyState"), feedback: null, synthetic: true });
+          renderMessages();
+        }
+        scheduleIdleClose();
+      } else {
+        cancelIdleClose();
+        // An explicit close is the visitor deliberately dismissing the
+        // panel — log it, but don't block their exit with a rating screen
+        // the way the idle-timeout path does.
+        const hadRealExchange = messages.some((m) => m.role === "user");
+        if (hadRealExchange && !ended) {
+          void fetch(`${API_BASE}/api/widget/close-conversation`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ channelSessionId: sessionId, reason: "user_closed" }),
+          }).catch(() => {});
+        }
+      }
     }
 
     launcher.addEventListener("click", () => setOpen(!open));
@@ -491,6 +671,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       const text = (presetText ?? input.value).trim();
       if (!text || sending) return;
 
+      cancelIdleClose();
       messages.push({ role: "user", content: text });
       renderMessages();
       input.value = "";
@@ -521,6 +702,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
             messages.push({ role: "assistant", content: data.reply, id: data.messageId, feedback: null });
             renderMessages();
             setStatus("");
+            if (open) scheduleIdleClose();
           }
         } else {
           const reader = response.body.getReader();
@@ -555,6 +737,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
                   messages.push({ role: "assistant", content: result.reply, id: result.messageId, feedback: null });
                 }
                 renderMessages();
+                if (open) scheduleIdleClose();
               } else if (event === "error") {
                 streamFailed = true;
               }

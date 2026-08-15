@@ -144,6 +144,13 @@ create table if not exists public.conversations (
   lead_email          text,   -- set once the lead-gen tool captures an email
   started_at          timestamptz not null default now(),
   last_active_at      timestamptz not null default now(),
+  -- Set when status transitions to 'closed' — 'idle_timeout' is the widget's
+  -- own client-side inactivity timer (ElevenLabs has no equivalent for text
+  -- sessions, see components/chat/ElevenLabsVoiceWidget.tsx), 'user_closed'
+  -- is an explicit close via the header button.
+  ended_reason          text check (ended_reason in ('user_closed', 'idle_timeout')),
+  satisfaction_rating   smallint check (satisfaction_rating between 1 and 5),
+  satisfaction_rated_at timestamptz,
   unique (channel, external_user_id)
 );
 

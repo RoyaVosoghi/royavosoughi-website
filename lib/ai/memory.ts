@@ -234,6 +234,33 @@ export async function resetConversationContext(conversationId: string): Promise<
   if (error) throw error;
 }
 
+/** Called by the widget when it ends a conversation (idle timeout or an explicit close) — see app/api/widget/close-conversation. */
+export async function closeConversation(
+  conversationId: string,
+  reason: "user_closed" | "idle_timeout",
+): Promise<void> {
+  const supabase = getSupabaseAdminClient();
+  if (!supabase) throw new Error("supabase_not_configured");
+
+  const { error } = await supabase
+    .from("conversations")
+    .update({ status: "closed", ended_reason: reason })
+    .eq("id", conversationId);
+  if (error) throw error;
+}
+
+/** One rating per conversation — a second call just overwrites the first. */
+export async function rateConversation(conversationId: string, rating: number): Promise<void> {
+  const supabase = getSupabaseAdminClient();
+  if (!supabase) throw new Error("supabase_not_configured");
+
+  const { error } = await supabase
+    .from("conversations")
+    .update({ satisfaction_rating: rating, satisfaction_rated_at: new Date().toISOString() })
+    .eq("id", conversationId);
+  if (error) throw error;
+}
+
 /** How many of the most recent messages stay verbatim in the model's context, never summarized away. */
 const RECENT_KEEP = 8;
 

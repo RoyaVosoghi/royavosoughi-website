@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, JetBrains_Mono, Space_Grotesk, Vazirmatn } from "next/font/google";
+import Script from "next/script";
 
 import { routing, getDirection } from "@/i18n/routing";
 import { site } from "@/lib/site";
@@ -115,6 +116,14 @@ export default async function LocaleLayout({
           <Footer />
         </NextIntlClientProvider>
         <ElevenLabsVoiceWidget />
+        {/*
+          Our own text-chat widget, stacked above the ElevenLabs call button
+          (data-bottom-offset) rather than on top of it — see
+          lib/widget/entry.ts and ElevenLabsVoiceWidget.tsx for why the two
+          are split (ElevenLabs' text/chat mode can't do a proactive greeting
+          or an inactivity close; this widget owns both instead).
+        */}
+        <Script src="/widget.js" data-bottom-offset="92" strategy="afterInteractive" />
       </body>
     </html>
   );
