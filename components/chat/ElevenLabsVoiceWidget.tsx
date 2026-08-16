@@ -6,6 +6,18 @@ const AGENT_ID =
   process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? "agent_8501kzxw287petfv74ank0vr0ec1";
 
 /**
+ * Replaces the widget's default launcher glyph with a plain phone icon on a
+ * forest-green disc, matching the site's own chat bubble (lib/widget/entry.ts).
+ * ElevenLabs' override-config has no dedicated "collapsed icon" field — the
+ * same `avatar` object also renders inside an active call — so the circle
+ * fill is baked into the SVG itself rather than relying on btn_color to show
+ * through. Confirmed against the widget-embed bundle (avatar type "url"
+ * reads `custom_url`; there's no documented alternative).
+ */
+const PHONE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${brandColors.forest}"/><path d="M42 36.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 24.11 22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L28.09 29.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 42 36.92z" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const PHONE_AVATAR_URL = `data:image/svg+xml,${encodeURIComponent(PHONE_AVATAR_SVG)}`;
+
+/**
  * Fallback only — used if the live fetch in getWidgetConfig() below fails
  * (network blip, ElevenLabs API down at build time, etc.). Last known-good
  * snapshot from 2026-08-14. Not meant to be kept in sync by hand; the live
@@ -102,7 +114,8 @@ export async function ElevenLabsVoiceWidget() {
 
   const config = {
     ...liveConfig,
-    avatar: { type: "orb", color_1: brandColors.emerald, color_2: brandColors.spring },
+    avatar: { type: "url", custom_url: PHONE_AVATAR_URL },
+    show_avatar_when_collapsed: true,
     btn_color: brandColors.forest,
     focus_color: brandColors.forest,
     // Voice-only: text chat is handled by our own widget (lib/widget/entry.ts)

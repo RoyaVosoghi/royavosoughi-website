@@ -65,7 +65,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       bubbleTitle: "Ask me anything",
       openChat: "Open chat",
       closeChat: "Close chat",
-      launcherLabel: "Chat",
       inputPlaceholder: "Type a message…",
       send: "Send",
       sending: "Sending…",
@@ -84,7 +83,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       bubbleTitle: "هر چیزی بپرسید",
       openChat: "باز کردن گفتگو",
       closeChat: "بستن گفتگو",
-      launcherLabel: "گفتگو",
       inputPlaceholder: "پیامی بنویسید…",
       send: "ارسال",
       sending: "در حال ارسال…",
@@ -284,26 +282,23 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-send:hover:not(:disabled) { background: ${COLORS.forest}; }
     .rv-send:disabled { opacity: 0.5; cursor: default; }
     .rv-launcher {
-      height: 48px;
-      padding: 0 20px;
-      border-radius: 999px;
-      background: ${COLORS.emerald};
+      width: 60px;
+      height: 60px;
+      padding: 0;
+      border-radius: 50%;
+      background: ${COLORS.forest};
       color: ${COLORS.offwhite};
       border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
       font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
       box-shadow: 0 8px 24px rgba(2, 51, 22, 0.35);
       transition: background 0.2s ease, transform 0.2s ease;
     }
-    .rv-launcher:hover { background: ${COLORS.forest}; transform: translateY(-2px); }
-    .rv-launcher-icon { display: grid; place-items: center; flex-shrink: 0; }
-    .rv-launcher-label[data-open="true"] { display: none; }
+    .rv-launcher:hover { background: ${COLORS.forestSoft}; transform: translateY(-2px); }
+    .rv-launcher-icon { display: grid; place-items: center; }
     .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
     .rv-end-screen {
       display: none;
@@ -488,10 +483,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     launcher.type = "button";
     const launcherIcon = el("span", "rv-launcher-icon");
     launcherIcon.innerHTML = CHAT_ICON;
-    const launcherLabel = el("span", "rv-launcher-label");
-    launcherLabel.textContent = t("launcherLabel");
     launcher.appendChild(launcherIcon);
-    launcher.appendChild(launcherLabel);
     launcher.setAttribute("aria-label", t("openChat"));
     root.appendChild(launcher);
 
@@ -658,7 +650,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       open = next;
       panel.dataset.open = String(open);
       launcherIcon.innerHTML = open ? CLOSE_ICON : CHAT_ICON;
-      launcherLabel.dataset.open = String(open);
       launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
 
       if (open) {
@@ -871,7 +862,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       closeBtn.setAttribute("aria-label", t("closeChat"));
       input.placeholder = t("inputPlaceholder");
       if (!sending) sendBtn.textContent = t("send");
-      launcherLabel.textContent = t("launcherLabel");
       launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
       endTitle.textContent = t("endedTitle");
       endBody.textContent = t("endedBody");
