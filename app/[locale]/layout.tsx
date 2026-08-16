@@ -10,7 +10,6 @@ import { routing, getDirection } from "@/i18n/routing";
 import { site } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { SocialRail } from "@/components/layout/SocialRail";
 import { ElevenLabsVoiceWidget } from "@/components/chat/ElevenLabsVoiceWidget";
 import "../globals.css";
 
@@ -109,7 +108,6 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider>
           <Header />
-          <SocialRail />
           <main id="main" className="flex-1">
             {children}
           </main>

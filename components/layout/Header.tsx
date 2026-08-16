@@ -8,6 +8,7 @@ import { Wordmark } from "@/components/ui/Logo";
 import { LocaleSwitch } from "./LocaleSwitch";
 
 const navItems = [
+  { key: "homeNav", href: "/" },
   { key: "services", href: "/#services" },
   { key: "projects", href: "/#projects" },
   { key: "about", href: "/about" },

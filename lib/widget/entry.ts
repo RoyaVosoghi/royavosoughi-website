@@ -106,8 +106,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     return lang.startsWith("fa") ? "fa" : "en";
   }
 
-  const locale = detectLocale();
-  const dir = locale === "fa" ? "rtl" : "ltr";
+  let locale = detectLocale();
+  let dir = locale === "fa" ? "rtl" : "ltr";
   const t = (key: string) => STRINGS[locale][key] ?? key;
 
   const SESSION_STORAGE_KEY = "rv_widget_session_id";
@@ -851,6 +851,38 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     input.addEventListener("input", () => {
       if (open && idleTimer) scheduleIdleClose();
     });
+
+    /**
+     * The panel mounts once per browser session (guard at the top of this
+     * file) and a soft locale switch never reloads /widget.js, so without
+     * this it stayed frozen in whatever language/corner it started in —
+     * unlike the ElevenLabs voice widget, which re-reads page direction on
+     * every render. Watching <html lang> (set per-locale in
+     * app/[locale]/layout.tsx) keeps this widget's side and text in step
+     * with the rest of the page instead of lagging a language switch.
+     */
+    function applyLocale(newLocale: Locale) {
+      if (newLocale === locale) return;
+      locale = newLocale;
+      dir = locale === "fa" ? "rtl" : "ltr";
+      host.setAttribute("dir", dir);
+      style.textContent = buildStyles(positionSide);
+      title.textContent = t("bubbleTitle");
+      closeBtn.setAttribute("aria-label", t("closeChat"));
+      input.placeholder = t("inputPlaceholder");
+      if (!sending) sendBtn.textContent = t("send");
+      launcherLabel.textContent = t("launcherLabel");
+      launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
+      endTitle.textContent = t("endedTitle");
+      endBody.textContent = t("endedBody");
+      rateQuestion.textContent = t("rateQuestion");
+      thanksEl.textContent = t("thanksForRating");
+    }
+
+    new MutationObserver(() => applyLocale(detectLocale())).observe(
+      document.documentElement,
+      { attributes: true, attributeFilter: ["lang"] },
+    );
 
     renderMessages();
   }

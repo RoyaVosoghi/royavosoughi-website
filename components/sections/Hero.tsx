@@ -28,17 +28,6 @@ export async function Hero() {
 
       <div className="container-page grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <div className="text-center lg:text-start">
-          <p
-            className="rise-in inline-flex items-center gap-2.5 rounded-full border border-emerald/25 bg-offwhite/70 px-4 py-2 text-sm font-medium text-emerald"
-            style={{ animationDelay: "0ms" }}
-          >
-            <span
-              aria-hidden="true"
-              className="h-2 w-2 rounded-full bg-spring ring-4 ring-spring/25"
-            />
-            {t("badge")}
-          </p>
-
           <h1
             className="rise-in-solid text-display mx-auto mt-8 max-w-[19ch] text-forest lg:mx-0"
             style={{ animationDelay: "80ms" }}

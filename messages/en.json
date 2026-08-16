@@ -5,6 +5,7 @@
   },
   "nav": {
     "home": "Roya Vosoughi — home",
+    "homeNav": "Home",
     "primary": "Primary",
     "services": "Services",
     "projects": "Projects",
@@ -16,9 +17,8 @@
     "skipToContent": "Skip to content"
   },
   "hero": {
-    "badge": "Open for new projects",
-    "lineA": "Building a dream,",
-    "lineB": "line by line.",
+    "lineA": "Create your business",
+    "lineB": "with you and AI.",
     "subtitle": "I build reliable, AI-powered applications for businesses that need them to actually work — not demos that impress in a meeting and break the week after.",
     "ctaPrimary": "Book a consultation",
     "ctaSecondary": "See my work",
