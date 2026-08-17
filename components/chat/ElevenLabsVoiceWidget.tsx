@@ -1,5 +1,6 @@
 import Script from "next/script";
 
+import { HideVoiceWidgetAvatar } from "@/components/chat/HideVoiceWidgetAvatar";
 import { brandColors } from "@/lib/site";
 
 const AGENT_ID =
@@ -126,9 +127,11 @@ async function getWidgetConfig(): Promise<Record<string, unknown>> {
  * button's glyph is hardcoded inside ElevenLabs' widget bundle
  * (`icon: "phone"`) with no *config* hook to replace it, confirmed by
  * reading their widget-embed source. `avatar`/`show_avatar_when_collapsed`
- * overrides don't reach this button at all either — that field only affects
- * the orb shown during an active call — so this deliberately doesn't touch
- * avatar.
+ * overrides don't reach this button at all — that's a separate animated
+ * circle ElevenLabs renders next to it unconditionally in every collapsed
+ * layout; Roya wants only the phone icon, so <HideVoiceWidgetAvatar />
+ * below removes that circle client-side (see its own comment for why that's
+ * safe to do).
  *
  * The live config is merged with a forced brand-green override for ONLY the
  * button/accent colors — ElevenLabs' dashboard "Accent" color edit doesn't
@@ -181,6 +184,7 @@ export async function ElevenLabsVoiceWidget() {
       >
         <PhoneIconSlot />
       </elevenlabs-convai>
+      <HideVoiceWidgetAvatar />
     </>
   );
 }
