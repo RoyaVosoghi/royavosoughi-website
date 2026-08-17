@@ -7,19 +7,28 @@ const AGENT_ID =
   process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? "agent_8501kzxw287petfv74ank0vr0ec1";
 
 /**
- * Roya's exact reference mark (white disc, forest ring, forest phone glyph),
- * projected into the widget's shadow DOM via its `icon-phone` named slot —
- * confirmed by dumping the live widget's shadowRoot.innerHTML, which exposes
- * `<slot name="icon-phone">` around the default glyph. Unlike `avatar` (a
- * config field that never reaches this button, see below), slots are a
- * standard Web Components mechanism: any light-DOM child of
- * <elevenlabs-convai> with a matching `slot` attribute replaces that
- * fallback content directly, so this is a supported customization path, not
- * a DOM hack. Sized to exactly cover the real button (36x36px at
- * variant="tiny", verified via getBoundingClientRect against the live
- * widget) — the -9px margin cancels out the slot wrapper's own centering so
- * the icon fills the whole circular button rather than sitting small inside
- * it.
+ * A white phone glyph, projected into the widget's shadow DOM via its
+ * `icon-phone` named slot — confirmed by dumping the live widget's
+ * shadowRoot.innerHTML, which exposes `<slot name="icon-phone">` around the
+ * default glyph. Unlike `avatar` (a config field that never reaches this
+ * button, see below), slots are a standard Web Components mechanism: any
+ * light-DOM child of <elevenlabs-convai> with a matching `slot` attribute
+ * replaces that fallback content directly, so this is a supported
+ * customization path, not a DOM hack.
+ *
+ * Deliberately draws only the glyph, not a background disc — the real
+ * button underneath is already pinned solid forest (config.styles.accent
+ * below), so this reads as a white icon on a solid-forest circle, matching
+ * our own text-chat bubble's launcher (lib/widget/entry.ts's CHAT_ICON on
+ * `.rv-launcher`) rather than the previous white-disc/forest-ring mark.
+ *
+ * Sized to exactly cover the real button (36x36px at variant="tiny",
+ * verified via getBoundingClientRect against the live widget) — the -9px
+ * margin cancels out the slot wrapper's own centering. The glyph itself is
+ * scaled down and centered within that 36x36 canvas (16px, the same ~43%
+ * icon-to-button ratio as the text-chat launcher's 26px icon on its 60px
+ * button) rather than filling it, since there's no disc edge to reach
+ * anymore.
  */
 function PhoneIconSlot() {
   return (
@@ -30,13 +39,15 @@ function PhoneIconSlot() {
       height={36}
       style={{ margin: "-9px", flexShrink: 0 }}
     >
-      <circle cx="18" cy="18" r="18" fill="#ffffff" />
-      <circle cx="18" cy="18" r="16.5" fill="none" stroke={brandColors.forest} strokeWidth={1.6} />
-      <g transform="translate(9,9) scale(0.75)">
-        <path
-          d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
-          fill={brandColors.forest}
-        />
+      <g
+        transform="translate(10,10) scale(0.667)"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
       </g>
     </svg>
   );
@@ -161,9 +172,9 @@ export async function ElevenLabsVoiceWidget() {
       ...styles,
       base_primary: brandColors.emerald,
       // All three pinned to forest, not just the base accent — this is the
-      // button chrome sitting directly behind PhoneIconSlot's baked-in forest
-      // ring, and an emerald hover/active state would show as a visible
-      // color mismatch right at that ring's edge.
+      // solid-forest button chrome that PhoneIconSlot's white glyph sits on
+      // top of, and an emerald hover/active state would show as a visible
+      // color flash right behind the icon.
       accent: brandColors.forest,
       accent_hover: brandColors.forest,
       accent_active: brandColors.forest,
