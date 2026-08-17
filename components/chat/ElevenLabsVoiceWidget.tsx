@@ -6,6 +6,42 @@ const AGENT_ID =
   process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? "agent_8501kzxw287petfv74ank0vr0ec1";
 
 /**
+ * Roya's exact reference mark (white disc, forest ring, forest phone glyph),
+ * projected into the widget's shadow DOM via its `icon-phone` named slot —
+ * confirmed by dumping the live widget's shadowRoot.innerHTML, which exposes
+ * `<slot name="icon-phone">` around the default glyph. Unlike `avatar` (a
+ * config field that never reaches this button, see below), slots are a
+ * standard Web Components mechanism: any light-DOM child of
+ * <elevenlabs-convai> with a matching `slot` attribute replaces that
+ * fallback content directly, so this is a supported customization path, not
+ * a DOM hack. Sized to exactly cover the real button (36x36px at
+ * variant="tiny", verified via getBoundingClientRect against the live
+ * widget) — the -9px margin cancels out the slot wrapper's own centering so
+ * the icon fills the whole circular button rather than sitting small inside
+ * it.
+ */
+function PhoneIconSlot() {
+  return (
+    <svg
+      slot="icon-phone"
+      viewBox="0 0 36 36"
+      width={36}
+      height={36}
+      style={{ margin: "-9px", flexShrink: 0 }}
+    >
+      <circle cx="18" cy="18" r="18" fill="#ffffff" />
+      <circle cx="18" cy="18" r="16.5" fill="none" stroke={brandColors.forest} strokeWidth={1.6} />
+      <g transform="translate(9,9) scale(0.75)">
+        <path
+          d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+          fill={brandColors.forest}
+        />
+      </g>
+    </svg>
+  );
+}
+
+/**
  * Fallback only — used if the live fetch in getWidgetConfig() below fails
  * (network blip, ElevenLabs API down at build time, etc.). Last known-good
  * snapshot from 2026-08-14. Not meant to be kept in sync by hand; the live
@@ -85,12 +121,14 @@ async function getWidgetConfig(): Promise<Record<string, unknown>> {
  * once the embed script registers it, and inherits page direction so it
  * lands at the logical trailing corner (bottom-right in English,
  * bottom-left in Farsi). `variant="tiny"` renders an icon-only launcher (no
- * "Start a call" text) — the button's phone glyph itself is hardcoded inside
- * ElevenLabs' widget bundle (`icon: "phone"`, their own icon set) with no
- * config field to replace it with custom artwork; confirmed by reading their
- * widget-embed source. `avatar`/`show_avatar_when_collapsed` overrides don't
- * reach this button at all — that field only affects the orb shown during an
- * active call — so this deliberately doesn't touch avatar.
+ * "Start a call" text); the icon itself is PhoneIconSlot above, projected in
+ * via the `icon-phone` slot rather than any override-config field — that
+ * button's glyph is hardcoded inside ElevenLabs' widget bundle
+ * (`icon: "phone"`) with no *config* hook to replace it, confirmed by
+ * reading their widget-embed source. `avatar`/`show_avatar_when_collapsed`
+ * overrides don't reach this button at all either — that field only affects
+ * the orb shown during an active call — so this deliberately doesn't touch
+ * avatar.
  *
  * The live config is merged with a forced brand-green override for ONLY the
  * button/accent colors — ElevenLabs' dashboard "Accent" color edit doesn't
@@ -119,9 +157,13 @@ export async function ElevenLabsVoiceWidget() {
     styles: {
       ...styles,
       base_primary: brandColors.emerald,
+      // All three pinned to forest, not just the base accent — this is the
+      // button chrome sitting directly behind PhoneIconSlot's baked-in forest
+      // ring, and an emerald hover/active state would show as a visible
+      // color mismatch right at that ring's edge.
       accent: brandColors.forest,
-      accent_hover: brandColors.emerald,
-      accent_active: brandColors.emerald,
+      accent_hover: brandColors.forest,
+      accent_active: brandColors.forest,
     },
   };
 
@@ -136,7 +178,9 @@ export async function ElevenLabsVoiceWidget() {
         agent-id={AGENT_ID}
         variant="tiny"
         override-config={JSON.stringify(config)}
-      />
+      >
+        <PhoneIconSlot />
+      </elevenlabs-convai>
     </>
   );
 }
