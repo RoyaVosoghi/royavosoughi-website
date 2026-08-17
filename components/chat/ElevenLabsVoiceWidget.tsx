@@ -1,6 +1,7 @@
 import Script from "next/script";
 
 import { HideVoiceWidgetAvatar } from "@/components/chat/HideVoiceWidgetAvatar";
+import { ResizeVoiceWidgetButton } from "@/components/chat/ResizeVoiceWidgetButton";
 import { brandColors } from "@/lib/site";
 
 const AGENT_ID =
@@ -22,13 +23,18 @@ const AGENT_ID =
  * our own text-chat bubble's launcher (lib/widget/entry.ts's CHAT_ICON on
  * `.rv-launcher`) rather than the previous white-disc/forest-ring mark.
  *
- * Sized to exactly cover the real button (36x36px at variant="tiny",
- * verified via getBoundingClientRect against the live widget) — the -9px
- * margin cancels out the slot wrapper's own centering. The glyph itself is
- * scaled down and centered within that 36x36 canvas (16px, the same ~43%
- * icon-to-button ratio as the text-chat launcher's 26px icon on its 60px
- * button) rather than filling it, since there's no disc edge to reach
- * anymore.
+ * Canvas is 36x36 (the button's original, unresized dimensions at
+ * variant="tiny", verified via getBoundingClientRect against the live
+ * widget) — the -9px margin cancels out the slot wrapper's own centering.
+ * The glyph itself is scaled down and centered within that canvas (16px)
+ * rather than filling it.
+ *
+ * <ResizeVoiceWidgetButton/> below grows the actual button to 60px to match
+ * the text-chat launcher, but this SVG deliberately keeps its original
+ * 36x36 sizing rather than growing with it: the slot wrapper centers
+ * whatever box this produces via flex, independently of the button's own
+ * size, so the glyph's pixel size and position stay exactly as they were —
+ * only the forest circle around it gets bigger.
  */
 function PhoneIconSlot() {
   return (
@@ -211,6 +217,7 @@ export async function ElevenLabsVoiceWidget() {
         <PhoneIconSlot />
       </elevenlabs-convai>
       <HideVoiceWidgetAvatar />
+      <ResizeVoiceWidgetButton />
     </>
   );
 }
