@@ -170,7 +170,22 @@ export async function ElevenLabsVoiceWidget() {
     text_input_enabled: false,
     styles: {
       ...styles,
-      base_primary: brandColors.emerald,
+      // The collapsed button isn't the only circle here — ElevenLabs wraps
+      // it in its own padded "sheet" container (bg-base, ~8px bigger on
+      // every side) that defaults to white, which is what read as a white
+      // ring around the forest button. `base`/`base_hover`/`base_active`
+      // are that sheet's background, pinned to forest for the same reason
+      // as accent below — so the ring disappears into the button instead of
+      // framing it.
+      base: brandColors.forest,
+      base_hover: brandColors.forest,
+      base_active: brandColors.forest,
+      // This sheet is reused as the button itself once a call is live (it
+      // switches to an "end call" glyph rendered in base_primary, not
+      // accent_primary) — bumped from emerald to offwhite so that glyph
+      // stays legible against the now-forest sheet instead of a forest icon
+      // on forest background.
+      base_primary: brandColors.offwhite,
       // All three pinned to forest, not just the base accent — this is the
       // solid-forest button chrome that PhoneIconSlot's white glyph sits on
       // top of, and an emerald hover/active state would show as a visible
