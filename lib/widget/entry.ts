@@ -282,12 +282,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-send:hover:not(:disabled) { background: ${COLORS.forest}; }
     .rv-send:disabled { opacity: 0.5; cursor: default; }
     .rv-launcher {
-      /* Matches the ElevenLabs voice launcher's fixed 36x36px button (its
-         "tiny" variant has no config field to resize it — confirmed against
-         the widget-embed bundle) so the two stacked launchers read as the
-         same size. */
-      width: 36px;
-      height: 36px;
+      width: 60px;
+      height: 60px;
       padding: 0;
       border-radius: 50%;
       background: ${COLORS.forest};
@@ -334,12 +330,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     `;
   }
 
-  // Sized to the same ~44% icon-to-button ratio as the shrunk .rv-launcher
-  // (36px) so the glyph doesn't look lost inside the smaller circle.
   const CHAT_ICON =
-    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+    '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
   const CLOSE_ICON =
-    '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>';
   const THUMB_UP_ICON =
     '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 22V11M2 13v7a2 2 0 0 0 2 2h12.9a2 2 0 0 0 2-1.7l1.4-8A2 2 0 0 0 18.3 10H14V5a2 2 0 0 0-2-2L7 11"/></svg>';
   const THUMB_DOWN_ICON =
