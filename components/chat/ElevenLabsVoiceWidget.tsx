@@ -6,19 +6,6 @@ const AGENT_ID =
   process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? "agent_8501kzxw287petfv74ank0vr0ec1";
 
 /**
- * Replaces the widget's default launcher glyph with a white disc, forest-green
- * ring, and a forest-green phone icon — the exact reference mark Roya
- * supplied. ElevenLabs' override-config has no dedicated "collapsed icon"
- * field — the same `avatar` object also renders inside an active call — so
- * the whole badge (ring included) is baked into the SVG itself rather than
- * relying on btn_color to show through. Confirmed against the widget-embed
- * bundle (avatar type "url" reads `custom_url`; there's no documented
- * alternative).
- */
-const PHONE_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ffffff" stroke="${brandColors.forest}" stroke-width="3"/><g transform="translate(20,20)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="${brandColors.forest}"/></g></svg>`;
-const PHONE_AVATAR_URL = `data:image/svg+xml,${encodeURIComponent(PHONE_AVATAR_SVG)}`;
-
-/**
  * Fallback only — used if the live fetch in getWidgetConfig() below fails
  * (network blip, ElevenLabs API down at build time, etc.). Last known-good
  * snapshot from 2026-08-14. Not meant to be kept in sync by hand; the live
@@ -92,15 +79,18 @@ async function getWidgetConfig(): Promise<Record<string, unknown>> {
 }
 
 /**
- * ElevenLabs Conversational AI widget — the site's single floating launcher
- * for both text chat and voice calls (it offers a chat toggle and a "Start
- * a call" button in one pill). Renders site-wide from app/[locale]/layout.tsx
+ * ElevenLabs Conversational AI widget — the site's voice-call launcher.
+ * Renders site-wide from app/[locale]/layout.tsx
  * — the <elevenlabs-convai> custom element manages its own fixed launcher
  * once the embed script registers it, and inherits page direction so it
  * lands at the logical trailing corner (bottom-right in English,
- * bottom-left in Farsi). `variant="compact"` keeps it a small pill rather
- * than the default widget's larger "Need help? Start a call" card, since
- * it's always on screen.
+ * bottom-left in Farsi). `variant="tiny"` renders an icon-only launcher (no
+ * "Start a call" text) — the button's phone glyph itself is hardcoded inside
+ * ElevenLabs' widget bundle (`icon: "phone"`, their own icon set) with no
+ * config field to replace it with custom artwork; confirmed by reading their
+ * widget-embed source. `avatar`/`show_avatar_when_collapsed` overrides don't
+ * reach this button at all — that field only affects the orb shown during an
+ * active call — so this deliberately doesn't touch avatar.
  *
  * The live config is merged with a forced brand-green override for ONLY the
  * button/accent colors — ElevenLabs' dashboard "Accent" color edit doesn't
@@ -115,12 +105,8 @@ export async function ElevenLabsVoiceWidget() {
 
   const config = {
     ...liveConfig,
-    avatar: { type: "url", custom_url: PHONE_AVATAR_URL },
-    show_avatar_when_collapsed: true,
-    // White, not forest — the launcher badge is a white disc with a forest
-    // ring baked into PHONE_AVATAR_SVG, so the button chrome behind it needs
-    // to match rather than show a clashing forest square at the edges.
-    btn_color: "#ffffff",
+    avatar: { type: "orb", color_1: brandColors.emerald, color_2: brandColors.spring },
+    btn_color: brandColors.forest,
     focus_color: brandColors.forest,
     // Voice-only: text chat is handled by our own widget (lib/widget/entry.ts)
     // now, which we fully control — greeting-on-open, idle-close, and a
@@ -148,7 +134,7 @@ export async function ElevenLabsVoiceWidget() {
       />
       <elevenlabs-convai
         agent-id={AGENT_ID}
-        variant="compact"
+        variant="tiny"
         override-config={JSON.stringify(config)}
       />
     </>
