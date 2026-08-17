@@ -286,18 +286,18 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       height: 60px;
       padding: 0;
       border-radius: 50%;
-      background: ${COLORS.offwhite};
-      color: ${COLORS.forest};
-      border: 2.5px solid ${COLORS.forest};
+      background: ${COLORS.forest};
+      color: ${COLORS.offwhite};
+      border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-family: inherit;
-      box-shadow: 0 8px 24px rgba(2, 51, 22, 0.25);
+      box-shadow: 0 8px 24px rgba(2, 51, 22, 0.35);
       transition: background 0.2s ease, transform 0.2s ease;
     }
-    .rv-launcher:hover { background: ${COLORS.mint}; transform: translateY(-2px); }
+    .rv-launcher:hover { background: ${COLORS.forestSoft}; transform: translateY(-2px); }
     .rv-launcher-icon { display: grid; place-items: center; }
     .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
     .rv-end-screen {
