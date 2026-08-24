@@ -13,6 +13,7 @@ const BodySchema = z.object({
   inputType: z.string().trim().max(50).nullable().optional(),
   chunkSize: z.number().int().min(100).max(6000).optional(),
   chunkOverlap: z.number().int().min(0).max(1000).optional(),
+  chunkingStrategy: z.enum(["paragraph", "fixed"]).optional(),
   topK: z.number().int().min(1).max(20).optional(),
   similarityThreshold: z.number().min(0).max(1).optional(),
   rerankerEnabled: z.boolean().optional(),

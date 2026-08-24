@@ -600,6 +600,16 @@ create table if not exists public.channel_secrets (
 alter table public.channel_secrets enable row level security;
 -- No policies: service role only.
 
+-- -----------------------------------------------------------------------------
+-- Chunking strategy — "paragraph" (default, groups whole paragraphs, best for
+-- prose like site copy/brand docs) or "fixed" (hard character slices, better
+-- for dense/unstructured source text with no real paragraph breaks).
+-- -----------------------------------------------------------------------------
+
+alter table public.embedding_config
+  add column if not exists chunking_strategy text not null default 'paragraph'
+    check (chunking_strategy in ('paragraph', 'fixed'));
+
 
 -- =============================================================================
 -- PHASE 2 — booking & payments. Not created yet; documented so the shape is

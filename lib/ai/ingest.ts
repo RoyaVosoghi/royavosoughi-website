@@ -60,6 +60,7 @@ export async function ingestSource(input: IngestSourceInput): Promise<IngestResu
     ? chunkText(text, {
         chunkSize: embeddingConfig.chunkSize,
         chunkOverlap: embeddingConfig.chunkOverlap,
+        strategy: embeddingConfig.chunkingStrategy,
       })
     : [];
 

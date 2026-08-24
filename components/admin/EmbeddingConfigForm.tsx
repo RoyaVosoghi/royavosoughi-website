@@ -13,6 +13,7 @@ export interface EmbeddingConfigValues {
   inputType: string | null;
   chunkSize: number;
   chunkOverlap: number;
+  chunkingStrategy: "paragraph" | "fixed";
   topK: number;
   similarityThreshold: number;
   rerankerEnabled: boolean;
@@ -143,6 +144,17 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             onChange={(e) => setValues({ ...values, chunkOverlap: Number(e.target.value) })}
             className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
           />
+        </label>
+        <label className="text-xs font-medium text-ink/70">
+          {t("embedding.chunkingStrategyLabel")}
+          <select
+            value={values.chunkingStrategy}
+            onChange={(e) => setValues({ ...values, chunkingStrategy: e.target.value as "paragraph" | "fixed" })}
+            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+          >
+            <option value="paragraph">{t("embedding.strategyParagraph")}</option>
+            <option value="fixed">{t("embedding.strategyFixed")}</option>
+          </select>
         </label>
         <label className="text-xs font-medium text-ink/70">
           {t("embedding.topKLabel")}

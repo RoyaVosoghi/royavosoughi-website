@@ -19,6 +19,8 @@ export interface EmbeddingConfig {
   inputType: string | null;
   chunkSize: number;
   chunkOverlap: number;
+  /** "paragraph" (default, groups whole paragraphs — best for prose) or "fixed" (hard character slices — best for dense/unstructured source text). */
+  chunkingStrategy: "paragraph" | "fixed";
   topK: number;
   similarityThreshold: number;
   rerankerEnabled: boolean;
@@ -32,6 +34,7 @@ export const DEFAULT_EMBEDDING_CONFIG: EmbeddingConfig = {
   inputType: null,
   chunkSize: 700,
   chunkOverlap: 120,
+  chunkingStrategy: "paragraph",
   topK: 6,
   similarityThreshold: 0.25,
   rerankerEnabled: false,
@@ -50,7 +53,7 @@ export async function getEmbeddingConfig(): Promise<EmbeddingConfig> {
   const { data, error } = await supabase
     .from("embedding_config")
     .select(
-      "provider, model, dimensions, input_type, chunk_size, chunk_overlap, top_k, similarity_threshold, reranker_enabled, reranker_model",
+      "provider, model, dimensions, input_type, chunk_size, chunk_overlap, chunking_strategy, top_k, similarity_threshold, reranker_enabled, reranker_model",
     )
     .eq("id", 1)
     .maybeSingle();
@@ -67,6 +70,7 @@ export async function getEmbeddingConfig(): Promise<EmbeddingConfig> {
     inputType: data.input_type,
     chunkSize: data.chunk_size,
     chunkOverlap: data.chunk_overlap,
+    chunkingStrategy: (data.chunking_strategy as "paragraph" | "fixed") ?? "paragraph",
     topK: data.top_k,
     similarityThreshold: data.similarity_threshold,
     rerankerEnabled: data.reranker_enabled,
@@ -83,6 +87,7 @@ export interface EmbeddingConfigUpdate {
   inputType?: string | null;
   chunkSize?: number;
   chunkOverlap?: number;
+  chunkingStrategy?: "paragraph" | "fixed";
   topK?: number;
   similarityThreshold?: number;
   rerankerEnabled?: boolean;
@@ -100,6 +105,7 @@ export async function updateEmbeddingConfig(update: EmbeddingConfigUpdate): Prom
   if (update.inputType !== undefined) patch.input_type = update.inputType;
   if (update.chunkSize !== undefined) patch.chunk_size = update.chunkSize;
   if (update.chunkOverlap !== undefined) patch.chunk_overlap = update.chunkOverlap;
+  if (update.chunkingStrategy !== undefined) patch.chunking_strategy = update.chunkingStrategy;
   if (update.topK !== undefined) patch.top_k = update.topK;
   if (update.similarityThreshold !== undefined) patch.similarity_threshold = update.similarityThreshold;
   if (update.rerankerEnabled !== undefined) patch.reranker_enabled = update.rerankerEnabled;
