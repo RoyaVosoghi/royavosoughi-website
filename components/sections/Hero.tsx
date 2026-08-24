@@ -8,8 +8,7 @@ import { HeroCodeCard } from "./HeroCodeCard";
  * only) gives it something to point at, the way Vercel/Stripe/Linear pair a
  * headline with a product visual instead of leaving it text-only. The
  * headline itself is split into two parts so the second half can carry the
- * Emerald colour and the underline that draws itself in — a literal reading
- * of "line by line".
+ * Emerald colour.
  */
 export async function Hero() {
   const t = await getTranslations("hero");
@@ -35,23 +34,6 @@ export async function Hero() {
             <span className="block">{t("lineA")}</span>
             <span className="relative inline-block text-emerald">
               {t("lineB")}
-              {/* The underline is decorative; it must never carry meaning */}
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 300 12"
-                preserveAspectRatio="none"
-                className="underline-draw absolute inset-x-0 -bottom-1 h-[0.18em] w-full overflow-visible"
-                style={{ animationDelay: "600ms" }}
-              >
-                <path
-                  d="M2 8 Q75 2 150 6 T298 5"
-                  fill="none"
-                  stroke="var(--color-spring)"
-                  strokeWidth="7"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
             </span>
           </h1>
 
