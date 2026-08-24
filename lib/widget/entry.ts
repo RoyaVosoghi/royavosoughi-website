@@ -380,6 +380,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     if (config?.primaryColor) COLORS.emerald = config.primaryColor;
     const positionSide = config?.position === "bottom-start" ? "start" : "end";
     const starters = (locale === "fa" ? config?.quickRepliesFa : config?.quickRepliesEn) ?? [];
+    const welcomeMessage = (locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn) || null;
 
     const host = document.createElement("div");
     host.setAttribute("dir", dir);
@@ -493,6 +494,12 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
     const messages: DisplayMessage[] = [];
 
+    /** Client-rendered greeting bubble from widget_config.welcome_message_* — never sent to/from the backend, never eligible for thumbs feedback (no `id`). */
+    function pushWelcomeMessage() {
+      if (welcomeMessage) messages.push({ role: "assistant", content: welcomeMessage, feedback: null, synthetic: true });
+    }
+    pushWelcomeMessage();
+
     async function rate(message: DisplayMessage, rating: 1 | -1) {
       if (!message.id || message.feedback !== null) return;
       message.feedback = rating;
@@ -595,12 +602,14 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     function resetToFresh() {
       ended = false;
       messages.length = 0;
+      pushWelcomeMessage();
       endScreen.dataset.visible = "false";
       messagesEl.style.display = "";
       inputRow.style.display = "";
       resetStars();
       setStatus("");
       sessionId = rotateSessionId();
+      renderMessages();
     }
 
     /**
