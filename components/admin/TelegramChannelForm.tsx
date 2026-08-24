@@ -7,16 +7,19 @@ import { useState } from "react";
 export function TelegramChannelForm({
   maskedBotToken,
   maskedWebhookSecret,
+  currentAdminChatId,
   siteUrl,
 }: {
   maskedBotToken: string | null;
   maskedWebhookSecret: string | null;
+  currentAdminChatId: string | null;
   siteUrl: string;
 }) {
   const t = useTranslations("channels.telegram");
   const router = useRouter();
   const [botToken, setBotToken] = useState("");
   const [webhookSecret, setWebhookSecret] = useState("");
+  const [adminChatId, setAdminChatId] = useState(currentAdminChatId ?? "");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [registerStatus, setRegisterStatus] = useState<"idle" | "running" | "done" | "error">("idle");
   const [registerMessage, setRegisterMessage] = useState<string | null>(null);
@@ -29,6 +32,7 @@ export function TelegramChannelForm({
       body: JSON.stringify({
         botToken: botToken.trim() || undefined,
         webhookSecret: webhookSecret.trim() || undefined,
+        adminChatId: adminChatId.trim() !== (currentAdminChatId ?? "") ? adminChatId.trim() : undefined,
       }),
     });
     setSaveStatus(response.ok ? "saved" : "error");
@@ -84,13 +88,27 @@ export function TelegramChannelForm({
             className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
           />
         </label>
+        <label className="text-xs font-medium text-ink/70 sm:col-span-2">
+          {t("adminChatIdLabel")}
+          <input
+            type="text"
+            value={adminChatId}
+            onChange={(e) => setAdminChatId(e.target.value)}
+            placeholder={t("adminChatIdPlaceholder")}
+            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
+          />
+          <span className="mt-1 block font-normal text-ink/50">{t("adminChatIdSubtitle")}</span>
+        </label>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={save}
-          disabled={saveStatus === "saving" || (!botToken.trim() && !webhookSecret.trim())}
+          disabled={
+            saveStatus === "saving" ||
+            (!botToken.trim() && !webhookSecret.trim() && adminChatId.trim() === (currentAdminChatId ?? ""))
+          }
           className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
         >
           {saveStatus === "saving" ? t("saving") : t("save")}

@@ -26,6 +26,9 @@ const messages: DeepStringify<typeof source> = {
       registering: "در حال ثبت…",
       registerSuccess: "وب‌هوک در {url} ثبت شد",
       registerErrorFallback: "ثبت وب‌هوک ناموفق بود — درستی توکن ربات را بررسی کنید.",
+      adminChatIdLabel: "شناسه چت تلگرام شما (برای اعلان‌های ارجاع به انسان)",
+      adminChatIdSubtitle: "وقتی بازدیدکننده‌ای درخواست صحبت با انسان می‌کند، ربات همین‌جا برایتان پیام تلگرام می‌فرستد. یک بار به ربات خودتان پیام دهید تا شناسه چتش زیر «صندوق ورودی → گفتگوها» (کانال: تلگرام) نمایش داده شود.",
+      adminChatIdPlaceholder: "مثلا 5459423729",
     },
     widgetEmbed: {
       title: "کد جاسازی ویجت",

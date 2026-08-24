@@ -24,6 +24,9 @@ const messages = {
       registering: "Registering…",
       registerSuccess: "Webhook registered at {url}",
       registerErrorFallback: "Registration failed — check the bot token is correct.",
+      adminChatIdLabel: "Your Telegram chat ID (for handoff alerts)",
+      adminChatIdSubtitle: "When a visitor asks for a human, the bot sends you a Telegram message here. Message your bot once and its chat ID will show up under Inbox → conversations (channel: telegram).",
+      adminChatIdPlaceholder: "e.g. 5459423729",
     },
     widgetEmbed: {
       title: "Widget embed code",

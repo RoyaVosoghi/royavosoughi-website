@@ -4,6 +4,7 @@ import type { FunctionDeclaration } from "@google/genai";
 import { z } from "zod";
 
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
+import { notifyAdminOfHandoff } from "../notify-admin";
 import type { ToolContext } from "./index";
 
 export const requestHumanHandoffDeclaration: FunctionDeclaration = {
@@ -56,6 +57,8 @@ export async function executeRequestHumanHandoff(
     console.error("[tool:request_human_handoff] insert failed:", error.message);
     return { error: "storage_failed" };
   }
+
+  void notifyAdminOfHandoff(reason, note, ctx.locale);
 
   return { ok: true };
 }

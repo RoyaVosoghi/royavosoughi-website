@@ -8,6 +8,7 @@ import { setChannelSecret } from "@/lib/ai/channel-secrets";
 const BodySchema = z.object({
   botToken: z.string().trim().min(1).max(200).optional(),
   webhookSecret: z.string().trim().min(1).max(200).optional(),
+  adminChatId: z.string().trim().min(1).max(64).optional(),
 });
 
 export async function POST(request: Request) {
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
   try {
     if (parsed.data.botToken) await setChannelSecret("telegram", "bot_token", parsed.data.botToken);
     if (parsed.data.webhookSecret) await setChannelSecret("telegram", "webhook_secret", parsed.data.webhookSecret);
+    if (parsed.data.adminChatId) await setChannelSecret("telegram", "admin_chat_id", parsed.data.adminChatId);
     await writeAuditLog("channel.telegram.update_secrets");
   } catch (err) {
     console.error("[admin/channels/telegram] update failed:", err);

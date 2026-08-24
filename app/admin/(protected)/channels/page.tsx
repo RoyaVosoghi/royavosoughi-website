@@ -15,9 +15,10 @@ export default async function AdminChannelsPage() {
     return <EmptyState title={t("notConfiguredTitle")} body={t("notConfiguredBody")} />;
   }
 
-  const [botToken, webhookSecret, widgetConfig] = await Promise.all([
+  const [botToken, webhookSecret, adminChatId, widgetConfig] = await Promise.all([
     getChannelSecret("telegram", "bot_token"),
     getChannelSecret("telegram", "webhook_secret"),
+    getChannelSecret("telegram", "admin_chat_id"),
     getWidgetConfig(),
   ]);
 
@@ -33,6 +34,7 @@ export default async function AdminChannelsPage() {
         <TelegramChannelForm
           maskedBotToken={botToken ? maskSecret(botToken) : null}
           maskedWebhookSecret={webhookSecret ? maskSecret(webhookSecret) : null}
+          currentAdminChatId={adminChatId}
           siteUrl={siteUrl}
         />
         <WidgetEmbedCode siteUrl={siteUrl} allowedDomains={widgetConfig.allowedDomains} />
