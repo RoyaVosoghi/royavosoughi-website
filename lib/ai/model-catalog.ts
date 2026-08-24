@@ -98,11 +98,20 @@ export const MODEL_CATALOG: ModelCatalogEntry[] = [
     pricePerMOutputUsd: 0.3,
   },
   {
-    slug: "openai/gpt-oss-20b:free",
-    label: "GPT-OSS 20B (Free)",
+    slug: "z-ai/glm-5.2:free",
+    label: "GLM 5.2 (Free)",
     providerGroup: "openai",
     description:
-      "$0 via OpenRouter's free tier — confirmed tool-calling support, so lead capture/handoff still work. Rate-limited (~20 req/min, 50/day), for testing the pipeline only. OpenRouter's free lineup rotates; if this slug 404s, swap it for another :free model at openrouter.ai/models.",
+      "$0 via OpenRouter's free tier — confirmed tool-calling support and, unlike several other free models tried, reliably follows the no-exposed-reasoning / plain-text rules in the system prompt. Current default while the OpenRouter account has no paid credits. OpenRouter's free lineup rotates; if this slug 404s, check openrouter.ai/api/v1/models for a current :free replacement with tool support.",
+    pricePerMInputUsd: 0,
+    pricePerMOutputUsd: 0,
+  },
+  {
+    slug: "dots-studio/dots-3-note-preview:free",
+    label: "Dots 3 Note Preview (Free)",
+    providerGroup: "openai",
+    description:
+      "$0 via OpenRouter's free tier, 512k context — current fallback_model for all channels. Verified clean (no leaked reasoning) on the same prompts that broke earlier free models.",
     pricePerMInputUsd: 0,
     pricePerMOutputUsd: 0,
   },

@@ -139,6 +139,36 @@ type StreamParams = {
  */
 const REASONING_PARAMS = { reasoning: { exclude: true } };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function openStream(client: OpenAI, model: string, params: StreamParams) {
+  return client.chat.completions.create({
+    model,
+    stream: true,
+    stream_options: { include_usage: true },
+    ...params,
+    ...REASONING_PARAMS,
+  } as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming);
+}
+
+/**
+ * Free-tier OpenRouter models occasionally 429/5xx on a request that would
+ * have succeeded a second later (provider-side capacity blips, not a real
+ * rate limit on us) — one short-backoff retry absorbs that class of failure
+ * before we give up on a model entirely and move to the fallback. A genuine
+ * rate-limit error is never retried here — isRateLimitError callers handle
+ * that themselves by surfacing RateLimitError to the visitor.
+ */
+async function openStreamWithRetry(client: OpenAI, model: string, params: StreamParams) {
+  try {
+    return await openStream(client, model, params);
+  } catch (err) {
+    if (isRateLimitError(err)) throw err;
+    await sleep(400);
+    return openStream(client, model, params);
+  }
+}
+
 async function openStreamWithFallback(
   client: OpenAI,
   primaryModel: string,
@@ -146,25 +176,13 @@ async function openStreamWithFallback(
   params: StreamParams,
 ): Promise<{ stream: AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>; modelUsed: string }> {
   try {
-    const stream = await client.chat.completions.create({
-      model: primaryModel,
-      stream: true,
-      stream_options: { include_usage: true },
-      ...params,
-      ...REASONING_PARAMS,
-    } as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming);
+    const stream = await openStreamWithRetry(client, primaryModel, params);
     return { stream, modelUsed: primaryModel };
   } catch (err) {
     if (fallbackModel && fallbackModel !== primaryModel) {
       console.error(`[brain] ${primaryModel} failed, retrying with fallback ${fallbackModel}:`, err);
       try {
-        const stream = await client.chat.completions.create({
-          model: fallbackModel,
-          stream: true,
-          stream_options: { include_usage: true },
-          ...params,
-          ...REASONING_PARAMS,
-        } as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming);
+        const stream = await openStreamWithRetry(client, fallbackModel, params);
         return { stream, modelUsed: fallbackModel };
       } catch (fallbackErr) {
         if (isRateLimitError(fallbackErr)) throw new RateLimitError();
