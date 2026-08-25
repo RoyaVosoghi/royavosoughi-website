@@ -7,6 +7,14 @@ const ContactSchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: z.email().max(200),
   company: z.string().trim().max(160).optional().or(z.literal("")),
+  businessStage: z
+    .enum(["idea", "early", "growing", "established"])
+    .optional()
+    .or(z.literal("")),
+  preferredTime: z
+    .enum(["morning", "afternoon", "evening"])
+    .optional()
+    .or(z.literal("")),
   message: z.string().trim().min(10).max(4000),
   locale: z.enum(["en", "fa"]).default("en"),
   subject: z.string().trim().max(80).optional().or(z.literal("")),
@@ -50,6 +58,8 @@ export async function POST(request: Request) {
     name: data.name,
     email: data.email,
     company: data.company || null,
+    business_stage: data.businessStage || null,
+    preferred_time: data.preferredTime || null,
     message: data.message,
     locale: data.locale,
     source: data.subject || "website",

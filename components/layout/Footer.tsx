@@ -34,7 +34,7 @@ export async function Footer() {
             <nav aria-label={t("siteLinks")}>
               <h2 className="label-eyebrow text-mint-deep">{t("siteLinks")}</h2>
               <ul className="mt-5 space-y-3">
-                {(["services", "projects", "about", "contact"] as const).map(
+                {(["services", "process", "projects", "about", "contact"] as const).map(
                   (key) => (
                     <li key={key}>
                       <Link

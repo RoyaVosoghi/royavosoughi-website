@@ -8,19 +8,21 @@
     "homeNav": "Home",
     "primary": "Primary",
     "services": "Services",
+    "process": "Process",
     "projects": "Projects",
     "about": "About",
     "chat": "Chat",
     "contact": "Contact",
+    "cta": "Request a consultation",
     "menu": "Open menu",
     "close": "Close menu",
     "skipToContent": "Skip to content"
   },
   "hero": {
-    "lineA": "Automate the system.",
-    "lineB": "Live the life.",
-    "subtitle": "We build AI agents and automation systems so you can focus on growth and freedom.",
-    "ctaPrimary": "Book a consultation",
+    "lineA": "I build reliable,",
+    "lineB": "AI-powered applications.",
+    "subtitle": "RAG tools, assistants and agents that do a specific job for your business — deployed, documented, and supported after handoff. Never a demo pretending to be a product.",
+    "ctaPrimary": "Request a consultation",
     "ctaSecondary": "See my work",
     "credential": "AI Engineer & Software Developer · Python · LLMs · RAG",
     "codeCardLabel": "Illustrative example: an AI agent answering from a company's own documents, not a guess"
@@ -69,6 +71,29 @@
       "summary": "Structured courses for teams who want to build their own AI capability instead of outsourcing it forever."
     }
   },
+  "process": {
+    "eyebrow": "How it works",
+    "title": "From a form to a plan, in four steps.",
+    "intro": "No sales call, no pressure — just a clear path to figuring out if AI is worth your time.",
+    "steps": {
+      "request": {
+        "name": "Send a request",
+        "body": "Fill out the form below with what you're trying to solve. Takes about two minutes."
+      },
+      "reply": {
+        "name": "Hear back personally",
+        "body": "I read every message myself and reply within two working days — even if the honest answer is that I'm not the right fit."
+      },
+      "call": {
+        "name": "60-minute consultation",
+        "body": "One focused call about your business and where AI genuinely fits — and, just as often, where it doesn't."
+      },
+      "roadmap": {
+        "name": "A written roadmap",
+        "body": "A summary you can share with your team: what's worth building, roughly how long, and what could go wrong."
+      }
+    }
+  },
   "projects": {
     "eyebrow": "Projects",
     "title": "A portfolio you can run.",
@@ -77,7 +102,9 @@
     "liveDemo": "Live demo",
     "sourceCode": "Source code",
     "emptyState": "The first projects are being built right now, in public. Each one lands here only once it is deployed, open source and documented — never before.",
-    "followGithub": "Follow along on GitHub"
+    "followGithub": "Follow along on GitHub",
+    "ctaTitle": "See something like your problem?",
+    "ctaButton": "Let's talk about it"
   },
   "about": {
     "eyebrow": "About",
@@ -152,8 +179,8 @@
   },
   "contact": {
     "eyebrow": "Contact",
-    "title": "Tell me what you're trying to solve.",
-    "intro": "The more concrete, the better — what happens today, who it slows down, and what \"fixed\" would look like.",
+    "title": "Ready to bring your vision to life?",
+    "intro": "Check out my latest projects, and let's build something amazing together — fill out the form below to get started.",
     "emailLabel": "Email",
     "responseLabel": "Response time",
     "responseValue": "Within two working days. Always a real reply, even if the answer is no.",
@@ -163,6 +190,20 @@
     "companyLabel": "Company",
     "companyPlaceholder": "Where you work",
     "optional": "(optional)",
+    "businessStageLabel": "What stage is your business at?",
+    "businessStageOptions": {
+      "idea": "Just an idea",
+      "early": "Early stage",
+      "growing": "Growing",
+      "established": "Established"
+    },
+    "preferredTimeLabel": "Best time to reach you",
+    "preferredTimeOptions": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "selectPlaceholder": "Select…",
     "messageLabel": "What are you working on?",
     "messagePlaceholder": "Describe the problem in a few sentences — no need for technical detail.",
     "messageError": "Say a little more — at least 10 characters.",

@@ -37,6 +37,19 @@ create policy "anon can insert contact messages"
 -- Read them in the Supabase dashboard (Table Editor), which uses your own
 -- authenticated session and bypasses RLS.
 
+-- -----------------------------------------------------------------------------
+-- V1.1: two optional qualifying fields on the contact form (business stage,
+-- best time to reach back) — lets a visitor add context without being
+-- required to. Nullable, additive, safe to run on an existing table.
+-- -----------------------------------------------------------------------------
+
+alter table public.contact_messages
+  add column if not exists business_stage text
+    check (business_stage in ('idea', 'early', 'growing', 'established'));
+alter table public.contact_messages
+  add column if not exists preferred_time text
+    check (preferred_time in ('morning', 'afternoon', 'evening'));
+
 
 -- =============================================================================
 -- V2: chatbot brain (RAG + memory + tools) — service-role only.

@@ -48,7 +48,7 @@ export async function Hero() {
             className="rise-in mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start"
             style={{ animationDelay: "320ms" }}
           >
-            <ButtonLink href="#services" variant="primary">
+            <ButtonLink href="#contact" variant="primary">
               {t("ctaPrimary")}
             </ButtonLink>
             <ButtonLink href="#projects" variant="secondary">

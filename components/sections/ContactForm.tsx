@@ -224,6 +224,54 @@ export function ContactForm({
         />
       </div>
 
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label
+            htmlFor="businessStage"
+            className="mb-2 block font-medium text-forest"
+          >
+            {t("businessStageLabel")}{" "}
+            <span className="font-normal text-ink/70">{t("optional")}</span>
+          </label>
+          <select
+            id="businessStage"
+            name="businessStage"
+            defaultValue=""
+            className={fieldClass(false)}
+          >
+            <option value="">{t("selectPlaceholder")}</option>
+            <option value="idea">{t("businessStageOptions.idea")}</option>
+            <option value="early">{t("businessStageOptions.early")}</option>
+            <option value="growing">{t("businessStageOptions.growing")}</option>
+            <option value="established">
+              {t("businessStageOptions.established")}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label
+            htmlFor="preferredTime"
+            className="mb-2 block font-medium text-forest"
+          >
+            {t("preferredTimeLabel")}{" "}
+            <span className="font-normal text-ink/70">{t("optional")}</span>
+          </label>
+          <select
+            id="preferredTime"
+            name="preferredTime"
+            defaultValue=""
+            className={fieldClass(false)}
+          >
+            <option value="">{t("selectPlaceholder")}</option>
+            <option value="morning">{t("preferredTimeOptions.morning")}</option>
+            <option value="afternoon">
+              {t("preferredTimeOptions.afternoon")}
+            </option>
+            <option value="evening">{t("preferredTimeOptions.evening")}</option>
+          </select>
+        </div>
+      </div>
+
       <div>
         <label htmlFor="message" className="mb-2 block font-medium text-forest">
           {t("messageLabel")}

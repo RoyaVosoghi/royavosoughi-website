@@ -5,11 +5,13 @@ import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/Logo";
+import { buttonStyles } from "@/components/ui/Button";
 import { LocaleSwitch } from "./LocaleSwitch";
 
 const navItems = [
   { key: "homeNav", href: "/" },
   { key: "services", href: "/#services" },
+  { key: "process", href: "/#process" },
   { key: "projects", href: "/#projects" },
   { key: "about", href: "/about" },
   { key: "chat", href: "/chat" },
@@ -83,6 +85,12 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <div className="hidden md:block">
+              <Link href="/#contact" className={buttonStyles("primary")}>
+                {t("cta")}
+              </Link>
+            </div>
+
             <div className="hidden sm:block">
               <LocaleSwitch />
             </div>
@@ -134,6 +142,12 @@ export function Header() {
                 {t(item.key)}
               </Link>
             ))}
+            <Link
+              href="/#contact"
+              className={`mt-6 justify-center ${buttonStyles("primary")}`}
+            >
+              {t("cta")}
+            </Link>
             <div className="pt-8">
               <LocaleSwitch />
             </div>

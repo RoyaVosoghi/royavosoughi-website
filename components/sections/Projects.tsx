@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { ButtonLink } from "@/components/ui/Button";
 import { visibleProjects } from "@/content/projects";
 import { site } from "@/lib/site";
 
@@ -110,6 +111,16 @@ export async function Projects() {
           })}
         </ul>
       )}
+
+      <Reveal
+        delayMs={items.length * 80 + 80}
+        className="mt-14 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-start"
+      >
+        <p className="text-xl text-forest">{t("ctaTitle")}</p>
+        <ButtonLink href="#contact" variant="secondary">
+          {t("ctaButton")}
+        </ButtonLink>
+      </Reveal>
     </Section>
   );
 }

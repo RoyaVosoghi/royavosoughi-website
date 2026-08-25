@@ -139,9 +139,10 @@
   }
 
   /* Hero display type. Scales from phone to large desktop without breakpoints.
-     The minimum is set so "Building a dream," still fits on ONE line at 360px —
-     anything larger wraps it to "Building a / dream," which reads badly.
-     If the headline text ever changes, re-check the fit at 360px. */
+     The minimum is set so the hero's first line ("I build reliable," in EN)
+     still fits on ONE line at 360px — anything larger wraps it mid-phrase,
+     which reads badly. If the headline text ever changes, re-check the fit
+     at 360px. */
   .text-display {
     font-family: var(--font-display);
     font-weight: 700;
