@@ -81,7 +81,9 @@ const messages = {
     models: {
       heading: "Model routing",
       description:
-        "Every model here runs through OpenRouter, so switching is just picking a different slug — no redeploy. Set a fallback for automatic retry on error/rate-limit, and an optional day-of-week schedule to switch models on specific days.",
+        "Picking a model here also picks its provider — Gemini models run on your own Google API key (billed on your Google account), everything else through OpenRouter (billed on OpenRouter credits). Switching between them just changes what model_config points at — no redeploy. Fallback and the day-of-week schedule must stay the same provider as the active model, since they're called through the same client.",
+      providerGemini: "Gemini · your subscription",
+      providerOpenrouter: "OpenRouter",
       channelWeb: "Web (site + homepage bubble)",
       channelTelegram: "Telegram",
       channelWidget: "Embeddable widget",
@@ -93,7 +95,7 @@ const messages = {
       weekdayFriday: "Friday",
       weekdaySaturday: "Saturday",
       modelLabel: "Model",
-      fallbackLabel: "Fallback model (used if the primary errors or rate-limits)",
+      fallbackLabel: "Fallback model (used if the primary errors or rate-limits) — must be the same provider as the model above",
       noOverride: "No override",
       temperatureLabel: "Temperature",
       topPLabel: "Top P",

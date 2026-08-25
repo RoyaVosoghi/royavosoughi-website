@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { groupedModelCatalog } from "@/lib/ai/model-catalog";
+import { getModelCatalogEntry, groupedModelCatalog, type ModelCatalogEntry } from "@/lib/ai/model-catalog";
 import type { WeekdaySchedule } from "@/lib/ai/model-config";
 
 export interface ModelConfigRow {
@@ -18,25 +18,46 @@ export interface ModelConfigRow {
   schedule: WeekdaySchedule | null;
 }
 
+/**
+ * `restrictToProvider` is how the fallback and per-weekday pickers stay
+ * same-provider as the active model — brain.ts calls primary and fallback
+ * through the same client, so an OpenRouter fallback under a Gemini active
+ * model (or vice versa) would 400 the moment it's actually used. The
+ * primary-model picker itself passes no restriction — that's the one
+ * control allowed to switch provider, and doing so resets the others (see
+ * ChannelCard's onChange below).
+ */
 function ModelSelect({
   value,
   onChange,
   allowNone,
   noOverrideLabel,
+  restrictToProvider,
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (model: string, entry: ModelCatalogEntry | undefined) => void;
   allowNone?: boolean;
   noOverrideLabel: string;
+  restrictToProvider?: "gemini" | "openrouter";
 }) {
+  const groups = groupedModelCatalog()
+    .map((group) => ({
+      ...group,
+      models: restrictToProvider ? group.models.filter((m) => m.provider === restrictToProvider) : group.models,
+    }))
+    .filter((group) => group.models.length > 0);
+
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        const slug = e.target.value;
+        onChange(slug, slug ? getModelCatalogEntry(slug) : undefined);
+      }}
       className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
     >
       {allowNone ? <option value="">{noOverrideLabel}</option> : null}
-      {groupedModelCatalog().map((group) => (
+      {groups.map((group) => (
         <optgroup key={group.group} label={group.label}>
           {group.models.map((m) => (
             <option key={m.slug} value={m.slug}>
@@ -72,6 +93,26 @@ function ChannelCard({
     { key: "6", label: t("models.weekdaySaturday") },
   ];
 
+  const activeEntry = getModelCatalogEntry(row.activeModel);
+  const currentProvider = activeEntry?.provider ?? (row.provider === "gemini" ? "gemini" : "openrouter");
+  const fallbackEntry = row.fallbackModel ? getModelCatalogEntry(row.fallbackModel) : undefined;
+
+  function setActiveModel(model: string, entry: ModelCatalogEntry | undefined) {
+    const nextProvider = entry?.provider ?? currentProvider;
+    const providerChanged = nextProvider !== currentProvider;
+    setRow({
+      ...row,
+      activeModel: model,
+      provider: nextProvider,
+      // A fallback or schedule entry from the old provider can't be called
+      // through the new provider's client — clear rather than silently
+      // submit something that would 400 the moment it's actually used.
+      fallbackModel: providerChanged ? null : row.fallbackModel,
+      schedule: providerChanged ? null : row.schedule,
+    });
+    if (providerChanged) setScheduleOpen(false);
+  }
+
   async function save() {
     setStatus("saving");
     const response = await fetch("/api/admin/model-config", {
@@ -95,18 +136,15 @@ function ChannelCard({
       <div className="flex items-center justify-between">
         <p className="font-display text-sm font-bold text-forest">{channelLabel}</p>
         <span className="rounded-full bg-forest/10 px-2.5 py-0.5 text-xs font-medium text-ink/60">
-          {row.provider}
+          {currentProvider === "gemini" ? t("models.providerGemini") : t("models.providerOpenrouter")}
         </span>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <label className="col-span-2 text-xs font-medium text-ink/70">
           {t("models.modelLabel")}
-          <ModelSelect
-            value={row.activeModel}
-            onChange={(v) => setRow({ ...row, activeModel: v })}
-            noOverrideLabel={t("models.noOverride")}
-          />
+          <ModelSelect value={row.activeModel} onChange={setActiveModel} noOverrideLabel={t("models.noOverride")} />
+          {activeEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-ink/50">{activeEntry.description}</p> : null}
         </label>
         <label className="col-span-2 text-xs font-medium text-ink/70">
           {t("models.fallbackLabel")}
@@ -115,7 +153,9 @@ function ChannelCard({
             onChange={(v) => setRow({ ...row, fallbackModel: v || null })}
             allowNone
             noOverrideLabel={t("models.noOverride")}
+            restrictToProvider={currentProvider}
           />
+          {fallbackEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-ink/50">{fallbackEntry.description}</p> : null}
         </label>
         <label className="text-xs font-medium text-ink/70">
           {t("models.temperatureLabel")}
@@ -172,6 +212,7 @@ function ChannelCard({
                 onChange={(v) => setScheduleDay(day.key, v)}
                 allowNone
                 noOverrideLabel={t("models.noOverride")}
+                restrictToProvider={currentProvider}
               />
             </label>
           ))}
