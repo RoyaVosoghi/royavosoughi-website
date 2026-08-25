@@ -35,7 +35,7 @@ function fieldValue(
 
 /**
  * Post-call webhook from the ElevenLabs voice/chat agent (see
- * components/chat/ElevenLabsVoiceWidget.tsx) — that agent runs entirely on
+ * components/chat/VoiceWidget.tsx) — that agent runs entirely on
  * ElevenLabs' platform, separate from lib/ai/'s own brain, so this is the
  * only bridge that gets its captured leads into our own `leads` table
  * instead of being stranded in ElevenLabs' dashboard.

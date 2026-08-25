@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -14,6 +14,7 @@
     "prebuild": "npm run build:widget"
   },
   "dependencies": {
+    "@elevenlabs/client": "^1.22.0",
     "@elevenlabs/elevenlabs-js": "^2.64.0",
     "@google/genai": "^2.16.0",
     "@supabase/supabase-js": "^2.58.0",

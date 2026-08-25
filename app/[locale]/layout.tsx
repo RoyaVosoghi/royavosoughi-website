@@ -10,7 +10,7 @@ import { routing, getDirection } from "@/i18n/routing";
 import { site } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ElevenLabsVoiceWidget } from "@/components/chat/ElevenLabsVoiceWidget";
+import { VoiceWidget } from "@/components/chat/VoiceWidget";
 import "../globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -112,14 +112,14 @@ export default async function LocaleLayout({
             {children}
           </main>
           <Footer />
+          <VoiceWidget />
         </NextIntlClientProvider>
-        <ElevenLabsVoiceWidget />
         {/*
-          Our own text-chat widget, stacked above the ElevenLabs call button
+          Our own text-chat widget, stacked above the voice call button
           (data-bottom-offset) rather than on top of it — see
-          lib/widget/entry.ts and ElevenLabsVoiceWidget.tsx for why the two
-          are split (ElevenLabs' text/chat mode can't do a proactive greeting
-          or an inactivity close; this widget owns both instead).
+          lib/widget/entry.ts and VoiceWidget.tsx for why the two are split
+          (ElevenLabs' text/chat mode can't do a proactive greeting or an
+          inactivity close; the text widget owns both instead).
         */}
         <Script src="/widget.js" data-bottom-offset="92" strategy="afterInteractive" />
       </body>

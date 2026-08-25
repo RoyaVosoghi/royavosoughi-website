@@ -178,6 +178,16 @@
     "consultationMessage": "I'd like to book a consultation.",
     "waitingForHuman": "Roya will reply here personally shortly."
   },
+  "voice": {
+    "start": "Start a voice call",
+    "title": "Talk to Roya's assistant",
+    "close": "End call",
+    "connecting": "Connecting…",
+    "listening": "Listening…",
+    "speaking": "Speaking…",
+    "ending": "Ending call…",
+    "errorBody": "The call couldn't connect. Check your microphone permission and try again."
+  },
   "contact": {
     "eyebrow": "Contact",
     "title": "Ready to bring your vision to life?",

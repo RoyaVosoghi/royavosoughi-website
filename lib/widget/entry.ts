@@ -42,9 +42,9 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   // which origin to call, so an embedding site never has to configure it.
   const currentScript = document.currentScript as HTMLScriptElement | null;
   const API_BASE = currentScript ? new URL(currentScript.src).origin : "";
-  // Lets our own site (see ElevenLabsVoiceWidget.tsx's sibling launcher) stack
-  // this bubble above the ElevenLabs call button instead of overlapping it,
-  // via <script data-bottom-offset="96">. Third-party embeds never set this,
+  // Lets our own site (see VoiceWidget.tsx's sibling launcher) stack this
+  // bubble above the voice call button instead of overlapping it, via
+  // <script data-bottom-offset="96">. Third-party embeds never set this,
   // so they keep the normal 20px.
   const BOTTOM_OFFSET = Number(currentScript?.dataset.bottomOffset) || 20;
 
