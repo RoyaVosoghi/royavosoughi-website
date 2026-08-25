@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
+import { sendContactNotification } from "@/lib/resend";
 
 const ContactSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -70,6 +71,8 @@ export async function POST(request: Request) {
     console.error("[contact] insert failed:", error.message);
     return NextResponse.json({ error: "storage_failed" }, { status: 500 });
   }
+
+  await sendContactNotification(data);
 
   return NextResponse.json({ ok: true });
 }
