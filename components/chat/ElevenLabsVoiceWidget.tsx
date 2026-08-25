@@ -1,7 +1,7 @@
 import Script from "next/script";
 
 import { HideVoiceWidgetAvatar } from "@/components/chat/HideVoiceWidgetAvatar";
-import { ResizeVoiceWidgetButton } from "@/components/chat/ResizeVoiceWidgetButton";
+import { VoiceWidgetChromeOverrides } from "@/components/chat/VoiceWidgetChromeOverrides";
 import { brandColors } from "@/lib/site";
 
 const AGENT_ID =
@@ -138,17 +138,29 @@ async function getWidgetConfig(): Promise<Record<string, unknown>> {
  * — the <elevenlabs-convai> custom element manages its own fixed launcher
  * once the embed script registers it, and inherits page direction so it
  * lands at the logical trailing corner (bottom-right in English,
- * bottom-left in Farsi). `variant="tiny"` renders an icon-only launcher (no
- * "Start a call" text); the icon itself is PhoneIconSlot above, projected in
- * via the `icon-phone` slot rather than any override-config field — that
- * button's glyph is hardcoded inside ElevenLabs' widget bundle
- * (`icon: "phone"`) with no *config* hook to replace it, confirmed by
- * reading their widget-embed source. `avatar`/`show_avatar_when_collapsed`
- * overrides don't reach this button at all — that's a separate animated
- * circle ElevenLabs renders next to it unconditionally in every collapsed
- * layout; Roya wants only the phone icon, so <HideVoiceWidgetAvatar />
- * below removes that circle client-side (see its own comment for why that's
- * safe to do).
+ * bottom-left in Farsi).
+ *
+ * `variant="full"` — deliberately, even though it's the "biggest" preset.
+ * "tiny"/"compact" render only the bare button with nothing else: pressing
+ * it just swaps the icon in place with no visible window, which read as
+ * completely broken ("I press the button and see nothing"). "full" is the
+ * only variant that shows an actual call window (status + a proper "End"
+ * button) once a call starts. Its side effects — a permanent "Need help?"
+ * prompt card, and visible "Start a call"/"End" text inside the button
+ * itself — are clawed back client-side by <VoiceWidgetChromeOverrides />
+ * below (see its own comment for the exact mechanism), so the idle state
+ * still reads as a single icon-only button matching the text-chat bubble,
+ * and the prompt card/window only appear once a call is actually live.
+ *
+ * The icon itself is PhoneIconSlot above, projected in via the `icon-phone`
+ * slot rather than any override-config field — that button's glyph is
+ * hardcoded inside ElevenLabs' widget bundle (`icon: "phone"`) with no
+ * *config* hook to replace it, confirmed by reading their widget-embed
+ * source. `avatar`/`show_avatar_when_collapsed` overrides don't reach this
+ * button at all — that's a separate animated circle ElevenLabs renders next
+ * to it unconditionally in every collapsed layout; Roya wants only the phone
+ * icon, so <HideVoiceWidgetAvatar /> below removes that circle client-side
+ * (see its own comment for why that's safe to do).
  *
  * The live config is merged with a forced brand-green override for ONLY the
  * button/accent colors — ElevenLabs' dashboard "Accent" color edit doesn't
@@ -163,6 +175,12 @@ export async function ElevenLabsVoiceWidget() {
 
   const config = {
     ...liveConfig,
+    // The ElevenLabs dashboard has this agent's widget set to
+    // expandable: "never" — irrelevant to whether the call window shows
+    // (that's purely variant="full" below), but "never" is documented
+    // elsewhere in their widget to skip click-to-expand behavior entirely,
+    // so it's overridden here too rather than left as a landmine.
+    expandable: "always",
     avatar: { type: "orb", color_1: brandColors.emerald, color_2: brandColors.spring },
     btn_color: brandColors.forest,
     focus_color: brandColors.forest,
@@ -211,13 +229,13 @@ export async function ElevenLabsVoiceWidget() {
       />
       <elevenlabs-convai
         agent-id={AGENT_ID}
-        variant="tiny"
+        variant="full"
         override-config={JSON.stringify(config)}
       >
         <PhoneIconSlot />
       </elevenlabs-convai>
       <HideVoiceWidgetAvatar />
-      <ResizeVoiceWidgetButton />
+      <VoiceWidgetChromeOverrides />
     </>
   );
 }
