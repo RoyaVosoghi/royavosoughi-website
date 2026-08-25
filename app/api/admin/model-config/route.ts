@@ -38,7 +38,11 @@ export async function POST(request: Request) {
   const { channel, ...update } = parsed.data;
 
   try {
-    await updateModelConfig(channel, update);
+    // This route's picker only ever offers OpenRouter catalog slugs, so a
+    // save here always means "run this channel on OpenRouter" — set
+    // explicitly rather than relying on a library-level default, since
+    // model_config.provider can also be 'gemini' (set outside this route).
+    await updateModelConfig(channel, { ...update, provider: "openrouter" });
     await writeAuditLog("model_config.update", channel);
   } catch (err) {
     console.error("[admin/model-config] update failed:", err);

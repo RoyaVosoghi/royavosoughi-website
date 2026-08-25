@@ -83,6 +83,7 @@ export async function getModelConfig(channel: Channel): Promise<ModelConfig> {
 
 export interface ModelConfigUpdate {
   activeModel?: string;
+  provider?: string;
   temperature?: number;
   maxTokens?: number;
   topP?: number;
@@ -90,11 +91,21 @@ export interface ModelConfigUpdate {
   schedule?: WeekdaySchedule | null;
 }
 
+/**
+ * `provider` is only written when the caller explicitly passes it — never
+ * defaulted to "openrouter" here. This used to be hardcoded on every save,
+ * which silently flipped a channel set to a non-OpenRouter provider (e.g.
+ * 'gemini') back to 'openrouter' the next time anyone touched any other
+ * setting (temperature, fallback, ...) from the admin panel. The admin
+ * UI's model picker currently only offers OpenRouter catalog slugs, so in
+ * practice this just means: don't touch the provider column unless asked to.
+ */
 export async function updateModelConfig(channel: Channel, update: ModelConfigUpdate): Promise<void> {
   const supabase = getSupabaseAdminClient();
   if (!supabase) throw new Error("supabase_not_configured");
 
-  const patch: Record<string, unknown> = { updated_at: new Date().toISOString(), provider: "openrouter" };
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (update.provider !== undefined) patch.provider = update.provider;
   if (update.activeModel !== undefined) patch.active_model = update.activeModel;
   if (update.temperature !== undefined) patch.temperature = update.temperature;
   if (update.maxTokens !== undefined) patch.max_tokens = update.maxTokens;
