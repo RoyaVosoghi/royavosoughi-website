@@ -9,10 +9,14 @@ const base =
   "disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  // Emerald solid on light — the one primary action per screen
+  // Deep Forest solid on light — the one primary action per screen. Forest
+  // is already the darkest brand tone, so hover lightens to forest-soft
+  // (defined for exactly this) instead of the usual "darken on hover", and
+  // the press-shadow uses a neutral black rather than a brand color, since
+  // there's no darker green left to contrast against the surface itself.
   primary:
-    "bg-emerald text-offwhite shadow-[0_2px_0_0_var(--color-forest)] " +
-    "hover:bg-forest hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--color-forest)] active:translate-y-0",
+    "bg-forest text-offwhite shadow-[0_2px_0_0_rgba(0,0,0,0.3)] " +
+    "hover:bg-forest-soft hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_rgba(0,0,0,0.3)] active:translate-y-0",
   // Outlined on light
   secondary:
     "border-2 border-forest text-forest hover:bg-forest hover:text-offwhite",

@@ -269,7 +269,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     .rv-input:focus { border-color: ${COLORS.emerald}; }
     .rv-send {
-      background: ${COLORS.emerald};
+      background: ${COLORS.forest};
       color: ${COLORS.offwhite};
       border: none;
       border-radius: 999px;
@@ -279,7 +279,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       cursor: pointer;
       flex-shrink: 0;
     }
-    .rv-send:hover:not(:disabled) { background: ${COLORS.forest}; }
+    .rv-send:hover:not(:disabled) { background: ${COLORS.forestSoft}; }
     .rv-send:disabled { opacity: 0.5; cursor: default; }
     .rv-launcher {
       width: 60px;

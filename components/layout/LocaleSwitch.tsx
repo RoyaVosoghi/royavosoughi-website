@@ -54,7 +54,7 @@ export function LocaleSwitch({ onDark = false }: { onDark?: boolean }) {
             lang={code}
             className={`min-h-11 min-w-11 rounded-full px-3.5 py-2.5 text-sm font-semibold transition-colors ${
               active
-                ? "bg-emerald text-offwhite"
+                ? "bg-forest text-offwhite"
                 : onDark
                   ? "text-mint hover:text-offwhite"
                   : "text-ink/70 hover:text-forest"

@@ -380,7 +380,7 @@ export function ChatWidget({
             type="button"
             onClick={() => sendMessage(t("consultationMessage"))}
             disabled={status === "sending" || status === "streaming"}
-            className="w-full rounded-full border-2 border-emerald px-5 py-2.5 text-sm font-semibold text-emerald transition-colors hover:bg-emerald hover:text-offwhite disabled:opacity-50"
+            className="w-full rounded-full border-2 border-forest px-5 py-2.5 text-sm font-semibold text-forest transition-colors hover:bg-forest hover:text-offwhite disabled:opacity-50"
           >
             {t("requestConsultation")}
           </button>
