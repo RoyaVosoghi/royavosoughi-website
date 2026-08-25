@@ -19,8 +19,8 @@
     "skipToContent": "Skip to content"
   },
   "hero": {
-    "lineA": "I build reliable,",
-    "lineB": "AI-powered applications.",
+    "lineA": "Automate the system,",
+    "lineB": "Live the life.",
     "subtitle": "RAG tools, assistants and agents that do a specific job for your business — deployed, documented, and supported after handoff. Never a demo pretending to be a product.",
     "ctaPrimary": "Request a consultation",
     "ctaSecondary": "See my work",
@@ -53,7 +53,8 @@
     "soonLabel": "Coming soon",
     "consultation": {
       "name": "AI Strategy Consultation",
-      "duration": "60 minutes",
+      "duration": "30 minutes",
+      "free": "First session free",
       "summary": "One focused call about your business and where AI genuinely fits — and, just as often, where it doesn't. Bring a problem, not a technology.",
       "walkAwayWith": "You leave with",
       "p1": "A clear read on which of your problems AI can actually solve today, and which are better solved another way.",
@@ -85,7 +86,7 @@
         "body": "I read every message myself and reply within two working days — even if the honest answer is that I'm not the right fit."
       },
       "call": {
-        "name": "60-minute consultation",
+        "name": "Free 30-minute consultation",
         "body": "One focused call about your business and where AI genuinely fits — and, just as often, where it doesn't."
       },
       "roadmap": {

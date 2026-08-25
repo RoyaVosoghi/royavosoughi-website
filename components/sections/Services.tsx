@@ -39,6 +39,9 @@ export async function Services() {
             <span className="rounded-full bg-mint px-3 py-1 text-sm font-semibold text-emerald">
               {t("consultation.duration")}
             </span>
+            <span className="rounded-full bg-saffron/20 px-3 py-1 text-sm font-semibold text-saffron-deep">
+              {t("consultation.free")}
+            </span>
           </div>
 
           <p className="mt-5 text-lg text-ink/80">{t("consultation.summary")}</p>
