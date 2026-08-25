@@ -32,23 +32,33 @@ import { useEffect } from "react";
  *      carries the real text for screen readers, so hiding it visually
  *      loses nothing.
  *
- * 2. A MutationObserver that hides the "Need help?" prompt card while idle.
- *    It shares a single container with the in-call status card (same
- *    element, content cross-fades based on call state), so it can't be
- *    removed via static CSS without also hiding the in-call window — and a
- *    plain `display: none` in our stylesheet loses outright anyway, because
- *    that container carries Tailwind's `!flex` (a genuinely `!important`
- *    utility, sitting in Tailwind's own `@layer utilities`); an unlayered
- *    `!important` rule like ours always loses to a layered one, regardless
- *    of specificity (confirmed empirically, not just from spec-reading).
- *    Setting the property via `element.style.setProperty(..., "important")`
- *    instead sidesteps that entirely — inline style always wins over any
- *    stylesheet, layered or not. The card's container is found by walking up
- *    from the button (`button.closest(".overlay")`), and shown/hidden based
- *    on the button's colour-role class — `bg-accent` while idle, `bg-base`
- *    once a call is live (see ElevenLabsVoiceWidget.tsx's styles override)
- *    — the same locale-proofing as the CSS rules above, since colour role
- *    doesn't change with language.
+ * 2. A MutationObserver that hides the "Need help?" label row while idle,
+ *    leaving the button itself untouched. IMPORTANT: the button lives
+ *    *inside* the same "card" element as that label — `.rounded-sheet` wraps
+ *    two rows, the label row (avatar + "Need help?" text) first, the button
+ *    row second — so hiding the whole card (an earlier version of this file
+ *    did exactly that, via `button.closest(".overlay")`) hides the button
+ *    along with the label, leaving nothing clickable at all. This instead
+ *    walks up from the button to its card (`button.closest(".rounded-sheet")`)
+ *    and hides only that card's *first* child (the label row) — the second
+ *    child (the button's own row) is left alone. The card's own padding/
+ *    background/shadow are also neutralized while idle, so what's left reads
+ *    as a plain button rather than a mostly-empty padded card; both are
+ *    restored once a call is live so the in-call window (status text + a
+ *    real "End" button) looks like a proper card again.
+ *
+ *    A plain `display: none` in a stylesheet doesn't work here regardless —
+ *    the card and its rows carry Tailwind's `!flex`/`!p-2` etc (genuinely
+ *    `!important` utilities, sitting in Tailwind's own `@layer utilities`);
+ *    an unlayered `!important` rule like a plain injected stylesheet's
+ *    always loses to a layered one, regardless of specificity (confirmed
+ *    empirically, not just from spec-reading). Setting the property via
+ *    `element.style.setProperty(..., "important")` instead sidesteps that
+ *    entirely — inline style always wins over any stylesheet, layered or
+ *    not. Idle vs. in-call is read off the button's colour-role class —
+ *    `bg-accent` while idle, `bg-base` once a call is live (see
+ *    ElevenLabsVoiceWidget.tsx's styles override) — the same locale-proofing
+ *    as the CSS rules above, since colour role doesn't change with language.
  *
  * Fails safe throughout: if ElevenLabs renames these classes/slots in a
  * future release, the selectors just stop matching — the button reverts to
@@ -85,13 +95,23 @@ export function VoiceWidgetChromeOverrides() {
       const btn = root.querySelector<HTMLElement>(
         'button:has(> slot[name="icon-phone"]), button:has(> slot[name="icon-phone-off"])',
       );
-      const overlay = btn?.closest<HTMLElement>(".overlay");
-      if (!overlay) return;
+      const card = btn?.closest<HTMLElement>(".rounded-sheet");
+      // The button's own row (card's 2nd child) must never be touched — only
+      // ever read/write the label row (1st child) and the card's own chrome.
+      const labelRow = card?.firstElementChild as HTMLElement | undefined;
+      if (!card || !labelRow || labelRow.contains(btn)) return;
+
       const idle = btn!.classList.contains("bg-accent");
       if (idle) {
-        overlay.style.setProperty("display", "none", "important");
+        labelRow.style.setProperty("display", "none", "important");
+        card.style.setProperty("padding", "0", "important");
+        card.style.setProperty("background", "transparent", "important");
+        card.style.setProperty("box-shadow", "none", "important");
       } else {
-        overlay.style.removeProperty("display");
+        labelRow.style.removeProperty("display");
+        card.style.removeProperty("padding");
+        card.style.removeProperty("background");
+        card.style.removeProperty("box-shadow");
       }
     }
 
