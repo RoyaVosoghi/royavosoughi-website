@@ -215,89 +215,106 @@ export async function* streamBrainTurn(turn: PreparedTurn): AsyncGenerator<Brain
   let tokensIn: number | undefined;
   let tokensOut: number | undefined;
   let modelUsedForReply = primaryModel;
+  // Free-tier models occasionally get rejected outright by the provider's
+  // own moderation (seen live on jailbreak-phrased prompts like "ignore all
+  // previous instructions" — both primary and fallback erroring instantly
+  // while ordinary prompts succeed). If that happens before any visible
+  // text has streamed, degrade to a locale-appropriate reply instead of
+  // leaving the visitor with a bare error — there's nothing to preserve or
+  // duplicate yet. Once real content has streamed, a later failure is
+  // treated as before (surfaced as an SSE "error" — see openStreamWithFallback's
+  // docstring for why a mid-stream failure can't cleanly restart).
+  let hasStreamedContent = false;
 
-  for (let iteration = 0; iteration <= MAX_TOOL_ITERATIONS; iteration++) {
-    const { stream, modelUsed } = await openStreamWithFallback(client, primaryModel, fallbackModel, {
-      messages,
-      tools: openAiToolDeclarations,
-      temperature: modelConfig.temperature,
-      top_p: modelConfig.topP,
-      max_tokens: modelConfig.maxTokens,
-    });
-    modelUsedForReply = modelUsed;
+  try {
+    for (let iteration = 0; iteration <= MAX_TOOL_ITERATIONS; iteration++) {
+      const { stream, modelUsed } = await openStreamWithFallback(client, primaryModel, fallbackModel, {
+        messages,
+        tools: openAiToolDeclarations,
+        temperature: modelConfig.temperature,
+        top_p: modelConfig.topP,
+        max_tokens: modelConfig.maxTokens,
+      });
+      modelUsedForReply = modelUsed;
 
-    let contentAcc = "";
-    const toolCallsAcc = new Map<number, AccumulatedToolCall>();
+      let contentAcc = "";
+      const toolCallsAcc = new Map<number, AccumulatedToolCall>();
 
-    for await (const chunk of stream) {
-      const delta = chunk.choices?.[0]?.delta;
+      for await (const chunk of stream) {
+        const delta = chunk.choices?.[0]?.delta;
 
-      if (delta?.content) {
-        contentAcc += delta.content;
-        yield { type: "chunk", text: delta.content };
-      }
+        if (delta?.content) {
+          contentAcc += delta.content;
+          hasStreamedContent = true;
+          yield { type: "chunk", text: delta.content };
+        }
 
-      if (delta?.tool_calls) {
-        for (const tc of delta.tool_calls) {
-          const idx = tc.index ?? 0;
-          const existing = toolCallsAcc.get(idx) ?? { id: "", name: "", arguments: "" };
-          if (tc.id) existing.id = tc.id;
-          if (tc.function?.name) existing.name += tc.function.name;
-          if (tc.function?.arguments) existing.arguments += tc.function.arguments;
-          toolCallsAcc.set(idx, existing);
+        if (delta?.tool_calls) {
+          for (const tc of delta.tool_calls) {
+            const idx = tc.index ?? 0;
+            const existing = toolCallsAcc.get(idx) ?? { id: "", name: "", arguments: "" };
+            if (tc.id) existing.id = tc.id;
+            if (tc.function?.name) existing.name += tc.function.name;
+            if (tc.function?.arguments) existing.arguments += tc.function.arguments;
+            toolCallsAcc.set(idx, existing);
+          }
+        }
+
+        if (chunk.usage) {
+          tokensIn = chunk.usage.prompt_tokens ?? tokensIn;
+          tokensOut = chunk.usage.completion_tokens ?? tokensOut;
         }
       }
 
-      if (chunk.usage) {
-        tokensIn = chunk.usage.prompt_tokens ?? tokensIn;
-        tokensOut = chunk.usage.completion_tokens ?? tokensOut;
-      }
-    }
+      const calls = Array.from(toolCallsAcc.entries())
+        .sort(([a], [b]) => a - b)
+        .map(([, call]) => call)
+        .filter((call) => call.name);
 
-    const calls = Array.from(toolCallsAcc.entries())
-      .sort(([a], [b]) => a - b)
-      .map(([, call]) => call)
-      .filter((call) => call.name);
-
-    if (calls.length === 0) {
-      reply = contentAcc;
-      break;
-    }
-
-    if (iteration === MAX_TOOL_ITERATIONS) {
-      // Hit the loop cap without a final answer — stop calling tools and
-      // answer with whatever text came back, or the locale fallback.
-      reply = contentAcc || FALLBACK_REPLY[locale];
-      break;
-    }
-
-    messages.push({
-      role: "assistant",
-      content: contentAcc || null,
-      tool_calls: calls.map((call) => ({
-        id: call.id,
-        type: "function" as const,
-        function: { name: call.name, arguments: call.arguments },
-      })),
-    });
-
-    for (const call of calls) {
-      let args: unknown = {};
-      try {
-        args = JSON.parse(call.arguments || "{}");
-      } catch {
-        // leave args as {} — the tool's own zod schema will reject it as invalid_arguments
+      if (calls.length === 0) {
+        reply = contentAcc;
+        break;
       }
 
-      const result = await dispatchTool(call.name, args, toolCtx);
+      if (iteration === MAX_TOOL_ITERATIONS) {
+        // Hit the loop cap without a final answer — stop calling tools and
+        // answer with whatever text came back, or the locale fallback.
+        reply = contentAcc || FALLBACK_REPLY[locale];
+        break;
+      }
 
-      await appendMessage(conversation.id, "tool", `${call.name}(${call.arguments})`, {
-        toolName: call.name,
-        toolPayload: result,
+      messages.push({
+        role: "assistant",
+        content: contentAcc || null,
+        tool_calls: calls.map((call) => ({
+          id: call.id,
+          type: "function" as const,
+          function: { name: call.name, arguments: call.arguments },
+        })),
       });
 
-      messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(result) });
+      for (const call of calls) {
+        let args: unknown = {};
+        try {
+          args = JSON.parse(call.arguments || "{}");
+        } catch {
+          // leave args as {} — the tool's own zod schema will reject it as invalid_arguments
+        }
+
+        const result = await dispatchTool(call.name, args, toolCtx);
+
+        await appendMessage(conversation.id, "tool", `${call.name}(${call.arguments})`, {
+          toolName: call.name,
+          toolPayload: result,
+        });
+
+        messages.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(result) });
+      }
     }
+  } catch (err) {
+    if (hasStreamedContent) throw err;
+    console.error("[brain] streamBrainTurn: both models failed before any content streamed, degrading gracefully:", err);
+    reply = FALLBACK_REPLY[locale];
   }
 
   const finalReply = reply.trim() || FALLBACK_REPLY[locale];
