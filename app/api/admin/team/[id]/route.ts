@@ -5,7 +5,7 @@ import { requireRole } from "@/lib/admin/auth";
 import { deleteAdminUser, getAdminUsers, resetAdminUserPassword, updateAdminUserRole, writeAuditLog } from "@/lib/admin/queries";
 
 const PatchSchema = z.object({
-  role: z.enum(["owner", "editor", "operator", "viewer"]).optional(),
+  role: z.enum(["owner", "admin", "editor", "operator", "viewer"]).optional(),
   password: z.string().min(8).max(200).optional(),
 });
 

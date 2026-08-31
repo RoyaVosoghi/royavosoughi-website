@@ -8,10 +8,12 @@ export function BudgetConfigForm({
   monthlyCapUsd,
   alertThresholdPct,
   spentUsd,
+  crmAiUsd,
 }: {
   monthlyCapUsd: number | null;
   alertThresholdPct: number;
   spentUsd: number;
+  crmAiUsd: number;
 }) {
   const t = useTranslations("security.budget");
   const router = useRouter();
@@ -50,6 +52,7 @@ export function BudgetConfigForm({
       {overThreshold ? (
         <p className="mt-1 text-sm font-semibold text-saffron-deep">{t("overThreshold", { threshold: alertThresholdPct })}</p>
       ) : null}
+      {crmAiUsd > 0 ? <p className="mt-1 text-xs text-ink/50">{t("crmAiUsdNote", { amount: crmAiUsd.toFixed(2) })}</p> : null}
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="text-xs font-medium text-ink/70">

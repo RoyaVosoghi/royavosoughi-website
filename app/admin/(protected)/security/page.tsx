@@ -88,6 +88,7 @@ export default async function AdminSecurityPage() {
           monthlyCapUsd={budgetConfig.monthlyCapUsd}
           alertThresholdPct={budgetConfig.alertThresholdPct}
           spentUsd={spend.spentUsd}
+          crmAiUsd={spend.crmAiUsd}
         />
       </div>
     </div>

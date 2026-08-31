@@ -3,6 +3,8 @@ import shared from "./messages/shared.en";
 import knowledge from "./messages/knowledge.en";
 import inbox from "./messages/inbox.en";
 import system from "./messages/system.en";
+import crm from "./messages/crm.en";
+import identities from "./messages/identities.en";
 
 /**
  * Source-of-truth English strings for the admin panel — a separate tree from
@@ -22,6 +24,8 @@ const messages = {
   ...knowledge,
   ...inbox,
   ...system,
+  ...crm,
+  ...identities,
 } as const;
 
 export default messages;

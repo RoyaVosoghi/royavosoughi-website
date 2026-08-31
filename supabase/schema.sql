@@ -625,6 +625,196 @@ alter table public.embedding_config
 
 
 -- =============================================================================
+-- V4 — CRM module: classic Lead -> Convert -> Contact/Company/Deal flow, on
+-- top of the existing leads table. Run this once in the Supabase dashboard
+-- like every other block above.
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- Pipeline stages — admin-editable config, not hardcoded, so the board's
+-- columns can be renamed/reordered without a redeploy.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.pipeline_stages (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null unique,
+  sort_order int not null default 0,
+  is_won     boolean not null default false,
+  is_lost    boolean not null default false,
+  color      text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists pipeline_stages_sort_idx on public.pipeline_stages (sort_order);
+
+insert into public.pipeline_stages (name, sort_order, is_won, is_lost) values
+  ('New', 0, false, false),
+  ('Contacted', 1, false, false),
+  ('Proposal', 2, false, false),
+  ('Negotiation', 3, false, false),
+  ('Won', 4, true, false),
+  ('Lost', 5, false, true)
+on conflict (name) do nothing;
+
+alter table public.pipeline_stages enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Companies — auto-created from a lead's company name at convert time, or
+-- created/edited directly from the admin panel.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.companies (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  domain     text,
+  industry   text,
+  notes      text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists companies_name_idx on public.companies (lower(name));
+
+alter table public.companies enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Contacts — the real, editable CRM record. Distinct from `unified_users`
+-- (which is just "we've seen this chat identity", see comment near that
+-- table) — a contact is created deliberately, by converting a lead or by an
+-- operator adding one directly.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.contacts (
+  id                    uuid primary key default gen_random_uuid(),
+  lead_id               uuid references public.leads(id) on delete set null,
+  company_id            uuid references public.companies(id) on delete set null,
+  name                  text not null,
+  email                 text not null unique,
+  phone                 text,
+  title                 text,
+  status                text not null default 'active'
+                          check (status in ('active', 'customer', 'inactive')),
+  source                text,
+  locale                text not null default 'en',
+  ai_summary            text,
+  ai_summary_updated_at timestamptz,
+  created_at            timestamptz not null default now(),
+  updated_at            timestamptz not null default now()
+);
+
+create index if not exists contacts_company_idx on public.contacts (company_id);
+create index if not exists contacts_lead_idx on public.contacts (lead_id);
+create index if not exists contacts_email_idx on public.contacts (lower(email));
+
+alter table public.contacts enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Deals — one Kanban card. `pipeline_stage_id` is ON DELETE RESTRICT
+-- (deliberately, unlike most FKs here): a deal silently losing its stage
+-- would vanish from every column, so the app must reassign a stage's deals
+-- before that stage can be deleted.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.deals (
+  id                        uuid primary key default gen_random_uuid(),
+  contact_id                uuid not null references public.contacts(id) on delete cascade,
+  company_id                uuid references public.companies(id) on delete set null,
+  pipeline_stage_id         uuid not null references public.pipeline_stages(id) on delete restrict,
+  title                     text not null,
+  amount_cents              bigint not null default 0,
+  currency                  text not null default 'USD',
+  status                    text not null default 'open'
+                              check (status in ('open', 'won', 'lost')),
+  expected_close_date       date,
+  closed_at                 timestamptz,
+  ai_next_action            text,
+  ai_next_action_updated_at timestamptz,
+  created_at                timestamptz not null default now(),
+  updated_at                timestamptz not null default now()
+);
+
+create index if not exists deals_stage_idx on public.deals (pipeline_stage_id);
+create index if not exists deals_contact_idx on public.deals (contact_id);
+create index if not exists deals_company_idx on public.deals (company_id);
+create index if not exists deals_status_idx on public.deals (status);
+
+alter table public.deals enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Activities — calls/meetings/notes/tasks against a contact (and optionally
+-- a specific deal). Also doubles as the contact timeline's log of stage
+-- changes (written as a 'note' row by updateContact, no separate history
+-- table).
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.activities (
+  id           uuid primary key default gen_random_uuid(),
+  contact_id   uuid not null references public.contacts(id) on delete cascade,
+  deal_id      uuid references public.deals(id) on delete cascade,
+  type         text not null check (type in ('call', 'meeting', 'note', 'task')),
+  subject      text not null,
+  body         text,
+  due_at       timestamptz,
+  completed_at timestamptz,
+  created_by   uuid references public.admin_users(id) on delete set null,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists activities_contact_idx on public.activities (contact_id);
+create index if not exists activities_deal_idx on public.activities (deal_id);
+create index if not exists activities_due_idx on public.activities (due_at)
+  where completed_at is null;
+
+alter table public.activities enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- AI usage log — lead scoring / contact summaries / deal next-action calls
+-- don't go through the chat `messages` table, so without this they'd be
+-- invisible to the budget dashboard. getMonthlySpend() sums both.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.ai_usage_log (
+  id         uuid primary key default gen_random_uuid(),
+  purpose    text not null check (purpose in ('lead_score', 'contact_summary', 'deal_next_action')),
+  tokens_in  int,
+  tokens_out int,
+  cost_usd   numeric(10, 4),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists ai_usage_log_created_at_idx on public.ai_usage_log (created_at desc);
+
+alter table public.ai_usage_log enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Leads: company name (captured manually at convert time — the capture_lead
+-- chat tool is untouched in this pass) + AI 0-100 score.
+-- -----------------------------------------------------------------------------
+
+alter table public.leads add column if not exists company_name text;
+alter table public.leads add column if not exists ai_score int
+  check (ai_score is null or (ai_score between 0 and 100));
+alter table public.leads add column if not exists ai_score_reason text;
+alter table public.leads add column if not exists ai_score_updated_at timestamptz;
+
+-- -----------------------------------------------------------------------------
+-- Admin roles: add 'admin', ranked between 'editor' and 'owner'
+-- (see lib/admin/auth.ts ROLE_RANK). Same drop/add-constraint pattern used
+-- above when 'operator'/'viewer' were added.
+-- -----------------------------------------------------------------------------
+
+alter table public.admin_users
+  drop constraint if exists admin_users_role_check;
+alter table public.admin_users
+  add constraint admin_users_role_check
+  check (role in ('owner', 'admin', 'editor', 'operator', 'viewer'));
+
+-- =============================================================================
 -- PHASE 2 — booking & payments. Not created yet; documented so the shape is
 -- agreed before it gets built. Uncomment when the consultation goes live.
 -- =============================================================================

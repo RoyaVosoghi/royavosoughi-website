@@ -1,22 +1,32 @@
+import Link from "next/link";
+
+import { AddContactForm } from "@/components/admin/AddContactForm";
+import { ContactStatusSelect } from "@/components/admin/ContactStatusSelect";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { getAdminTranslator } from "@/lib/admin/i18n/server";
-import { getUnifiedUsers, type UnifiedUser } from "@/lib/admin/queries";
+import { getContacts, type Contact } from "@/lib/admin/queries";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 
 export const metadata = { title: "Contacts · Admin" };
 
-function buildColumns(
-  t: Awaited<ReturnType<typeof getAdminTranslator<"contacts">>>,
-): Column<UnifiedUser>[] {
+function buildColumns(t: Awaited<ReturnType<typeof getAdminTranslator<"contacts">>>): Column<Contact>[] {
   return [
-    { header: t("columnName"), cell: (row) => row.name ?? "—" },
-    { header: t("columnChannel"), cell: (row) => <span className="capitalize">{row.channel}</span> },
-    { header: t("columnIdentifier"), cell: (row) => <span className="font-mono text-xs">{row.externalId}</span> },
     {
-      header: t("columnFirstSeen"),
+      header: t("columnName"),
+      cell: (row) => (
+        <Link href={`/admin/contacts/${row.id}`} className="font-medium text-forest hover:underline">
+          {row.name}
+        </Link>
+      ),
+    },
+    { header: t("columnEmail"), cell: (row) => row.email },
+    { header: t("columnCompany"), cell: (row) => row.companyName ?? "—" },
+    { header: t("columnStatus"), cell: (row) => <ContactStatusSelect id={row.id} status={row.status} /> },
+    {
+      header: t("columnCreated"),
       numeric: true,
-      cell: (row) => new Date(row.firstSeen).toLocaleString(),
+      cell: (row) => new Date(row.createdAt).toLocaleString(),
     },
   ];
 }
@@ -28,7 +38,7 @@ export default async function AdminContactsPage() {
     return <EmptyState title={t("notConfiguredTitle")} body={t("notConfiguredBody")} />;
   }
 
-  const users = await getUnifiedUsers();
+  const contacts = await getContacts();
   const columns = buildColumns(t);
 
   return (
@@ -37,11 +47,12 @@ export default async function AdminContactsPage() {
       <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
       <p className="mt-3 text-ink/70">{t("subtitle")}</p>
 
-      <div className="mt-8">
-        {users.length === 0 ? (
+      <div className="mt-8 flex flex-col gap-6">
+        <AddContactForm />
+        {contacts.length === 0 ? (
           <EmptyState title={t("emptyTitle")} body={t("emptyBody")} />
         ) : (
-          <DataTable columns={columns} rows={users} />
+          <DataTable columns={columns} rows={contacts} />
         )}
       </div>
     </div>

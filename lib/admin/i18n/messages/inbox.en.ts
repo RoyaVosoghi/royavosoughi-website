@@ -1,4 +1,4 @@
-/** English strings for /admin/conversations(+[id]), /admin/handoffs, /admin/leads, /admin/registrations, /admin/feedback, /admin/contacts and their form components. */
+/** English strings for /admin/conversations(+[id]), /admin/handoffs, /admin/leads, /admin/registrations, /admin/feedback and their form components. (/admin/contacts is now CRM Contacts — see messages/crm.en.ts. Chat identities live at /admin/identities — see messages/identities.en.ts.) */
 const messages = {
   conversations: {
     list: {
@@ -99,6 +99,23 @@ const messages = {
       converted: "Converted",
       lost: "Lost",
     },
+    columnAiScore: "AI score",
+    columnActions: "Actions",
+    aiScore: {
+      notScored: "Not scored",
+      scoreButton: "Score",
+      scoring: "Scoring…",
+      scoreFailed: "Couldn't score.",
+      scoreUnscoredButton: "Score unscored leads",
+      scoringBatch: "Scoring…",
+    },
+    convert: {
+      button: "Convert to contact",
+      converting: "Converting…",
+      companyNamePrompt: "Company name (optional):",
+      converted: "Converted",
+      convertFailed: "Couldn't convert this lead.",
+    },
   },
   registrations: {
     eyebrow: "Events",
@@ -145,20 +162,6 @@ const messages = {
     noQuestionCaptured: "(no question captured)",
     viewConversation: "View conversation →",
     addToKnowledgeBase: "Add to knowledge base →",
-  },
-  contacts: {
-    eyebrow: "Identity",
-    title: "Contacts",
-    subtitle:
-      "One row per identity seen across web, widget, and Telegram — names fill in once a visitor is captured as a lead.",
-    notConfiguredTitle: "Supabase isn't configured",
-    notConfiguredBody: "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to see visitors here.",
-    columnName: "Name",
-    columnChannel: "Channel",
-    columnIdentifier: "Identifier",
-    columnFirstSeen: "First seen",
-    emptyTitle: "No visitors yet",
-    emptyBody: "They'll show up here the moment someone opens the chat.",
   },
 } as const;
 

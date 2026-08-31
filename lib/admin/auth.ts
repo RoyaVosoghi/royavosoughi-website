@@ -19,9 +19,9 @@ import { getSupabaseAdminClient } from "@/lib/supabase-admin";
  * payload instead of a single number.
  */
 
-export type AdminRole = "owner" | "editor" | "operator" | "viewer";
+export type AdminRole = "owner" | "admin" | "editor" | "operator" | "viewer";
 
-const ROLE_RANK: Record<AdminRole, number> = { viewer: 1, operator: 2, editor: 3, owner: 4 };
+const ROLE_RANK: Record<AdminRole, number> = { viewer: 1, operator: 2, editor: 3, admin: 4, owner: 5 };
 
 export function roleAtLeast(role: AdminRole, min: AdminRole): boolean {
   return ROLE_RANK[role] >= ROLE_RANK[min];

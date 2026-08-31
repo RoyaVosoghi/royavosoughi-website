@@ -7,7 +7,7 @@ import { createAdminUser, writeAuditLog } from "@/lib/admin/queries";
 const BodySchema = z.object({
   email: z.string().trim().email().max(200),
   password: z.string().min(8).max(200),
-  role: z.enum(["owner", "editor", "operator", "viewer"]),
+  role: z.enum(["owner", "admin", "editor", "operator", "viewer"]),
 });
 
 export async function POST(request: Request) {

@@ -7,7 +7,7 @@ import { useState } from "react";
 import type { AdminRole } from "@/lib/admin/auth";
 import type { AdminUserRow } from "@/lib/admin/queries";
 
-const ROLES: AdminRole[] = ["owner", "editor", "operator", "viewer"];
+const ROLES: AdminRole[] = ["owner", "admin", "editor", "operator", "viewer"];
 
 export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow[]; currentAdminId: string }) {
   const t = useTranslations("team.manager");
@@ -21,12 +21,14 @@ export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow
 
   const ROLE_HINT: Record<AdminRole, string> = {
     owner: t("roleHintOwner"),
+    admin: t("roleHintAdmin"),
     editor: t("roleHintEditor"),
     operator: t("roleHintOperator"),
     viewer: t("roleHintViewer"),
   };
   const ROLE_LABEL: Record<AdminRole, string> = {
     owner: t("roleLabelOwner"),
+    admin: t("roleLabelAdmin"),
     editor: t("roleLabelEditor"),
     operator: t("roleLabelOperator"),
     viewer: t("roleLabelViewer"),
