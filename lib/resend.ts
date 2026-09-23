@@ -58,7 +58,7 @@ export async function sendContactNotification(data: ContactNotification) {
 
   const html = `
     <div style="font-family: sans-serif; max-width: 560px;">
-      <h2 style="color: #023316;">New contact form submission</h2>
+      <h2 style="color: #9D4EDD;">New contact form submission</h2>
       <table cellpadding="6" style="border-collapse: collapse;">
         ${rows
           .map(

@@ -45,12 +45,12 @@ export function SecurityConfigForm({ initial }: { initial: SecurityConfigValues 
   }
 
   return (
-    <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
-      <p className="mt-1 text-sm text-ink/60">{t("subtitle")}</p>
+    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
+      <p className="mt-1 text-sm text-soft/60">{t("subtitle")}</p>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("windowLabel")}
           <input
             type="number"
@@ -58,10 +58,10 @@ export function SecurityConfigForm({ initial }: { initial: SecurityConfigValues 
             max={1440}
             value={values.rateLimitWindowMinutes}
             onChange={(e) => setValues({ ...values, rateLimitWindowMinutes: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("maxMessagesLabel")}
           <input
             type="number"
@@ -69,10 +69,10 @@ export function SecurityConfigForm({ initial }: { initial: SecurityConfigValues 
             max={1000}
             value={values.rateLimitMaxMessages}
             onChange={(e) => setValues({ ...values, rateLimitMaxMessages: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           <span className="flex items-center gap-2">
             <input type="checkbox" checked={retentionEnabled} onChange={(e) => setRetentionEnabled(e.target.checked)} className="h-4 w-4" />
             {t("retentionLabel")}
@@ -84,7 +84,7 @@ export function SecurityConfigForm({ initial }: { initial: SecurityConfigValues 
             disabled={!retentionEnabled}
             value={values.retentionDays ?? 90}
             onChange={(e) => setValues({ ...values, retentionDays: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none disabled:opacity-50"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none disabled:opacity-50"
           />
         </label>
       </div>
@@ -94,23 +94,23 @@ export function SecurityConfigForm({ initial }: { initial: SecurityConfigValues 
           type="button"
           onClick={save}
           disabled={status === "saving"}
-          className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+          className="rounded-full bg-cyan px-5 py-2 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
         >
           {status === "saving" ? t("saving") : t("save")}
         </button>
-        {status === "saved" ? <span className="text-sm font-medium text-emerald">{t("saved")}</span> : null}
-        {status === "error" ? <span className="text-sm font-medium text-saffron-deep">{t("saveError")}</span> : null}
+        {status === "saved" ? <span className="text-sm font-medium text-cyan">{t("saved")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-amber-soft">{t("saveError")}</span> : null}
 
         <button
           type="button"
           onClick={runCleanup}
           disabled={cleanupStatus === "running" || !retentionEnabled}
-          className="rounded-full border-2 border-saffron-deep/40 px-5 py-2 text-sm font-semibold text-saffron-deep transition-colors hover:bg-saffron/10 disabled:opacity-50"
+          className="rounded-full border-2 border-amber/40 px-5 py-2 text-sm font-semibold text-amber-soft transition-colors hover:bg-amber/10 disabled:opacity-50"
         >
           {cleanupStatus === "running" ? t("runningCleanup") : t("runCleanup")}
         </button>
       </div>
-      {cleanupMessage ? <p className="mt-2 text-sm text-ink/60">{cleanupMessage}</p> : null}
+      {cleanupMessage ? <p className="mt-2 text-sm text-soft/60">{cleanupMessage}</p> : null}
     </section>
   );
 }

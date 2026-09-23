@@ -3,7 +3,10 @@
  * Change it here, it changes everywhere (header, footer, metadata, JSON-LD).
  */
 export const site = {
-  name: "Roya Vosoughi",
+  name: "Nura",
+  slogan: "AI engineered for reality",
+  /** The person behind the brand — used for authorship / JSON-LD Person. */
+  founder: "Roya Vosoughi",
   domain: "royavosoughi.com",
   url:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
@@ -16,13 +19,14 @@ export const site = {
   },
 } as const;
 
-/** Brand palette, mirrored from app/globals.css for use in TS (OG image, JSON-LD). */
+/** Brand palette, mirrored from app/globals.css for use in TS (OG image, charts, email). */
 export const brandColors = {
-  forest: "#023316",
-  emerald: "#0F7B4F",
-  spring: "#35C97E",
-  mint: "#DFF5E9",
-  offwhite: "#F7FAF8",
-  ink: "#1A1E1C",
-  saffron: "#E3A72F",
+  indigo: "#0F0C29",
+  violet: "#9D4EDD",
+  cyan: "#00E5FF",
+  soft: "#F8F9FA",
+  night: "#1A1640",
+  haze: "#AAA5D4",
+  violetSoft: "#C79BF2",
+  amber: "#F5B942",
 } as const;

@@ -29,33 +29,33 @@ export function AddContactForm() {
   }
 
   return (
-    <div className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
+    <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <input
           type="text"
           placeholder={t("namePlaceholder")}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="rounded-2xl border-2 border-forest/15 bg-offwhite px-4 py-2.5 text-ink focus:border-emerald focus:outline-none"
+          className="rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
         />
         <input
           type="email"
           placeholder={t("emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-2xl border-2 border-forest/15 bg-offwhite px-4 py-2.5 text-ink focus:border-emerald focus:outline-none"
+          className="rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
         />
         <button
           type="button"
           onClick={submit}
           disabled={status === "submitting" || !name || !email}
-          className="rounded-full bg-emerald px-6 py-2.5 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+          className="rounded-full bg-cyan px-6 py-2.5 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
         >
           {status === "submitting" ? t("adding") : t("addButton")}
         </button>
       </div>
-      {status === "error" ? <p className="mt-3 text-sm font-medium text-saffron-deep">{t("errorGeneric")}</p> : null}
+      {status === "error" ? <p className="mt-3 text-sm font-medium text-amber-soft">{t("errorGeneric")}</p> : null}
     </div>
   );
 }

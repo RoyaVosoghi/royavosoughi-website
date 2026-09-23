@@ -62,42 +62,42 @@ export function TelegramChannelForm({
   }
 
   return (
-    <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
-      <p className="mt-1 text-sm text-ink/60">{t("subtitle")}</p>
+    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
+      <p className="mt-1 text-sm text-soft/60">{t("subtitle")}</p>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="text-xs font-medium text-ink/70">
-          {t("botTokenLabel")} {maskedBotToken ? <span className="text-ink/40">{t("currentValue", { value: maskedBotToken })}</span> : null}
+        <label className="text-xs font-medium text-soft/70">
+          {t("botTokenLabel")} {maskedBotToken ? <span className="text-soft/40">{t("currentValue", { value: maskedBotToken })}</span> : null}
           <input
             type="text"
             value={botToken}
             onChange={(e) => setBotToken(e.target.value)}
             placeholder={maskedBotToken ? t("placeholderKeepCurrent") : t("botTokenPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 font-mono text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("webhookSecretLabel")}{" "}
-          {maskedWebhookSecret ? <span className="text-ink/40">{t("currentValue", { value: maskedWebhookSecret })}</span> : null}
+          {maskedWebhookSecret ? <span className="text-soft/40">{t("currentValue", { value: maskedWebhookSecret })}</span> : null}
           <input
             type="text"
             value={webhookSecret}
             onChange={(e) => setWebhookSecret(e.target.value)}
             placeholder={maskedWebhookSecret ? t("placeholderKeepCurrent") : t("webhookSecretPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 font-mono text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70 sm:col-span-2">
+        <label className="text-xs font-medium text-soft/70 sm:col-span-2">
           {t("adminChatIdLabel")}
           <input
             type="text"
             value={adminChatId}
             onChange={(e) => setAdminChatId(e.target.value)}
             placeholder={t("adminChatIdPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 font-mono text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 font-mono text-sm text-soft focus:border-cyan focus:outline-none"
           />
-          <span className="mt-1 block font-normal text-ink/50">{t("adminChatIdSubtitle")}</span>
+          <span className="mt-1 block font-normal text-soft/50">{t("adminChatIdSubtitle")}</span>
         </label>
       </div>
 
@@ -109,24 +109,24 @@ export function TelegramChannelForm({
             saveStatus === "saving" ||
             (!botToken.trim() && !webhookSecret.trim() && adminChatId.trim() === (currentAdminChatId ?? ""))
           }
-          className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+          className="rounded-full bg-cyan px-5 py-2 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
         >
           {saveStatus === "saving" ? t("saving") : t("save")}
         </button>
-        {saveStatus === "saved" ? <span className="text-sm font-medium text-emerald">{t("saved")}</span> : null}
-        {saveStatus === "error" ? <span className="text-sm font-medium text-saffron-deep">{t("saveError")}</span> : null}
+        {saveStatus === "saved" ? <span className="text-sm font-medium text-cyan">{t("saved")}</span> : null}
+        {saveStatus === "error" ? <span className="text-sm font-medium text-amber-soft">{t("saveError")}</span> : null}
 
         <button
           type="button"
           onClick={registerWebhook}
           disabled={registerStatus === "running" || (!maskedBotToken && !botToken.trim())}
-          className="rounded-full border-2 border-forest/20 px-5 py-2 text-sm font-semibold text-forest transition-colors hover:bg-mint/40 disabled:opacity-50"
+          className="rounded-full border-2 border-soft/20 px-5 py-2 text-sm font-semibold text-soft transition-colors hover:bg-violet/10 disabled:opacity-50"
         >
           {registerStatus === "running" ? t("registering") : t("registerWebhook")}
         </button>
       </div>
       {registerMessage ? (
-        <p className={`mt-2 text-sm font-medium ${registerStatus === "error" ? "text-saffron-deep" : "text-emerald"}`}>{registerMessage}</p>
+        <p className={`mt-2 text-sm font-medium ${registerStatus === "error" ? "text-amber-soft" : "text-cyan"}`}>{registerMessage}</p>
       ) : null}
     </section>
   );

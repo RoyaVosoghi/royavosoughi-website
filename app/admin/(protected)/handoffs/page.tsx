@@ -26,7 +26,7 @@ function buildColumns(
       header: t("columnConversation"),
       cell: (row) =>
         row.sessionId ? (
-          <Link href={`/admin/conversations/${row.sessionId}`} className="text-emerald hover:underline">
+          <Link href={`/admin/conversations/${row.sessionId}`} className="text-cyan hover:underline">
             {t("viewLink")}
           </Link>
         ) : (
@@ -57,9 +57,9 @@ export default async function AdminHandoffsPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
-      <p className="mt-3 text-ink/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
+      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
 
       <div className="mt-8">
         {handoffs.length === 0 ? (

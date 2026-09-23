@@ -56,23 +56,23 @@ export default async function AdminSecurityPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
-      <p className="mt-3 text-ink/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
+      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
 
       <div className="mt-8 flex flex-col gap-8">
-        <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-          <h2 className="font-display text-lg font-bold text-forest">{t("apiKeysTitle")}</h2>
+        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+          <h2 className="font-display text-lg font-bold text-soft">{t("apiKeysTitle")}</h2>
           <div className="mt-4 flex flex-col gap-2">
             {keyChecks.map((k) => (
-              <div key={k.label} className="flex items-center justify-between gap-4 border-b border-forest/5 py-2 last:border-0">
+              <div key={k.label} className="flex items-center justify-between gap-4 border-b border-soft/5 py-2 last:border-0">
                 <div>
-                  <p className="text-sm text-ink/80">{k.label}</p>
-                  {k.note ? <p className="text-xs text-ink/40">{k.note}</p> : null}
+                  <p className="text-sm text-soft/80">{k.label}</p>
+                  {k.note ? <p className="text-xs text-soft/40">{k.note}</p> : null}
                 </div>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    k.configured ? "bg-emerald/15 text-emerald" : "bg-saffron/20 text-saffron-deep"
+                    k.configured ? "bg-cyan/15 text-cyan" : "bg-amber/20 text-amber-soft"
                   }`}
                 >
                   {k.configured ? t("keyConfigured") : t("keyMissing")}

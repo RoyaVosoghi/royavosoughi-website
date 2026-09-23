@@ -36,7 +36,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: "Admin · Roya Vosoughi",
+  title: "Admin · Nura",
   robots: { index: false, follow: false },
 };
 
@@ -52,7 +52,7 @@ export default async function AdminRootLayout({ children }: { children: ReactNod
       className={`${spaceGrotesk.variable} ${inter.variable} ${vazirmatn.variable}`}
       suppressHydrationWarning
     >
-      <body className={`locale-${locale} min-h-dvh bg-offwhite`} suppressHydrationWarning>
+      <body className={`locale-${locale} min-h-dvh bg-indigo`} suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

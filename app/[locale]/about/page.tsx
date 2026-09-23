@@ -37,32 +37,32 @@ export default async function AboutPage({
     <>
       <Section tone="light" className="pt-14 md:pt-20">
         <div className="max-w-3xl">
-          <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
-          <h1 className="text-section mt-4 text-forest">{t("title")}</h1>
-          <p className="mt-8 text-xl text-ink/80">{t("lead")}</p>
+          <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
+          <h1 className="text-section mt-4 text-soft">{t("title")}</h1>
+          <p className="mt-8 text-xl text-soft/80">{t("lead")}</p>
         </div>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-16">
-          <div className="space-y-5 text-lg text-ink/80">
+          <div className="space-y-5 text-lg text-soft/80">
             <p>{t("p1")}</p>
             <p>{t("p2")}</p>
             <p>{t("p3")}</p>
 
             {/* Placeholder until the CV and photos arrive — see README */}
-            <div className="rounded-2xl border-2 border-dashed border-forest/20 bg-mint/40 p-6 text-base text-ink/70">
+            <div className="rounded-2xl border-2 border-dashed border-soft/20 bg-violet/10 p-6 text-base text-soft/70">
               {t("cvPlaceholder")}
             </div>
           </div>
 
           <aside>
-            <h2 className="label-eyebrow text-emerald">{t("valuesTitle")}</h2>
+            <h2 className="label-eyebrow text-cyan">{t("valuesTitle")}</h2>
             <dl className="mt-6 space-y-6">
               {values.map((key) => (
-                <div key={key} className="border-s-2 border-emerald/30 ps-5">
-                  <dt className="font-semibold text-forest">
+                <div key={key} className="border-s-2 border-cyan/30 ps-5">
+                  <dt className="font-semibold text-soft">
                     {t(`values.${key}.name`)}
                   </dt>
-                  <dd className="mt-1.5 text-ink/75">
+                  <dd className="mt-1.5 text-soft/75">
                     {t(`values.${key}.body`)}
                   </dd>
                 </div>
@@ -74,8 +74,8 @@ export default async function AboutPage({
 
       <Section tone="forest">
         <div className="text-center">
-          <h2 className="text-section text-offwhite">{t("ctaTitle")}</h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg text-mint">
+          <h2 className="text-section text-soft">{t("ctaTitle")}</h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg text-soft/80">
             {t("ctaBody")}
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">

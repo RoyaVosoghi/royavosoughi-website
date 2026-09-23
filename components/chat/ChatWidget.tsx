@@ -153,8 +153,8 @@ export function ChatWidget({
   /** No database/Gemini key yet → don't show an input that silently fails. */
   if (!configured) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-forest/20 bg-mint/50 p-8 text-center">
-        <p className="text-lg text-ink/80">{t("notConfigured")}</p>
+      <div className="rounded-3xl border-2 border-dashed border-soft/20 bg-violet/12 p-8 text-center">
+        <p className="text-lg text-soft/80">{t("notConfigured")}</p>
       </div>
     );
   }
@@ -307,7 +307,7 @@ export function ChatWidget({
             : "";
 
   return (
-    <div className="flex h-full flex-col bg-offwhite">
+    <div className="flex h-full flex-col bg-indigo">
       <div aria-live="polite" role="status" className="sr-only">
         {liveMessage}
       </div>
@@ -315,7 +315,7 @@ export function ChatWidget({
       <div ref={listRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">
         {messages.length === 0 ? (
           <div className="flex flex-col gap-4">
-            <p className="text-ink/60">{welcomeOverride || t("emptyState")}</p>
+            <p className="text-soft/60">{welcomeOverride || t("emptyState")}</p>
             {showStarters ? (
               <div className="flex flex-wrap gap-2">
                 {starters.map((starter) => (
@@ -323,7 +323,7 @@ export function ChatWidget({
                     key={starter}
                     type="button"
                     onClick={() => sendMessage(starter)}
-                    className="rounded-full border-2 border-forest/15 bg-offwhite px-4 py-2 text-sm text-ink/80 transition-colors hover:border-emerald hover:text-emerald"
+                    className="rounded-full border-2 border-soft/15 bg-indigo px-4 py-2 text-sm text-soft/80 transition-colors hover:border-cyan hover:text-cyan"
                   >
                     {starter}
                   </button>
@@ -341,7 +341,7 @@ export function ChatWidget({
                 onRate={message.role === "assistant" ? (rating) => onRate(index, rating) : undefined}
               />
               {message.sources && message.sources.length > 0 ? (
-                <p className={`px-1 text-xs text-ink/40 ${message.role === "user" ? "text-end" : "text-start"}`}>
+                <p className={`px-1 text-xs text-soft/40 ${message.role === "user" ? "text-end" : "text-start"}`}>
                   {t("sourcesLabel")}: {message.sources.join(", ")}
                 </p>
               ) : null}
@@ -350,11 +350,11 @@ export function ChatWidget({
         )}
         {status === "sending" ? (
           <div className="flex justify-start">
-            <div className="max-w-[70%] rounded-2xl bg-mint px-4 py-3 text-ink/60">
+            <div className="max-w-[70%] rounded-2xl bg-night px-4 py-3 text-soft/60">
               <span className="inline-flex items-center gap-1">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink/40 [animation-delay:-0.3s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink/40 [animation-delay:-0.15s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink/40" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-black/60 [animation-delay:-0.3s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-black/60 [animation-delay:-0.15s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-black/60" />
               </span>
             </div>
           </div>
@@ -364,30 +364,30 @@ export function ChatWidget({
       {status === "error" || status === "rateLimited" ? (
         <p
           role="alert"
-          className="border-t border-forest/10 px-5 py-3 text-sm font-medium text-saffron-deep"
+          className="border-t border-soft/10 px-5 py-3 text-sm font-medium text-amber-soft"
         >
           {status === "rateLimited" ? t("rateLimited") : t("errorBody")}
         </p>
       ) : null}
 
       {status === "waitingForHuman" ? (
-        <p className="border-t border-forest/10 px-5 py-3 text-sm font-medium text-emerald">{t("waitingForHuman")}</p>
+        <p className="border-t border-soft/10 px-5 py-3 text-sm font-medium text-cyan">{t("waitingForHuman")}</p>
       ) : null}
 
       {showConsultationButton ? (
-        <div className="border-t border-forest/10 px-5 pt-3">
+        <div className="border-t border-soft/10 px-5 pt-3">
           <button
             type="button"
             onClick={() => sendMessage(t("consultationMessage"))}
             disabled={status === "sending" || status === "streaming"}
-            className="w-full rounded-full border-2 border-forest px-5 py-2.5 text-sm font-semibold text-forest transition-colors hover:bg-forest hover:text-offwhite disabled:opacity-50"
+            className="w-full rounded-full border-2 border-soft/40 px-5 py-2.5 text-sm font-semibold text-soft transition-colors hover:bg-cyan hover:text-indigo disabled:opacity-50"
           >
             {t("requestConsultation")}
           </button>
         </div>
       ) : null}
 
-      <form onSubmit={onSubmit} className="flex items-center gap-3 border-t border-forest/10 p-4">
+      <form onSubmit={onSubmit} className="flex items-center gap-3 border-t border-soft/10 p-4">
         {/* Honeypot — hidden from people, tempting to bots. Never remove. */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
           <label htmlFor="chat-website">Website</label>
@@ -399,7 +399,7 @@ export function ChatWidget({
           onChange={(event) => setInput(event.target.value)}
           placeholder={t("inputPlaceholder")}
           disabled={status === "sending" || status === "streaming"}
-          className="w-full rounded-2xl border-2 border-forest/15 bg-offwhite px-4 py-3 text-ink transition-colors placeholder:text-ink/35 focus:border-emerald focus:outline-none"
+          className="w-full rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-3 text-soft transition-colors placeholder:text-soft/35 focus:border-cyan focus:outline-none"
         />
         <Button type="submit" disabled={status === "sending" || status === "streaming" || !input.trim()}>
           {status === "sending" || status === "streaming" ? t("sending") : t("send")}

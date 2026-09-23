@@ -38,7 +38,7 @@ export function LocaleSwitch({ onDark = false }: { onDark?: boolean }) {
   return (
     <div
       className={`inline-flex items-center rounded-full border p-0.5 ${
-        onDark ? "border-mint-deep/40" : "border-forest/20"
+        onDark ? "border-haze/40" : "border-soft/20"
       } ${isPending ? "opacity-60" : ""}`}
       role="group"
       aria-label="Language"
@@ -54,10 +54,10 @@ export function LocaleSwitch({ onDark = false }: { onDark?: boolean }) {
             lang={code}
             className={`min-h-11 min-w-11 rounded-full px-3.5 py-2.5 text-sm font-semibold transition-colors ${
               active
-                ? "bg-forest text-offwhite"
+                ? "bg-night text-soft"
                 : onDark
-                  ? "text-mint hover:text-offwhite"
-                  : "text-ink/70 hover:text-forest"
+                  ? "text-soft/80 hover:text-soft"
+                  : "text-soft/70 hover:text-soft"
             }`}
           >
             {labels[code] ?? code.toUpperCase()}

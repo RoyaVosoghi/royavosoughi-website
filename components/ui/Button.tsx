@@ -9,22 +9,20 @@ const base =
   "disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  // Deep Forest solid on light — the one primary action per screen. Forest
-  // is already the darkest brand tone, so hover lightens to forest-soft
-  // (defined for exactly this) instead of the usual "darken on hover", and
-  // the press-shadow uses a neutral black rather than a brand color, since
-  // there's no darker green left to contrast against the surface itself.
+  // Neon Cyan solid — the one primary action per screen. Cyan is the
+  // brightest brand tone, so text on it is Deep Indigo (white on cyan fails
+  // contrast) and hover lifts to Soft White with a cyan glow.
   primary:
-    "bg-forest text-offwhite shadow-[0_2px_0_0_rgba(0,0,0,0.3)] " +
-    "hover:bg-forest-soft hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_rgba(0,0,0,0.3)] active:translate-y-0",
-  // Outlined on light
+    "bg-cyan text-indigo shadow-[0_0_0_0_rgba(0,229,255,0)] " +
+    "hover:bg-soft hover:-translate-y-0.5 hover:shadow-[0_8px_28px_-6px_rgba(0,229,255,0.55)] active:translate-y-0",
+  // Outlined — Soft White line, fills cyan on hover
   secondary:
-    "border-2 border-forest text-forest hover:bg-forest hover:text-offwhite",
-  // Spring on Deep Forest — the guide's designated CTA-on-dark
+    "border-2 border-soft/40 text-soft hover:border-cyan hover:bg-cyan hover:text-indigo",
+  // On raised Night panels — same cyan action (buttons are always cyan)
   onDark:
-    "bg-spring text-forest hover:bg-offwhite hover:-translate-y-0.5 active:translate-y-0",
+    "bg-cyan text-indigo hover:bg-soft hover:-translate-y-0.5 active:translate-y-0",
   onDarkGhost:
-    "border-2 border-mint-deep text-offwhite hover:bg-offwhite hover:text-forest hover:border-offwhite",
+    "border-2 border-haze text-soft hover:bg-soft hover:text-indigo hover:border-soft",
 };
 
 type LinkProps = { href: string; variant?: Variant; children: ReactNode } & Omit<

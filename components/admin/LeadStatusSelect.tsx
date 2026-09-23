@@ -9,11 +9,11 @@ import type { LeadStatus } from "@/lib/admin/queries";
 const STATUSES: LeadStatus[] = ["new", "contacted", "qualified", "converted", "lost"];
 
 const STATUS_STYLES: Record<LeadStatus, string> = {
-  new: "bg-forest/10 text-forest",
-  contacted: "bg-mint text-emerald",
-  qualified: "bg-spring/20 text-emerald",
-  converted: "bg-emerald/20 text-emerald",
-  lost: "bg-saffron/15 text-saffron-deep",
+  new: "bg-soft/10 text-soft",
+  contacted: "bg-night text-cyan",
+  qualified: "bg-violet/20 text-cyan",
+  converted: "bg-cyan/20 text-cyan",
+  lost: "bg-amber/15 text-amber-soft",
 };
 
 export function LeadStatusSelect({ id, status }: { id: string; status: LeadStatus }) {

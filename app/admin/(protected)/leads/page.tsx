@@ -15,7 +15,7 @@ function buildColumns(
 ): Column<Lead>[] {
   return [
     { header: t("columnName"), cell: (row) => row.name },
-    { header: t("columnEmail"), cell: (row) => <a className="text-emerald hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
+    { header: t("columnEmail"), cell: (row) => <a className="text-cyan hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
     { header: t("columnInterest"), cell: (row) => row.interest ?? "—" },
     { header: t("columnSource"), cell: (row) => row.source ?? "—" },
     { header: t("columnStatus"), cell: (row) => <LeadStatusSelect id={row.id} status={row.status} /> },
@@ -47,15 +47,15 @@ export default async function AdminLeadsPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
-          <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
-          <p className="mt-3 text-ink/70">{t("subtitle")}</p>
+          <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
+          <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
+          <p className="mt-3 text-soft/70">{t("subtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <ScoreUnscoredLeadsButton />
           <a
             href="/api/admin/leads/export"
-            className="rounded-full border-2 border-forest/20 px-5 py-2 text-sm font-semibold text-forest transition-colors hover:bg-mint/40"
+            className="rounded-full border-2 border-soft/20 px-5 py-2 text-sm font-semibold text-soft transition-colors hover:bg-violet/10"
           >
             {t("exportCsv")}
           </a>

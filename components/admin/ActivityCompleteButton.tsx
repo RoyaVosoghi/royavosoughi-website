@@ -21,7 +21,7 @@ export function ActivityCompleteButton({ id, completed }: { id: string; complete
   }
 
   if (completed) {
-    return <span className="rounded-full bg-emerald/15 px-2.5 py-1 text-xs font-semibold text-emerald">{t("doneBadge")}</span>;
+    return <span className="rounded-full bg-cyan/15 px-2.5 py-1 text-xs font-semibold text-cyan">{t("doneBadge")}</span>;
   }
 
   return (
@@ -29,7 +29,7 @@ export function ActivityCompleteButton({ id, completed }: { id: string; complete
       type="button"
       onClick={complete}
       disabled={pending}
-      className="rounded-full border-2 border-forest/15 px-2.5 py-1 text-xs font-medium text-forest transition-colors hover:bg-mint/40 disabled:opacity-50"
+      className="rounded-full border-2 border-soft/15 px-2.5 py-1 text-xs font-medium text-soft transition-colors hover:bg-violet/10 disabled:opacity-50"
     >
       {pending ? t("completing") : t("completeButton")}
     </button>

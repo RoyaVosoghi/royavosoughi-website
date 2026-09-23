@@ -19,24 +19,24 @@ export function WidgetEmbedCode({ siteUrl, allowedDomains }: { siteUrl: string; 
   }
 
   return (
-    <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
-      <p className="mt-1 text-sm text-ink/60">
+    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
+      <p className="mt-1 text-sm text-soft/60">
         {t.rich("subtitle", { code: (chunks) => <span className="font-mono">{chunks}</span> })}
       </p>
 
-      <div className="mt-4 flex items-center gap-3 rounded-xl border-2 border-forest/15 bg-forest/5 p-4">
-        <code className="flex-1 overflow-x-auto font-mono text-sm text-forest">{snippet}</code>
+      <div className="mt-4 flex items-center gap-3 rounded-xl border-2 border-soft/15 bg-soft/5 p-4">
+        <code className="flex-1 overflow-x-auto font-mono text-sm text-soft">{snippet}</code>
         <button
           type="button"
           onClick={copy}
-          className="rounded-full bg-emerald px-4 py-1.5 text-xs font-semibold text-offwhite transition-colors hover:bg-forest"
+          className="rounded-full bg-cyan px-4 py-1.5 text-xs font-semibold text-indigo transition-colors hover:bg-soft"
         >
           {copied ? t("copied") : t("copy")}
         </button>
       </div>
 
-      <p className="mt-3 text-xs text-ink/50">
+      <p className="mt-3 text-xs text-soft/50">
         {allowedDomains.length === 0 ? t("noDomains") : t("allowedDomains", { domains: allowedDomains.join(", ") })}
       </p>
     </section>

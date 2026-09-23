@@ -48,17 +48,34 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
   // so they keep the normal 20px.
   const BOTTOM_OFFSET = Number(currentScript?.dataset.bottomOffset) || 20;
 
-  const DEFAULT_ACCENT = "#0f7b4f";
+  const DEFAULT_ACCENT = "#00e5ff"; // Nura Neon Cyan
 
+  // Nura palette. `accent` is overwritten below once /api/widget/config
+  // resolves; `onAccent` is then recomputed so text on the accent stays
+  // readable whatever colour the admin picks.
   const COLORS = {
-    forest: "#023316",
-    forestSoft: "#0a4a24",
-    emerald: DEFAULT_ACCENT, // overwritten below once /api/widget/config resolves
-    mint: "#dff5e9",
-    offwhite: "#f7faf8",
-    ink: "#1a1e1c",
-    saffronDeep: "#876012",
+    indigo: "#0f0c29",
+    night: "#1a1640",
+    nightSoft: "#262058",
+    soft: "#f8f9fa",
+    haze: "#aaa5d4",
+    amber: "#ffd27a",
+    accent: DEFAULT_ACCENT,
+    onAccent: "#0f0c29",
   };
+
+  /** Deep Indigo on light accents, Soft White on dark ones (WCAG luminance). */
+  function textOn(hex: string): string {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+    if (!m) return COLORS.indigo;
+    const n = parseInt(m[1], 16);
+    const lin = (c: number) => {
+      const v = c / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    };
+    const L = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+    return L > 0.18 ? COLORS.indigo : COLORS.soft;
+  }
 
   const STRINGS: Record<Locale, Record<string, string>> = {
     en: {
@@ -150,10 +167,11 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-panel {
       width: min(22rem, calc(100vw - 2.5rem));
       height: min(32rem, 70vh);
-      background: ${COLORS.offwhite};
+      background: ${COLORS.indigo};
+      color: ${COLORS.soft};
       border-radius: 24px;
-      border: 2px solid rgba(2, 51, 22, 0.15);
-      box-shadow: 0 20px 50px rgba(2, 51, 22, 0.25);
+      border: 1px solid rgba(157, 78, 221, 0.35);
+      box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.6), 0 0 40px -12px rgba(157, 78, 221, 0.45);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -169,12 +187,13 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: ${COLORS.forest};
+      background: ${COLORS.night};
+      border-bottom: 1px solid rgba(248, 249, 250, 0.08);
       padding: 14px 18px;
       flex-shrink: 0;
     }
     .rv-header-title {
-      color: ${COLORS.offwhite};
+      color: ${COLORS.soft};
       font-weight: 600;
       font-size: 15px;
       margin: 0;
@@ -182,7 +201,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-header-close {
       background: none;
       border: none;
-      color: ${COLORS.mint};
+      color: ${COLORS.haze};
       cursor: pointer;
       width: 30px;
       height: 30px;
@@ -190,7 +209,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       display: grid;
       place-items: center;
     }
-    .rv-header-close:hover { background: ${COLORS.forestSoft}; color: ${COLORS.offwhite}; }
+    .rv-header-close:hover { background: ${COLORS.nightSoft}; color: ${COLORS.soft}; }
     .rv-messages {
       flex: 1;
       overflow-y: auto;
@@ -201,16 +220,16 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     .rv-starters { display: flex; flex-wrap: wrap; gap: 8px; }
     .rv-starter-btn {
-      border: 2px solid rgba(2, 51, 22, 0.15);
-      background: ${COLORS.offwhite};
-      color: rgba(26, 30, 28, 0.8);
+      border: 1px solid rgba(248, 249, 250, 0.18);
+      background: transparent;
+      color: rgba(248, 249, 250, 0.85);
       border-radius: 999px;
       padding: 8px 14px;
       font-size: 13px;
       cursor: pointer;
       transition: border-color 0.15s ease, color 0.15s ease;
     }
-    .rv-starter-btn:hover { border-color: ${COLORS.emerald}; color: ${COLORS.emerald}; }
+    .rv-starter-btn:hover { border-color: ${COLORS.accent}; color: ${COLORS.accent}; }
     .rv-bubble-row { display: flex; flex-direction: column; gap: 4px; }
     .rv-bubble-row.rv-user { align-items: flex-end; }
     .rv-bubble-row.rv-assistant { align-items: flex-start; }
@@ -222,8 +241,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       line-height: 1.45;
       white-space: pre-wrap;
     }
-    .rv-user .rv-bubble { background: ${COLORS.forest}; color: ${COLORS.offwhite}; }
-    .rv-assistant .rv-bubble { background: ${COLORS.mint}; color: ${COLORS.ink}; }
+    .rv-user .rv-bubble { background: ${COLORS.accent}; color: ${COLORS.onAccent}; }
+    .rv-assistant .rv-bubble { background: ${COLORS.night}; color: ${COLORS.soft}; border: 1px solid rgba(157, 78, 221, 0.25); }
     .rv-feedback { display: flex; gap: 4px; padding: 0 2px; }
     .rv-feedback-btn {
       width: 26px;
@@ -234,43 +253,44 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       cursor: pointer;
       display: grid;
       place-items: center;
-      color: rgba(26, 30, 28, 0.35);
+      color: rgba(170, 165, 212, 0.6);
       transition: background 0.15s ease, color 0.15s ease;
     }
-    .rv-feedback-btn:hover:not(:disabled) { background: rgba(2, 51, 22, 0.06); color: ${COLORS.emerald}; }
+    .rv-feedback-btn:hover:not(:disabled) { background: rgba(248, 249, 250, 0.06); color: ${COLORS.accent}; }
     .rv-feedback-btn:disabled { cursor: default; }
-    .rv-feedback-btn[data-active="true"] { background: rgba(15, 123, 79, 0.15); color: ${COLORS.emerald}; }
-    .rv-feedback-btn[data-active="true"].rv-down { background: rgba(135, 96, 18, 0.15); color: ${COLORS.saffronDeep}; }
+    .rv-feedback-btn[data-active="true"] { background: rgba(248, 249, 250, 0.1); color: ${COLORS.accent}; }
+    .rv-feedback-btn[data-active="true"].rv-down { background: rgba(245, 185, 66, 0.14); color: ${COLORS.amber}; }
     .rv-status {
       padding: 8px 18px;
       font-size: 13px;
       font-weight: 500;
-      color: ${COLORS.saffronDeep};
-      border-top: 1px solid rgba(2, 51, 22, 0.1);
+      color: ${COLORS.amber};
+      border-top: 1px solid rgba(248, 249, 250, 0.08);
     }
     .rv-input-row {
       display: flex;
       gap: 10px;
       align-items: center;
       padding: 14px;
-      border-top: 1px solid rgba(2, 51, 22, 0.1);
+      border-top: 1px solid rgba(248, 249, 250, 0.08);
       flex-shrink: 0;
     }
     .rv-input {
       flex: 1;
-      border: 2px solid rgba(2, 51, 22, 0.15);
+      border: 1px solid rgba(248, 249, 250, 0.18);
       border-radius: 16px;
       padding: 10px 14px;
       font-size: 14px;
-      color: ${COLORS.ink};
-      background: ${COLORS.offwhite};
+      color: ${COLORS.soft};
+      background: ${COLORS.night};
       outline: none;
       font-family: inherit;
     }
-    .rv-input:focus { border-color: ${COLORS.emerald}; }
+    .rv-input::placeholder { color: rgba(170, 165, 212, 0.7); }
+    .rv-input:focus { border-color: ${COLORS.accent}; }
     .rv-send {
-      background: ${COLORS.forest};
-      color: ${COLORS.offwhite};
+      background: ${COLORS.accent};
+      color: ${COLORS.onAccent};
       border: none;
       border-radius: 999px;
       padding: 10px 18px;
@@ -278,28 +298,29 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       font-weight: 600;
       cursor: pointer;
       flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
     }
-    .rv-send:hover:not(:disabled) { background: ${COLORS.forestSoft}; }
+    .rv-send:hover:not(:disabled) { background: ${COLORS.soft}; color: ${COLORS.indigo}; }
     .rv-send:disabled { opacity: 0.5; cursor: default; }
     .rv-launcher {
       width: 60px;
       height: 60px;
       padding: 0;
       border-radius: 50%;
-      background: ${COLORS.forest};
-      color: ${COLORS.offwhite};
+      background: ${COLORS.accent};
+      color: ${COLORS.onAccent};
       border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-family: inherit;
-      box-shadow: 0 8px 24px rgba(2, 51, 22, 0.35);
-      transition: background 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.55), 0 0 22px -4px rgba(157, 78, 221, 0.5);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
     }
-    .rv-launcher:hover { background: ${COLORS.forestSoft}; transform: translateY(-2px); }
+    .rv-launcher:hover { background: ${COLORS.soft}; color: ${COLORS.indigo}; transform: translateY(-2px); }
     .rv-launcher-icon { display: grid; place-items: center; }
-    .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.ink}; text-align: center; }
+    .rv-fallback { padding: 20px; font-size: 14px; color: ${COLORS.soft}; text-align: center; }
     .rv-end-screen {
       display: none;
       flex: 1;
@@ -311,22 +332,22 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       text-align: center;
     }
     .rv-end-screen[data-visible="true"] { display: flex; }
-    .rv-end-title { font-size: 16px; font-weight: 700; color: ${COLORS.forest}; margin: 0; }
-    .rv-end-body { font-size: 14px; color: rgba(26, 30, 28, 0.65); margin: 0 0 8px; }
-    .rv-rate-question { font-size: 13px; font-weight: 600; color: ${COLORS.ink}; margin: 0; }
+    .rv-end-title { font-size: 16px; font-weight: 700; color: ${COLORS.soft}; margin: 0; }
+    .rv-end-body { font-size: 14px; color: ${COLORS.haze}; margin: 0 0 8px; }
+    .rv-rate-question { font-size: 13px; font-weight: 600; color: ${COLORS.soft}; margin: 0; }
     .rv-stars { display: flex; gap: 6px; }
     .rv-star-btn {
       background: none;
       border: none;
       cursor: pointer;
       padding: 4px;
-      color: rgba(2, 51, 22, 0.25);
+      color: rgba(248, 249, 250, 0.2);
       transition: color 0.15s ease, transform 0.15s ease;
     }
-    .rv-star-btn:hover:not(:disabled) { color: ${COLORS.emerald}; transform: scale(1.1); }
-    .rv-star-btn[data-active="true"] { color: ${COLORS.emerald}; }
+    .rv-star-btn:hover:not(:disabled) { color: ${COLORS.accent}; transform: scale(1.1); }
+    .rv-star-btn[data-active="true"] { color: ${COLORS.accent}; }
     .rv-star-btn:disabled { cursor: default; }
-    .rv-thanks { display: none; font-size: 13px; color: ${COLORS.emerald}; font-weight: 600; margin: 0; }
+    .rv-thanks { display: none; font-size: 13px; color: ${COLORS.accent}; font-weight: 600; margin: 0; }
     `;
   }
 
@@ -377,7 +398,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     // the widget must never fail to render just because /api/widget/config
     // is unreachable.
     const config = await fetchConfig();
-    if (config?.primaryColor) COLORS.emerald = config.primaryColor;
+    if (config?.primaryColor) {
+      COLORS.accent = config.primaryColor;
+      COLORS.onAccent = textOn(config.primaryColor);
+    }
     const positionSide = config?.position === "bottom-start" ? "start" : "end";
     const starters = (locale === "fa" ? config?.quickRepliesFa : config?.quickRepliesEn) ?? [];
     const welcomeMessage = (locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn) || null;

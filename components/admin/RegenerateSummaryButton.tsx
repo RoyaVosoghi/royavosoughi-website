@@ -28,11 +28,11 @@ export function RegenerateSummaryButton({ contactId }: { contactId: string }) {
         type="button"
         onClick={run}
         disabled={pending}
-        className="rounded-full border-2 border-forest/20 px-4 py-1.5 text-xs font-semibold text-forest transition-colors hover:bg-mint/40 disabled:opacity-50"
+        className="rounded-full border-2 border-soft/20 px-4 py-1.5 text-xs font-semibold text-soft transition-colors hover:bg-violet/10 disabled:opacity-50"
       >
         {pending ? t("regenerating") : t("regenerateButton")}
       </button>
-      {error ? <span className="text-xs text-saffron-deep">{t("regenerateFailed")}</span> : null}
+      {error ? <span className="text-xs text-amber-soft">{t("regenerateFailed")}</span> : null}
     </div>
   );
 }

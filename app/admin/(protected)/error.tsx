@@ -17,20 +17,20 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
   }, [error]);
 
   return (
-    <div role="alert" className="rounded-3xl border-2 border-dashed border-saffron-deep/30 bg-saffron-deep/5 p-10 text-center">
-      <p className="font-display text-lg font-bold text-forest">{t("title")}</p>
-      <p className="mt-2 text-ink/70">{t("body")}</p>
+    <div role="alert" className="rounded-3xl border-2 border-dashed border-amber/30 bg-amber/5 p-10 text-center">
+      <p className="font-display text-lg font-bold text-soft">{t("title")}</p>
+      <p className="mt-2 text-soft/70">{t("body")}</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <button
           type="button"
           onClick={() => reset()}
-          className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-offwhite transition-colors hover:bg-forest"
+          className="rounded-full bg-cyan px-5 py-2.5 text-sm font-semibold text-indigo transition-colors hover:bg-soft"
         >
           {t("retry")}
         </button>
         <a
           href="/admin"
-          className="rounded-full border-2 border-forest/15 px-5 py-2.5 text-sm font-semibold text-forest transition-colors hover:border-emerald hover:text-emerald"
+          className="rounded-full border-2 border-soft/15 px-5 py-2.5 text-sm font-semibold text-soft transition-colors hover:border-cyan hover:text-cyan"
         >
           {t("backToDashboard")}
         </a>

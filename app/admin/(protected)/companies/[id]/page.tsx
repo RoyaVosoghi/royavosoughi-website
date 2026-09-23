@@ -24,41 +24,41 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
 
   return (
     <div>
-      <Link href="/admin/companies" className="text-sm font-medium text-emerald hover:underline">
+      <Link href="/admin/companies" className="text-sm font-medium text-cyan hover:underline">
         {t("detail.backLink")}
       </Link>
 
-      <h1 className="text-section mt-4 text-forest">{company.name}</h1>
+      <h1 className="text-section mt-4 text-soft">{company.name}</h1>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6 lg:col-span-1">
+        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6 lg:col-span-1">
           <dl className="flex flex-col gap-3 text-sm">
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-ink/40">{t("detail.fieldDomain")}</dt>
-              <dd className="mt-0.5 text-ink/80">{company.domain ?? t("detail.notSet")}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldDomain")}</dt>
+              <dd className="mt-0.5 text-soft/80">{company.domain ?? t("detail.notSet")}</dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-ink/40">{t("detail.fieldIndustry")}</dt>
-              <dd className="mt-0.5 text-ink/80">{company.industry ?? t("detail.notSet")}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldIndustry")}</dt>
+              <dd className="mt-0.5 text-soft/80">{company.industry ?? t("detail.notSet")}</dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-ink/40">{t("detail.fieldNotes")}</dt>
-              <dd className="mt-0.5 text-ink/80">{company.notes ?? t("detail.notSet")}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldNotes")}</dt>
+              <dd className="mt-0.5 text-soft/80">{company.notes ?? t("detail.notSet")}</dd>
             </div>
           </dl>
         </section>
 
-        <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6 lg:col-span-1">
-          <h2 className="font-display text-lg font-bold text-forest">{t("detail.contactsTitle")}</h2>
+        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6 lg:col-span-1">
+          <h2 className="font-display text-lg font-bold text-soft">{t("detail.contactsTitle")}</h2>
           {contacts.length === 0 ? (
-            <p className="mt-3 text-sm text-ink/50">{t("detail.contactsEmpty")}</p>
+            <p className="mt-3 text-sm text-soft/50">{t("detail.contactsEmpty")}</p>
           ) : (
             <ul className="mt-3 flex flex-col gap-2">
               {contacts.map((c) => (
                 <li key={c.id}>
                   <Link
                     href={`/admin/contacts/${c.id}`}
-                    className="block rounded-2xl border border-forest/10 bg-mint/20 px-4 py-3 text-sm font-medium text-ink/85 hover:bg-mint/40"
+                    className="block rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3 text-sm font-medium text-soft/85 hover:bg-violet/10"
                   >
                     {c.name}
                   </Link>
@@ -68,20 +68,20 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
           )}
         </section>
 
-        <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6 lg:col-span-1">
-          <h2 className="font-display text-lg font-bold text-forest">{t("detail.dealsTitle")}</h2>
+        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6 lg:col-span-1">
+          <h2 className="font-display text-lg font-bold text-soft">{t("detail.dealsTitle")}</h2>
           {companyDeals.length === 0 ? (
-            <p className="mt-3 text-sm text-ink/50">{t("detail.dealsEmpty")}</p>
+            <p className="mt-3 text-sm text-soft/50">{t("detail.dealsEmpty")}</p>
           ) : (
             <ul className="mt-3 flex flex-col gap-2">
               {companyDeals.map((d) => (
                 <li key={d.id}>
                   <Link
                     href={`/admin/deals/${d.id}`}
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-mint/20 px-4 py-3 hover:bg-mint/40"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3 hover:bg-violet/10"
                   >
-                    <span className="text-sm font-medium text-ink/85">{d.title}</span>
-                    <span className="text-sm font-semibold text-forest">
+                    <span className="text-sm font-medium text-soft/85">{d.title}</span>
+                    <span className="text-sm font-semibold text-soft">
                       {(d.amountCents / 100).toLocaleString(undefined, { style: "currency", currency: d.currency })}
                     </span>
                   </Link>

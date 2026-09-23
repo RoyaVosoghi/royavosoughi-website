@@ -85,12 +85,12 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
   }
 
   return (
-    <section className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("embedding.heading")}</h2>
-      <p className="mt-1 text-sm text-ink/60">{t("embedding.description")}</p>
+    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("embedding.heading")}</h2>
+      <p className="mt-1 text-sm text-soft/60">{t("embedding.description")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.modelLabel")}
           <select
             value={`${values.provider}::${values.model}`}
@@ -98,7 +98,7 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
               const [provider, model] = e.target.value.split("::");
               requestModelChange(provider, model);
             }}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           >
             {groupedEmbeddingCatalog().map((group) => (
               <optgroup key={group.provider} label={PROVIDER_LABELS[group.provider]}>
@@ -111,7 +111,7 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             ))}
           </select>
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.dimensionsLabel")}
           <input
             type="number"
@@ -120,10 +120,10 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             value={values.dimensions}
             disabled={!getEmbeddingCatalogEntry(values.provider, values.model)?.customDimensions}
             onChange={(e) => setValues({ ...values, dimensions: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none disabled:opacity-50"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none disabled:opacity-50"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.chunkSizeLabel")}
           <input
             type="number"
@@ -131,10 +131,10 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             max={6000}
             value={values.chunkSize}
             onChange={(e) => setValues({ ...values, chunkSize: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.chunkOverlapLabel")}
           <input
             type="number"
@@ -142,21 +142,21 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             max={1000}
             value={values.chunkOverlap}
             onChange={(e) => setValues({ ...values, chunkOverlap: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.chunkingStrategyLabel")}
           <select
             value={values.chunkingStrategy}
             onChange={(e) => setValues({ ...values, chunkingStrategy: e.target.value as "paragraph" | "fixed" })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           >
             <option value="paragraph">{t("embedding.strategyParagraph")}</option>
             <option value="fixed">{t("embedding.strategyFixed")}</option>
           </select>
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.topKLabel")}
           <input
             type="number"
@@ -164,10 +164,10 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             max={20}
             value={values.topK}
             onChange={(e) => setValues({ ...values, topK: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-ink/70">
+        <label className="text-xs font-medium text-soft/70">
           {t("embedding.similarityThresholdLabel")}
           <input
             type="number"
@@ -176,10 +176,10 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             step={0.05}
             value={values.similarityThreshold}
             onChange={(e) => setValues({ ...values, similarityThreshold: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-forest/15 bg-offwhite px-3 py-2 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </label>
-        <label className="flex items-center gap-2 text-xs font-medium text-ink/70">
+        <label className="flex items-center gap-2 text-xs font-medium text-soft/70">
           <input
             type="checkbox"
             checked={values.rerankerEnabled}
@@ -191,9 +191,9 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
       </div>
 
       {pendingModelChange ? (
-        <div className="mt-4 rounded-xl border-2 border-saffron-deep/40 bg-saffron/10 p-4">
-          <p className="text-sm font-semibold text-saffron-deep">{t("embedding.pendingTitle")}</p>
-          <p className="mt-1 text-sm text-ink/70">
+        <div className="mt-4 rounded-xl border-2 border-amber/40 bg-amber/10 p-4">
+          <p className="text-sm font-semibold text-amber-soft">{t("embedding.pendingTitle")}</p>
+          <p className="mt-1 text-sm text-soft/70">
             {t("embedding.pendingBody", {
               provider: PROVIDER_LABELS[pendingModelChange.provider],
               model: pendingModelChange.model,
@@ -203,14 +203,14 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
             <button
               type="button"
               onClick={() => applyModelChange(pendingModelChange.provider, pendingModelChange.model)}
-              className="rounded-full bg-saffron-deep px-4 py-1.5 text-xs font-semibold text-offwhite"
+              className="rounded-full bg-amber px-4 py-1.5 text-xs font-semibold text-indigo"
             >
               {t("embedding.switchAnyway")}
             </button>
             <button
               type="button"
               onClick={() => setPendingModelChange(null)}
-              className="rounded-full border-2 border-forest/20 px-4 py-1.5 text-xs font-semibold text-ink/70"
+              className="rounded-full border-2 border-soft/20 px-4 py-1.5 text-xs font-semibold text-soft/70"
             >
               {t("embedding.cancel")}
             </button>
@@ -223,23 +223,23 @@ export function EmbeddingConfigForm({ initial }: { initial: EmbeddingConfigValue
           type="button"
           onClick={save}
           disabled={status === "saving" || Boolean(pendingModelChange)}
-          className="rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+          className="rounded-full bg-cyan px-5 py-2 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
         >
           {status === "saving" ? t("embedding.saving") : t("embedding.save")}
         </button>
-        {status === "saved" ? <span className="text-sm font-medium text-emerald">{t("embedding.saved")}</span> : null}
-        {status === "error" ? <span className="text-sm font-medium text-saffron-deep">{t("embedding.error")}</span> : null}
+        {status === "saved" ? <span className="text-sm font-medium text-cyan">{t("embedding.saved")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-amber-soft">{t("embedding.error")}</span> : null}
 
         <button
           type="button"
           onClick={rebuildIndex}
           disabled={rebuildStatus === "running"}
-          className="rounded-full border-2 border-forest/20 px-5 py-2 text-sm font-semibold text-forest transition-colors hover:bg-mint/40 disabled:opacity-50"
+          className="rounded-full border-2 border-soft/20 px-5 py-2 text-sm font-semibold text-soft transition-colors hover:bg-violet/10 disabled:opacity-50"
         >
           {rebuildStatus === "running" ? t("embedding.rebuilding") : t("embedding.rebuild")}
         </button>
         {rebuildResult ? (
-          <span className={`text-sm font-medium ${rebuildStatus === "error" ? "text-saffron-deep" : "text-emerald"}`}>
+          <span className={`text-sm font-medium ${rebuildStatus === "error" ? "text-amber-soft" : "text-cyan"}`}>
             {rebuildResult}
           </span>
         ) : null}

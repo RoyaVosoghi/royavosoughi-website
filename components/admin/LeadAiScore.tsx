@@ -5,9 +5,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 function scoreColor(score: number): string {
-  if (score >= 70) return "bg-emerald/20 text-emerald";
-  if (score >= 40) return "bg-spring/20 text-emerald";
-  return "bg-forest/10 text-ink/60";
+  if (score >= 70) return "bg-cyan/20 text-cyan";
+  if (score >= 40) return "bg-violet/20 text-cyan";
+  return "bg-soft/10 text-soft/60";
 }
 
 export function LeadAiScore({ id, score, reason }: { id: string; score: number | null; reason: string | null }) {
@@ -45,11 +45,11 @@ export function LeadAiScore({ id, score, reason }: { id: string; score: number |
         type="button"
         onClick={runScore}
         disabled={pending}
-        className="rounded-full border-2 border-forest/15 px-2.5 py-1 text-xs font-medium text-forest transition-colors hover:bg-mint/40 disabled:opacity-50"
+        className="rounded-full border-2 border-soft/15 px-2.5 py-1 text-xs font-medium text-soft transition-colors hover:bg-violet/10 disabled:opacity-50"
       >
         {pending ? t("scoring") : t("scoreButton")}
       </button>
-      {error ? <span className="text-xs text-saffron-deep">{t("scoreFailed")}</span> : null}
+      {error ? <span className="text-xs text-amber-soft">{t("scoreFailed")}</span> : null}
     </div>
   );
 }

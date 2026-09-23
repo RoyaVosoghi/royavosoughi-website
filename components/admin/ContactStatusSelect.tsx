@@ -9,9 +9,9 @@ import type { ContactStatus } from "@/lib/admin/queries";
 const STATUSES: ContactStatus[] = ["active", "customer", "inactive"];
 
 const STATUS_STYLES: Record<ContactStatus, string> = {
-  active: "bg-forest/10 text-forest",
-  customer: "bg-emerald/20 text-emerald",
-  inactive: "bg-ink/10 text-ink/60",
+  active: "bg-soft/10 text-soft",
+  customer: "bg-cyan/20 text-cyan",
+  inactive: "bg-soft/10 text-soft/60",
 };
 
 export function ContactStatusSelect({ id, status }: { id: string; status: ContactStatus }) {

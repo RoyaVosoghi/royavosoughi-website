@@ -27,16 +27,16 @@ export async function Projects() {
         /* Honest empty state. Better than inventing work that does not exist. */
         <Reveal
           delayMs={80}
-          className="mt-12 rounded-3xl border-2 border-dashed border-forest/15 bg-mint/40 p-10 text-center"
+          className="mt-12 rounded-3xl border-2 border-dashed border-soft/15 bg-violet/10 p-10 text-center"
         >
-          <p className="mx-auto max-w-md text-lg text-ink/75">
+          <p className="mx-auto max-w-md text-lg text-soft/75">
             {t("emptyState")}
           </p>
           <a
             href={site.social.github}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-5 inline-block font-semibold text-emerald underline underline-offset-4 hover:text-forest"
+            className="mt-5 inline-block font-semibold text-cyan underline underline-offset-4 hover:text-soft"
           >
             {t("followGithub")}
           </a>
@@ -49,35 +49,35 @@ export async function Projects() {
               <li key={project.slug}>
                 <Reveal
                   delayMs={80 + i * 80}
-                  className="flex h-full flex-col rounded-3xl border border-forest/10 bg-offwhite p-8 transition-all duration-200 hover:-translate-y-1 hover:border-emerald/40 hover:shadow-[0_12px_32px_-12px_rgba(2,51,22,0.25)]"
+                  className="flex h-full flex-col rounded-3xl border border-soft/10 bg-indigo p-8 transition-all duration-200 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-[0_12px_32px_-12px_rgba(0,0,0,0.25)]"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm text-ink/70">
+                    <span className="font-mono text-sm text-soft/70">
                       {project.year}
                     </span>
                     {project.draft ? (
-                      <span className="rounded-full bg-saffron/20 px-2.5 py-0.5 font-mono text-xs font-bold text-saffron-deep">
+                      <span className="rounded-full bg-amber/20 px-2.5 py-0.5 font-mono text-xs font-bold text-amber-soft">
                         DRAFT — dev only
                       </span>
                     ) : null}
                   </div>
 
-                  <h3 className="mt-3 text-2xl text-forest">{copy.title}</h3>
-                  <p className="mt-3 text-ink/75">{copy.problem}</p>
+                  <h3 className="mt-3 text-2xl text-soft">{copy.title}</h3>
+                  <p className="mt-3 text-soft/75">{copy.problem}</p>
 
                   <ul className="mt-5 flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
                       <li
                         key={tag}
-                        className="rounded-full bg-mint px-3 py-1 font-mono text-xs font-medium text-forest"
+                        className="rounded-full bg-night px-3 py-1 font-mono text-xs font-medium text-soft"
                       >
                         {tag}
                       </li>
                     ))}
                   </ul>
 
-                  <p className="mt-6 rounded-2xl bg-mint/50 p-4 text-[0.9375rem] text-ink/80">
-                    <span className="font-semibold text-emerald">
+                  <p className="mt-6 rounded-2xl bg-violet/12 p-4 text-[0.9375rem] text-soft/80">
+                    <span className="font-semibold text-cyan">
                       {t("learnedLabel")}{" "}
                     </span>
                     {copy.learned}
@@ -89,7 +89,7 @@ export async function Projects() {
                         href={project.links.demo}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="font-semibold text-emerald underline underline-offset-4 hover:text-forest"
+                        className="font-semibold text-cyan underline underline-offset-4 hover:text-soft"
                       >
                         {t("liveDemo")} →
                       </a>
@@ -99,7 +99,7 @@ export async function Projects() {
                         href={project.links.github}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="font-semibold text-emerald underline underline-offset-4 hover:text-forest"
+                        className="font-semibold text-cyan underline underline-offset-4 hover:text-soft"
                       >
                         {t("sourceCode")} →
                       </a>
@@ -116,7 +116,7 @@ export async function Projects() {
         delayMs={items.length * 80 + 80}
         className="mt-14 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-start"
       >
-        <p className="text-xl text-forest">{t("ctaTitle")}</p>
+        <p className="text-xl text-soft">{t("ctaTitle")}</p>
         <ButtonLink href="#contact" variant="secondary">
           {t("ctaButton")}
         </ButtonLink>

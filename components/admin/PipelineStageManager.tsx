@@ -51,25 +51,25 @@ export function PipelineStageManager({ initial }: { initial: PipelineStage[] }) 
   }
 
   return (
-    <div className="rounded-3xl border-2 border-forest/10 bg-offwhite p-6">
-      <h2 className="font-display text-lg font-bold text-forest">{t("title")}</h2>
-      {error ? <p className="mt-2 text-sm font-medium text-saffron-deep">{error}</p> : null}
+    <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
+      {error ? <p className="mt-2 text-sm font-medium text-amber-soft">{error}</p> : null}
       <ul className="mt-4 flex flex-col gap-2">
         {stages.map((stage, index) => (
-          <li key={stage.id} className="flex items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-mint/20 px-4 py-2">
-            <span className="text-sm font-medium text-ink/85">
+          <li key={stage.id} className="flex items-center justify-between gap-3 rounded-2xl border border-soft/10 bg-violet/8 px-4 py-2">
+            <span className="text-sm font-medium text-soft/85">
               {stage.name}
-              {stage.isWon ? <span className="ms-2 rounded-full bg-emerald/20 px-2 py-0.5 text-xs text-emerald">{t("won")}</span> : null}
-              {stage.isLost ? <span className="ms-2 rounded-full bg-saffron/20 px-2 py-0.5 text-xs text-saffron-deep">{t("lost")}</span> : null}
+              {stage.isWon ? <span className="ms-2 rounded-full bg-cyan/20 px-2 py-0.5 text-xs text-cyan">{t("won")}</span> : null}
+              {stage.isLost ? <span className="ms-2 rounded-full bg-amber/20 px-2 py-0.5 text-xs text-amber-soft">{t("lost")}</span> : null}
             </span>
             <div className="flex items-center gap-2">
-              <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="text-sm text-forest disabled:opacity-30" aria-label={t("moveUp")}>
+              <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="text-sm text-soft disabled:opacity-30" aria-label={t("moveUp")}>
                 ↑
               </button>
-              <button type="button" onClick={() => move(index, 1)} disabled={index === stages.length - 1} className="text-sm text-forest disabled:opacity-30" aria-label={t("moveDown")}>
+              <button type="button" onClick={() => move(index, 1)} disabled={index === stages.length - 1} className="text-sm text-soft disabled:opacity-30" aria-label={t("moveDown")}>
                 ↓
               </button>
-              <button type="button" onClick={() => deleteStage(stage.id)} className="text-sm font-medium text-saffron-deep hover:underline">
+              <button type="button" onClick={() => deleteStage(stage.id)} className="text-sm font-medium text-amber-soft hover:underline">
                 {t("deleteButton")}
               </button>
             </div>
@@ -82,13 +82,13 @@ export function PipelineStageManager({ initial }: { initial: PipelineStage[] }) 
           placeholder={t("namePlaceholder")}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 rounded-2xl border-2 border-forest/15 bg-offwhite px-4 py-2.5 text-ink focus:border-emerald focus:outline-none"
+          className="flex-1 rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
         />
         <button
           type="button"
           onClick={addStage}
           disabled={!name}
-          className="rounded-full bg-emerald px-6 py-2.5 text-sm font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+          className="rounded-full bg-cyan px-6 py-2.5 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
         >
           {t("addButton")}
         </button>

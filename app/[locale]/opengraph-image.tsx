@@ -4,16 +4,16 @@ import { brandColors, site } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Roya Vosoughi — AI Engineer & Software Developer";
+export const alt = "Nura — AI engineered for reality";
 
 /**
- * Social share card: Deep Forest background, wordmark, tagline.
+ * Social share card: Deep Indigo background, Nura mark + wordmark, slogan.
  *
  * DELIBERATELY LATIN-SCRIPT FOR BOTH LOCALES.
  * Satori (the renderer behind ImageResponse) performs no Arabic contextual
  * shaping and no bidi reordering, so Persian text comes out with disconnected,
- * reversed letterforms — verified: «رویا رو خط‌به‌خط می‌سازم» rendered as
- * "ایور رو طخاهباطخ". A correct Latin card beats a garbled Persian one on
+ * reversed letterforms — verified: a Persian tagline rendered with its
+ * letters disconnected and reversed. A correct Latin card beats a garbled Persian one on
  * LinkedIn and Telegram previews.
  *
  * To get a real Persian card later: hand-make a 1200×630 PNG in the brand
@@ -32,54 +32,58 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "90px",
-          backgroundColor: brandColors.forest,
+          backgroundColor: brandColors.indigo,
+          backgroundImage: `radial-gradient(circle at 18% 20%, ${brandColors.violet}55 0%, transparent 45%), radial-gradient(circle at 88% 85%, ${brandColors.cyan}26 0%, transparent 40%)`,
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span
-            style={{
-              fontSize: 44,
-              fontWeight: 700,
-              color: brandColors.offwhite,
-            }}
-          >
-            roya
-          </span>
-          <svg width="46" height="40" viewBox="0 0 40 34" fill="none">
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <svg width="64" height="64" viewBox="0 0 100 100">
             <path
-              d="M4 18 L14 28 L36 5"
-              stroke={brandColors.spring}
-              strokeWidth="7"
+              d="M22 80 V24 L76 76 V40"
+              fill="none"
+              stroke={brandColors.violet}
+              strokeWidth="15"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+            <circle cx="76" cy="17" r="10" fill={brandColors.cyan} />
           </svg>
+          <span
+            style={{
+              fontSize: 56,
+              fontWeight: 700,
+              letterSpacing: -2,
+              color: brandColors.soft,
+            }}
+          >
+            nura
+          </span>
         </div>
 
         <div
           style={{
             display: "flex",
-            fontSize: 82,
+            fontSize: 88,
             fontWeight: 700,
-            color: brandColors.offwhite,
-            lineHeight: 1.15,
-            marginTop: 44,
-            maxWidth: 940,
+            color: brandColors.soft,
+            lineHeight: 1.1,
+            marginTop: 48,
+            maxWidth: 980,
           }}
         >
-          Building a dream, line by line.
+          AI engineered for reality.
         </div>
 
         <div
           style={{
             display: "flex",
             fontSize: 32,
-            color: brandColors.spring,
-            marginTop: 34,
+            color: brandColors.cyan,
+            marginTop: 36,
           }}
         >
-          {site.name} · AI Engineer &amp; Software Developer
+          {site.name} · by {site.founder} · AI Engineer &amp; Software Developer
         </div>
       </div>
     ),

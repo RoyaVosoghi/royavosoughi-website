@@ -21,39 +21,39 @@ export async function Contact() {
 
           <dl className="mt-10 space-y-6">
             <div>
-              <dt className="label-eyebrow text-emerald">{t("emailLabel")}</dt>
+              <dt className="label-eyebrow text-cyan">{t("emailLabel")}</dt>
               <dd className="mt-2">
                 <a
                   href={`mailto:${site.email}`}
                   dir="ltr"
-                  className="text-lg text-forest underline underline-offset-4 hover:text-emerald"
+                  className="text-lg text-soft underline underline-offset-4 hover:text-cyan"
                 >
                   {site.email}
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-emerald">LinkedIn</dt>
+              <dt className="label-eyebrow text-cyan">LinkedIn</dt>
               <dd className="mt-2">
                 <a
                   href={site.social.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
                   dir="ltr"
-                  className="text-lg text-forest underline underline-offset-4 hover:text-emerald"
+                  className="text-lg text-soft underline underline-offset-4 hover:text-cyan"
                 >
                   /in/royavosoughi
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-emerald">{t("responseLabel")}</dt>
-              <dd className="mt-2 text-lg text-ink/75">{t("responseValue")}</dd>
+              <dt className="label-eyebrow text-cyan">{t("responseLabel")}</dt>
+              <dd className="mt-2 text-lg text-soft/75">{t("responseValue")}</dd>
             </div>
           </dl>
         </Reveal>
 
-        <Reveal delayMs={100} className="rounded-3xl bg-mint/40 p-6 md:p-8">
+        <Reveal delayMs={100} className="rounded-3xl bg-violet/10 p-6 md:p-8">
           <ContactForm configured={isSupabaseConfigured()} email={site.email} />
         </Reveal>
       </div>

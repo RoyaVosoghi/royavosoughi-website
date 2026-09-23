@@ -1,25 +1,28 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Roya Vosoughi — brand tokens
-   Source of truth: Roya_Brand_Guide.md § 02 Visual Identity
-   Do not introduce colours outside this palette.
+   Nura — brand tokens
+   "Nura: AI engineered for reality"
+   Four brand colours. Everything else below is a tint derived from them or a
+   functional status colour — do not introduce new hues.
    ========================================================================== */
 
 @theme {
-  /* Palette */
-  --color-forest: #023316; /* Deep Forest — dark base, headings, dark sections */
-  --color-emerald: #0f7b4f; /* Emerald — primary brand: buttons, links, emphasis */
-  --color-spring: #35c97e; /* Spring — accent on dark, display-size highlight only */
-  --color-mint: #dff5e9; /* Mint — soft background, cards, quotes */
-  --color-offwhite: #f7faf8; /* Off-White — main light background */
-  --color-ink: #1a1e1c; /* Ink — body text on light */
-  --color-saffron: #e3a72f; /* Saffron — rare special highlight */
+  /* Core palette */
+  --color-indigo: #0f0c29; /* Deep Indigo — main background */
+  --color-violet: #9d4edd; /* Electric Violet — accent & logo */
+  --color-cyan: #00e5ff; /* Neon Cyan — buttons & links */
+  --color-soft: #f8f9fa; /* Soft White — body text */
 
-  /* Supporting tints, derived from the palette (not new colours) */
-  --color-forest-soft: #0a4a24; /* hover state on forest surfaces */
-  --color-mint-deep: #8fd9b4; /* muted text on forest — matches the wordmark */
-  --color-saffron-deep: #876012; /* Saffron, darkened for text/borders on light — raw Saffron is 2:1 on Off-White, fails WCAG AA */
+  /* Derived tints (not new colours) */
+  --color-night: #1a1640; /* Indigo, raised — cards, panels, feature sections */
+  --color-night-soft: #262058; /* hover state on night surfaces */
+  --color-haze: #aaa5d4; /* muted text on indigo — Soft White mixed into Indigo */
+  --color-violet-soft: #c79bf2; /* Violet for SMALL text — raw Violet is ~4:1 on Indigo, below AA for body copy */
+
+  /* Functional status colour (warnings, "needs attention") — not a brand colour */
+  --color-amber: #f5b942;
+  --color-amber-soft: #ffd27a; /* amber for text on indigo */
 
   /* Type families. --font-display / --font-body are re-pointed per locale below. */
   --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
@@ -59,8 +62,9 @@
   }
 
   body {
-    background-color: var(--color-offwhite);
-    color: var(--color-ink);
+    background-color: var(--color-indigo);
+    color: var(--color-soft);
+    color-scheme: dark;
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -74,7 +78,7 @@
   h4 {
     font-family: var(--font-display);
     font-weight: 700;
-    color: var(--color-forest);
+    color: var(--color-soft);
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
@@ -104,7 +108,7 @@
 
   /* Visible, on-brand focus ring everywhere */
   :focus-visible {
-    outline: 3px solid var(--color-emerald);
+    outline: 3px solid var(--color-cyan);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -120,8 +124,8 @@
   }
 
   ::selection {
-    background-color: var(--color-spring);
-    color: var(--color-forest);
+    background-color: var(--color-violet);
+    color: var(--color-soft);
   }
 }
 
@@ -188,7 +192,7 @@
    Motion — every animation here must no-op under prefers-reduced-motion
    -------------------------------------------------------------------------- */
 
-/* The Emerald underline that draws itself under "line by line".
+/* The Cyan underline that draws itself under "line by line".
    A literal reading of the tagline: the line is built, left to right. */
 @keyframes draw-underline {
   from {
@@ -261,13 +265,13 @@
   transform: translateY(0);
 }
 
-/* Subtle technical texture for dark (Forest) sections — a fine dot grid,
+/* Subtle technical texture for dark (Night) sections — a fine dot grid,
    deliberately faint so it reads as texture, never competes with content.
    The alpha lives in the dot colour itself (not element opacity), so it
    never dims the section's actual content. */
 .bg-dot-grid {
   background-image: radial-gradient(
-    color-mix(in srgb, var(--color-mint-deep) 12%, transparent) 1px,
+    color-mix(in srgb, var(--color-haze) 12%, transparent) 1px,
     transparent 1px
   );
   background-size: 28px 28px;

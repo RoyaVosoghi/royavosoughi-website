@@ -33,9 +33,9 @@ export default async function AdminIdentitiesPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-forest">{t("title")}</h1>
-      <p className="mt-3 text-ink/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
+      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
 
       <div className="mt-8">
         {users.length === 0 ? (

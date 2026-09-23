@@ -18,22 +18,22 @@ export async function ActivityListSection({
   return (
     <div className="flex flex-col gap-4">
       {activities.length === 0 ? (
-        <p className="text-sm text-ink/50">{t("emptyTitle")}</p>
+        <p className="text-sm text-soft/50">{t("emptyTitle")}</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {activities.map((a) => (
             <li
               key={a.id}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-forest/10 bg-mint/20 px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3"
             >
               <div>
-                <p className="text-sm font-medium text-ink/85">
-                  <span className="me-2 rounded-full bg-forest/10 px-2 py-0.5 text-xs font-semibold text-forest capitalize">
+                <p className="text-sm font-medium text-soft/85">
+                  <span className="me-2 rounded-full bg-soft/10 px-2 py-0.5 text-xs font-semibold text-soft capitalize">
                     {a.type}
                   </span>
                   {a.subject}
                 </p>
-                {a.dueAt ? <p className="mt-1 text-xs text-ink/50">{new Date(a.dueAt).toLocaleString()}</p> : null}
+                {a.dueAt ? <p className="mt-1 text-xs text-soft/50">{new Date(a.dueAt).toLocaleString()}</p> : null}
               </div>
               <ActivityCompleteButton id={a.id} completed={Boolean(a.completedAt)} />
             </li>

@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Roya Vosoughi — AI Engineer & Software Developer",
+    "title": "Nura — AI engineered for reality",
     "description": "I build reliable, AI-powered applications for businesses that need them to actually work. Delivered on time, documented, and supported after handoff."
   },
   "nav": {
-    "home": "Roya Vosoughi — home",
+    "home": "Nura — home",
     "homeNav": "Home",
     "primary": "Primary",
     "services": "Services",
@@ -19,6 +19,7 @@
     "skipToContent": "Skip to content"
   },
   "hero": {
+    "eyebrow": "Nura: AI engineered for reality",
     "lineA": "Automate the system,",
     "lineB": "Live the life.",
     "subtitle": "RAG tools, assistants and agents that do a specific job for your business — deployed, documented, and supported after handoff. Never a demo pretending to be a product.",
@@ -228,7 +229,7 @@
     "fallbackIntro": "The contact form isn't switched on yet. Email me directly — I read every message."
   },
   "footer": {
-    "tagline": "Building a dream, line by line. 🌱",
+    "tagline": "Nura: AI engineered for reality.",
     "siteLinks": "Site",
     "elsewhere": "Elsewhere",
     "rights": "All rights reserved."

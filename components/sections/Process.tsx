@@ -29,18 +29,18 @@ export async function Process() {
           <li key={key}>
             <Reveal
               delayMs={i * 80}
-              className="flex h-full flex-col rounded-3xl bg-offwhite p-7"
+              className="flex h-full flex-col rounded-3xl bg-indigo p-7"
             >
               <span
                 aria-hidden="true"
-                className="font-mono text-sm font-bold text-emerald"
+                className="font-mono text-sm font-bold text-cyan"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-3 text-xl text-forest">
+              <h3 className="mt-3 text-xl text-soft">
                 {t(`steps.${key}.name`)}
               </h3>
-              <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-ink/75">
+              <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-soft/75">
                 {t(`steps.${key}.body`)}
               </p>
             </Reveal>

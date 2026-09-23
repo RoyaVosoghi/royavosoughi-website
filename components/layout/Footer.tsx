@@ -16,15 +16,15 @@ export async function Footer() {
   ];
 
   return (
-    <footer className="bg-forest text-offwhite">
+    <footer className="bg-night text-soft">
       <div className="container-page py-16 md:py-20">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
-            <Wordmark className="text-offwhite" />
-            <p className="mt-5 text-lg text-mint">{t("tagline")}</p>
+            <Wordmark className="text-soft" />
+            <p className="mt-5 text-lg text-soft/80">{t("tagline")}</p>
             <a
               href={`mailto:${site.email}`}
-              className="mt-6 inline-block text-mint-deep underline underline-offset-4 transition-colors hover:text-spring"
+              className="mt-6 inline-block text-haze underline underline-offset-4 transition-colors hover:text-cyan"
             >
               {site.email}
             </a>
@@ -32,14 +32,14 @@ export async function Footer() {
 
           <div className="flex flex-col gap-10 sm:flex-row sm:gap-16">
             <nav aria-label={t("siteLinks")}>
-              <h2 className="label-eyebrow text-mint-deep">{t("siteLinks")}</h2>
+              <h2 className="label-eyebrow text-haze">{t("siteLinks")}</h2>
               <ul className="mt-5 space-y-3">
                 {(["services", "process", "projects", "about", "contact"] as const).map(
                   (key) => (
                     <li key={key}>
                       <Link
                         href={key === "about" ? "/about" : `/#${key}`}
-                        className="text-mint transition-colors hover:text-spring"
+                        className="text-soft/80 transition-colors hover:text-cyan"
                       >
                         {nav(key)}
                       </Link>
@@ -50,7 +50,7 @@ export async function Footer() {
             </nav>
 
             <nav aria-label={t("elsewhere")}>
-              <h2 className="label-eyebrow text-mint-deep">{t("elsewhere")}</h2>
+              <h2 className="label-eyebrow text-haze">{t("elsewhere")}</h2>
               <ul className="mt-5 space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
@@ -58,7 +58,7 @@ export async function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="text-mint transition-colors hover:text-spring"
+                      className="text-soft/80 transition-colors hover:text-cyan"
                     >
                       {link.label}
                     </a>
@@ -69,8 +69,8 @@ export async function Footer() {
           </div>
         </div>
 
-        <p className="mt-14 border-t border-mint-deep/20 pt-8 text-sm text-mint-deep">
-          © {year} {site.name}. {t("rights")}
+        <p className="mt-14 border-t border-haze/20 pt-8 text-sm text-haze">
+          © {year} {site.name} · {site.founder}. {t("rights")}
         </p>
       </div>
     </footer>

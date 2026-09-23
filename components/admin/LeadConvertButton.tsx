@@ -38,11 +38,11 @@ export function LeadConvertButton({ id, companyName }: { id: string; companyName
         type="button"
         onClick={convert}
         disabled={pending}
-        className="rounded-full bg-emerald px-3 py-1 text-xs font-semibold text-offwhite transition-colors hover:bg-forest disabled:opacity-50"
+        className="rounded-full bg-cyan px-3 py-1 text-xs font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
       >
         {pending ? t("converting") : t("button")}
       </button>
-      {error ? <span className="text-xs text-saffron-deep">{t("convertFailed")}</span> : null}
+      {error ? <span className="text-xs text-amber-soft">{t("convertFailed")}</span> : null}
     </div>
   );
 }

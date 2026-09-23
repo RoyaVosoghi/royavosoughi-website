@@ -9,9 +9,9 @@ import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 export const metadata = { title: "Conversations · Admin" };
 
 const CHANNEL_STYLES: Record<string, string> = {
-  web: "bg-mint text-emerald",
-  widget: "bg-spring/20 text-emerald",
-  telegram: "bg-forest/10 text-forest",
+  web: "bg-night text-cyan",
+  widget: "bg-violet/20 text-cyan",
+  telegram: "bg-soft/10 text-soft",
 };
 
 function buildColumns(
@@ -23,7 +23,7 @@ function buildColumns(
       cell: (row) => (
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
-            CHANNEL_STYLES[row.channel] ?? "bg-forest/10 text-ink/60"
+            CHANNEL_STYLES[row.channel] ?? "bg-soft/10 text-soft/60"
           }`}
         >
           {row.channel}
@@ -34,16 +34,16 @@ function buildColumns(
       header: t("list.columnStatus"),
       cell: (row) => (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`text-xs font-medium capitalize ${row.status === "closed" ? "text-ink/40" : "text-emerald"}`}>
+          <span className={`text-xs font-medium capitalize ${row.status === "closed" ? "text-soft/40" : "text-cyan"}`}>
             {row.status}
           </span>
           {row.botPaused ? (
-            <span className="rounded-full bg-saffron/20 px-2 py-0.5 text-[10px] font-semibold text-saffron-deep">
+            <span className="rounded-full bg-amber/20 px-2 py-0.5 text-[10px] font-semibold text-amber-soft">
               {t("list.statusPaused")}
             </span>
           ) : null}
           {row.flagged ? (
-            <span className="rounded-full bg-forest/10 px-2 py-0.5 text-[10px] font-semibold text-forest">
+            <span className="rounded-full bg-soft/10 px-2 py-0.5 text-[10px] font-semibold text-soft">
               {t("list.statusFlagged")}
             </span>
           ) : null}
@@ -60,7 +60,7 @@ function buildColumns(
     {
       header: "",
       cell: (row) => (
-        <Link href={`/admin/conversations/${row.id}`} className="font-medium text-emerald hover:underline">
+        <Link href={`/admin/conversations/${row.id}`} className="font-medium text-cyan hover:underline">
           {t("list.viewLink")}
         </Link>
       ),
@@ -113,15 +113,15 @@ export default async function AdminConversationsPage({
 
   return (
     <div>
-      <p className="label-eyebrow text-emerald">{t("list.eyebrow")}</p>
-      <h1 className="text-section mt-3 text-forest">{t("list.title")}</h1>
-      <p className="mt-3 text-ink/70">{t("list.subtitle")}</p>
+      <p className="label-eyebrow text-cyan">{t("list.eyebrow")}</p>
+      <h1 className="text-section mt-3 text-soft">{t("list.title")}</h1>
+      <p className="mt-3 text-soft/70">{t("list.subtitle")}</p>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <div className="flex gap-1 rounded-full bg-forest/5 p-1">
+        <div className="flex gap-1 rounded-full bg-soft/5 p-1">
           <Link
             href={filterLink({ channel: "" })}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!channelFilter ? "bg-emerald text-offwhite" : "text-ink/60 hover:bg-forest/10"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!channelFilter ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
           >
             {t("list.filterAllChannels")}
           </Link>
@@ -129,16 +129,16 @@ export default async function AdminConversationsPage({
             <Link
               key={c}
               href={filterLink({ channel: c })}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${channelFilter === c ? "bg-emerald text-offwhite" : "text-ink/60 hover:bg-forest/10"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${channelFilter === c ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
             >
               {CHANNEL_LABELS[c]}
             </Link>
           ))}
         </div>
-        <div className="flex gap-1 rounded-full bg-forest/5 p-1">
+        <div className="flex gap-1 rounded-full bg-soft/5 p-1">
           <Link
             href={filterLink({ status: "" })}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!statusFilter ? "bg-emerald text-offwhite" : "text-ink/60 hover:bg-forest/10"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!statusFilter ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
           >
             {t("list.filterAnyStatus")}
           </Link>
@@ -146,7 +146,7 @@ export default async function AdminConversationsPage({
             <Link
               key={s}
               href={filterLink({ status: s })}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${statusFilter === s ? "bg-emerald text-offwhite" : "text-ink/60 hover:bg-forest/10"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${statusFilter === s ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
             >
               {STATUS_LABELS[s]}
             </Link>
@@ -160,7 +160,7 @@ export default async function AdminConversationsPage({
             name="q"
             defaultValue={q ?? ""}
             placeholder={t("list.searchPlaceholder")}
-            className="rounded-full border-2 border-forest/15 bg-offwhite px-4 py-1.5 text-sm text-ink focus:border-emerald focus:outline-none"
+            className="rounded-full border-2 border-soft/15 bg-indigo px-4 py-1.5 text-sm text-soft focus:border-cyan focus:outline-none"
           />
         </form>
       </div>
