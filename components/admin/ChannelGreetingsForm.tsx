@@ -37,11 +37,11 @@ function Row({ row }: { row: AllChannelGreetingsRow }) {
   const localeLabel = row.locale === "en" ? t("localeEn") : t("localeFa");
 
   return (
-    <div className="rounded-2xl border-2 border-soft/10 bg-violet/8 p-4">
-      <p className="font-display text-sm font-bold text-soft">
+    <div className="rounded-2xl border-2 border-navy/10 bg-mist/20 p-4">
+      <p className="font-display text-sm font-bold text-navy">
         {channelLabel} · {localeLabel}
       </p>
-      {row.channel === "widget" ? <p className="mt-1 text-xs text-soft/50">{t("widgetNote")}</p> : null}
+      {row.channel === "widget" ? <p className="mt-1 text-xs text-navy/50">{t("widgetNote")}</p> : null}
       <div className="mt-3 flex flex-col gap-2">
         {row.channel !== "widget" ? (
           <input
@@ -49,7 +49,7 @@ function Row({ row }: { row: AllChannelGreetingsRow }) {
             value={welcome}
             onChange={(e) => setWelcome(e.target.value)}
             placeholder={t("welcomePlaceholder")}
-            className="w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         ) : null}
         <input
@@ -57,7 +57,7 @@ function Row({ row }: { row: AllChannelGreetingsRow }) {
           value={replies}
           onChange={(e) => setReplies(e.target.value)}
           placeholder={t("quickRepliesPlaceholder")}
-          className="w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+          className="w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
         />
       </div>
       <div className="mt-3 flex items-center gap-3">
@@ -65,12 +65,12 @@ function Row({ row }: { row: AllChannelGreetingsRow }) {
           type="button"
           onClick={save}
           disabled={status === "saving"}
-          className="rounded-full bg-cyan px-4 py-1.5 text-xs font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+          className="rounded-full bg-coral px-4 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
         >
           {status === "saving" ? t("saving") : t("save")}
         </button>
-        {status === "saved" ? <span className="text-xs font-medium text-cyan">{t("saved")}</span> : null}
-        {status === "error" ? <span className="text-xs font-medium text-amber-soft">{t("saveError")}</span> : null}
+        {status === "saved" ? <span className="text-xs font-medium text-coral-deep">{t("saved")}</span> : null}
+        {status === "error" ? <span className="text-xs font-medium text-amber-deep">{t("saveError")}</span> : null}
       </div>
     </div>
   );
@@ -79,9 +79,9 @@ function Row({ row }: { row: AllChannelGreetingsRow }) {
 export function ChannelGreetingsForm({ initial }: { initial: AllChannelGreetingsRow[] }) {
   const t = useTranslations("channels.greetings");
   return (
-    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
-      <p className="mt-1 text-sm text-soft/60">{t("subtitle")}</p>
+    <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-navy">{t("title")}</h2>
+      <p className="mt-1 text-sm text-navy/60">{t("subtitle")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {initial.map((row) => (

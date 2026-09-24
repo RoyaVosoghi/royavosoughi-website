@@ -17,7 +17,7 @@ function buildColumns(
       cell: (row) => (
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            row.rating === 1 ? "bg-night text-cyan" : "bg-amber/20 text-amber-soft"
+            row.rating === 1 ? "bg-mist text-coral-deep" : "bg-amber/20 text-amber-deep"
           }`}
         >
           {row.rating === 1 ? t("ratingGood") : t("ratingBad")}
@@ -30,7 +30,7 @@ function buildColumns(
       header: t("columnConversation"),
       cell: (row) =>
         row.conversationId ? (
-          <Link href={`/admin/conversations/${row.conversationId}`} className="text-cyan hover:underline">
+          <Link href={`/admin/conversations/${row.conversationId}`} className="text-coral-deep hover:underline">
             {t("viewLink")}
           </Link>
         ) : (
@@ -61,12 +61,12 @@ export default async function AdminFeedbackPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
-      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
+      <p className="mt-3 text-navy/70">{t("subtitle")}</p>
 
       <div className="mt-8">
-        <h2 className="font-display text-lg font-bold text-soft">{t("ratingsTitle")}</h2>
+        <h2 className="font-display text-lg font-bold text-navy">{t("ratingsTitle")}</h2>
         <div className="mt-4">
           {feedback.length === 0 ? (
             <EmptyState title={t("emptyRatingsTitle")} body={t("emptyRatingsBody")} />
@@ -77,19 +77,19 @@ export default async function AdminFeedbackPage() {
       </div>
 
       <div className="mt-10">
-        <h2 className="font-display text-lg font-bold text-soft">{t("flaggedTitle")}</h2>
-        <p className="mt-1 text-sm text-soft/60">{t("flaggedSubtitle")}</p>
+        <h2 className="font-display text-lg font-bold text-navy">{t("flaggedTitle")}</h2>
+        <p className="mt-1 text-sm text-navy/60">{t("flaggedSubtitle")}</p>
         <div className="mt-4">
           {flagged.length === 0 ? (
-            <p className="text-sm text-soft/60">{t("flaggedEmpty")}</p>
+            <p className="text-sm text-navy/60">{t("flaggedEmpty")}</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {flagged.map((c) => (
-                <li key={c.id} className="rounded-xl border border-soft/10 bg-violet/8 p-3 text-sm">
-                  <Link href={`/admin/conversations/${c.id}`} className="font-semibold text-cyan hover:underline">
+                <li key={c.id} className="rounded-xl border border-navy/10 bg-mist/20 p-3 text-sm">
+                  <Link href={`/admin/conversations/${c.id}`} className="font-semibold text-coral-deep hover:underline">
                     {c.channel} · {c.leadEmail ?? t("anonymous")} →
                   </Link>
-                  <span className="ms-2 text-soft/50">{new Date(c.lastActiveAt).toLocaleString()}</span>
+                  <span className="ms-2 text-navy/50">{new Date(c.lastActiveAt).toLocaleString()}</span>
                 </li>
               ))}
             </ul>
@@ -98,22 +98,22 @@ export default async function AdminFeedbackPage() {
       </div>
 
       <div className="mt-10">
-        <h2 className="font-display text-lg font-bold text-soft">{t("unansweredTitle")}</h2>
-        <p className="mt-1 text-sm text-soft/60">{t("unansweredSubtitle")}</p>
+        <h2 className="font-display text-lg font-bold text-navy">{t("unansweredTitle")}</h2>
+        <p className="mt-1 text-sm text-navy/60">{t("unansweredSubtitle")}</p>
         <div className="mt-4">
           {unanswered.length === 0 ? (
-            <p className="text-sm text-soft/60">{t("unansweredEmpty")}</p>
+            <p className="text-sm text-navy/60">{t("unansweredEmpty")}</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {unanswered.map((u) => (
-                <li key={u.messageId} className="rounded-xl border border-soft/10 bg-indigo p-3 text-sm">
-                  <p className="font-medium text-soft/80">{u.question ?? t("noQuestionCaptured")}</p>
-                  <p className="mt-1 text-soft/50 line-clamp-2">{u.reply}</p>
+                <li key={u.messageId} className="rounded-xl border border-navy/10 bg-canvas p-3 text-sm">
+                  <p className="font-medium text-navy/80">{u.question ?? t("noQuestionCaptured")}</p>
+                  <p className="mt-1 text-navy/50 line-clamp-2">{u.reply}</p>
                   <div className="mt-2 flex gap-3">
-                    <Link href={`/admin/conversations/${u.conversationId}`} className="text-xs font-semibold text-cyan hover:underline">
+                    <Link href={`/admin/conversations/${u.conversationId}`} className="text-xs font-semibold text-coral-deep hover:underline">
                       {t("viewConversation")}
                     </Link>
-                    <Link href="/admin/knowledge" className="text-xs font-semibold text-soft hover:underline">
+                    <Link href="/admin/knowledge" className="text-xs font-semibold text-navy hover:underline">
                       {t("addToKnowledgeBase")}
                     </Link>
                   </div>

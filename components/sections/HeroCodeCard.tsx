@@ -6,7 +6,7 @@
  * code is not a translatable surface.
  *
  * Framing follows the brand guide's imagery rule for code/screenshots
- * Nura version: a Deep Indigo code panel inside a violet → cyan glow frame.
+ * verbatim: Deep Forest frame on a Mint background.
  */
 export function HeroCodeCard({ label }: { label: string }) {
   return (
@@ -14,46 +14,46 @@ export function HeroCodeCard({ label }: { label: string }) {
       role="img"
       aria-label={label}
       dir="ltr"
-      className="rounded-3xl border border-violet/30 bg-gradient-to-br from-violet/25 via-night to-cyan/15 p-3 shadow-[0_24px_80px_-24px_rgba(157,78,221,0.55)]"
+      className="rounded-3xl bg-mist p-3 shadow-[0_24px_60px_-24px_rgba(20,33,61,0.35)]"
     >
-      <div className="overflow-hidden rounded-2xl bg-indigo">
-        <div className="flex items-center gap-2.5 bg-night-soft/60 px-4 py-3">
+      <div className="overflow-hidden rounded-2xl bg-navy">
+        <div className="flex items-center gap-2.5 bg-navy-soft/60 px-4 py-3">
           <span
             aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-violet ring-4 ring-violet/25"
+            className="h-2 w-2 rounded-full bg-coral ring-4 ring-coral/20"
           />
-          <span className="rounded-md bg-indigo px-2.5 py-1 font-mono text-xs text-haze">
+          <span className="rounded-md bg-navy px-2.5 py-1 font-mono text-xs text-fog">
             agent.py
           </span>
         </div>
 
-        <pre className="overflow-x-auto px-5 py-6 font-mono text-[0.8125rem] leading-relaxed text-haze">
+        <pre className="overflow-x-auto px-5 py-6 font-mono text-[0.8125rem] leading-relaxed text-fog">
           <code>
-            <span className="text-violet-soft">from</span> rag{" "}
-            <span className="text-violet-soft">import</span> KnowledgeBase
+            <span className="text-coral">from</span> rag{" "}
+            <span className="text-coral">import</span> KnowledgeBase
             {"\n"}
-            <span className="text-violet-soft">from</span> agents{" "}
-            <span className="text-violet-soft">import</span> Agent
+            <span className="text-coral">from</span> agents{" "}
+            <span className="text-coral">import</span> Agent
             {"\n\n"}
-            kb = KnowledgeBase.from_docs(<span className="text-cyan">
+            kb = KnowledgeBase.from_docs(<span className="text-canvas">
               &quot;./company_docs&quot;
             </span>)
             {"\n"}
-            agent = Agent(model=<span className="text-cyan">&quot;gpt-4o&quot;</span>
+            agent = Agent(model=<span className="text-canvas">&quot;gpt-4o&quot;</span>
             , tools=[kb]){"\n\n"}
             agent.run({"\n"}
             {"  "}
-            <span className="text-cyan">
+            <span className="text-canvas">
               &quot;What&apos;s our refund policy?&quot;
             </span>
             {"\n"})
             {"\n"}
-            <span className="text-haze/60">
+            <span className="text-fog/60">
               # → answered from YOUR docs, not a guess
             </span>
             <span
               aria-hidden="true"
-              className="cursor-blink ms-0.5 inline-block h-[1em] w-[0.5ch] -translate-y-0.5 bg-violet align-middle"
+              className="cursor-blink ms-0.5 inline-block h-[1em] w-[0.5ch] -translate-y-0.5 bg-coral align-middle"
             />
           </code>
         </pre>

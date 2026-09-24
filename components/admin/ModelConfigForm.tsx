@@ -54,7 +54,7 @@ function ModelSelect({
         const slug = e.target.value;
         onChange(slug, slug ? getModelCatalogEntry(slug) : undefined);
       }}
-      className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+      className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
     >
       {allowNone ? <option value="">{noOverrideLabel}</option> : null}
       {groups.map((group) => (
@@ -132,21 +132,21 @@ function ChannelCard({
   }
 
   return (
-    <div className="rounded-2xl border-2 border-soft/10 bg-violet/8 p-5">
+    <div className="rounded-2xl border-2 border-navy/10 bg-mist/20 p-5">
       <div className="flex items-center justify-between">
-        <p className="font-display text-sm font-bold text-soft">{channelLabel}</p>
-        <span className="rounded-full bg-soft/10 px-2.5 py-0.5 text-xs font-medium text-soft/60">
+        <p className="font-display text-sm font-bold text-navy">{channelLabel}</p>
+        <span className="rounded-full bg-navy/10 px-2.5 py-0.5 text-xs font-medium text-navy/60">
           {currentProvider === "gemini" ? t("models.providerGemini") : t("models.providerOpenrouter")}
         </span>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <label className="col-span-2 text-xs font-medium text-soft/70">
+        <label className="col-span-2 text-xs font-medium text-navy/70">
           {t("models.modelLabel")}
           <ModelSelect value={row.activeModel} onChange={setActiveModel} noOverrideLabel={t("models.noOverride")} />
-          {activeEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-soft/50">{activeEntry.description}</p> : null}
+          {activeEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-navy/50">{activeEntry.description}</p> : null}
         </label>
-        <label className="col-span-2 text-xs font-medium text-soft/70">
+        <label className="col-span-2 text-xs font-medium text-navy/70">
           {t("models.fallbackLabel")}
           <ModelSelect
             value={row.fallbackModel ?? ""}
@@ -155,9 +155,9 @@ function ChannelCard({
             noOverrideLabel={t("models.noOverride")}
             restrictToProvider={currentProvider}
           />
-          {fallbackEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-soft/50">{fallbackEntry.description}</p> : null}
+          {fallbackEntry ? <p className="mt-1.5 text-xs font-normal leading-snug text-navy/50">{fallbackEntry.description}</p> : null}
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("models.temperatureLabel")}
           <input
             type="number"
@@ -166,10 +166,10 @@ function ChannelCard({
             step={0.1}
             value={row.temperature}
             onChange={(e) => setRow({ ...row, temperature: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("models.topPLabel")}
           <input
             type="number"
@@ -178,10 +178,10 @@ function ChannelCard({
             step={0.05}
             value={row.topP}
             onChange={(e) => setRow({ ...row, topP: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
-        <label className="col-span-2 text-xs font-medium text-soft/70">
+        <label className="col-span-2 text-xs font-medium text-navy/70">
           {t("models.maxTokensLabel")}
           <input
             type="number"
@@ -189,7 +189,7 @@ function ChannelCard({
             max={8192}
             value={row.maxTokens}
             onChange={(e) => setRow({ ...row, maxTokens: Number(e.target.value) })}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
       </div>
@@ -197,15 +197,15 @@ function ChannelCard({
       <button
         type="button"
         onClick={() => setScheduleOpen((v) => !v)}
-        className="mt-4 text-xs font-medium text-cyan hover:underline"
+        className="mt-4 text-xs font-medium text-coral-deep hover:underline"
       >
         {scheduleOpen ? t("models.scheduleHide") : t("models.scheduleShow")}
       </button>
 
       {scheduleOpen ? (
-        <div className="mt-3 grid grid-cols-1 gap-2 rounded-xl bg-indigo p-3 sm:grid-cols-2">
+        <div className="mt-3 grid grid-cols-1 gap-2 rounded-xl bg-canvas p-3 sm:grid-cols-2">
           {WEEKDAYS.map((day) => (
-            <label key={day.key} className="text-xs font-medium text-soft/70">
+            <label key={day.key} className="text-xs font-medium text-navy/70">
               {day.label}
               <ModelSelect
                 value={row.schedule?.[day.key] ?? ""}
@@ -224,12 +224,12 @@ function ChannelCard({
           type="button"
           onClick={save}
           disabled={status === "saving"}
-          className="rounded-full bg-cyan px-5 py-2 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+          className="rounded-full bg-coral px-5 py-2 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
         >
           {status === "saving" ? t("models.saving") : t("models.save")}
         </button>
-        {status === "saved" ? <span className="text-sm font-medium text-cyan">{t("models.saved")}</span> : null}
-        {status === "error" ? <span className="text-sm font-medium text-amber-soft">{t("models.error")}</span> : null}
+        {status === "saved" ? <span className="text-sm font-medium text-coral-deep">{t("models.saved")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-amber-deep">{t("models.error")}</span> : null}
       </div>
     </div>
   );
@@ -245,9 +245,9 @@ export function ModelConfigForm({ initial }: { initial: ModelConfigRow[] }) {
   };
 
   return (
-    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-      <h2 className="font-display text-lg font-bold text-soft">{t("models.heading")}</h2>
-      <p className="mt-1 text-sm text-soft/60">{t("models.description")}</p>
+    <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-navy">{t("models.heading")}</h2>
+      <p className="mt-1 text-sm text-navy/60">{t("models.description")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
         {initial.map((row) => (

@@ -30,34 +30,34 @@ export async function Services() {
         {/* Primary offer */}
         <Reveal
           delayMs={80}
-          className="rounded-3xl bg-indigo p-8 md:p-10 lg:col-span-2"
+          className="rounded-3xl bg-canvas p-8 md:p-10 lg:col-span-2"
         >
           <div className="flex flex-wrap items-center gap-3">
-            <h3 className="text-2xl text-soft md:text-3xl">
+            <h3 className="text-2xl text-navy md:text-3xl">
               {t("consultation.name")}
             </h3>
-            <span className="rounded-full bg-night px-3 py-1 text-sm font-semibold text-cyan">
+            <span className="rounded-full bg-mist px-3 py-1 text-sm font-semibold text-coral-deep">
               {t("consultation.duration")}
             </span>
-            <span className="rounded-full bg-amber/20 px-3 py-1 text-sm font-semibold text-amber-soft">
+            <span className="rounded-full bg-amber/20 px-3 py-1 text-sm font-semibold text-amber-deep">
               {t("consultation.free")}
             </span>
           </div>
 
-          <p className="mt-5 text-lg text-soft/80">{t("consultation.summary")}</p>
+          <p className="mt-5 text-lg text-navy/80">{t("consultation.summary")}</p>
 
-          <h4 className="label-eyebrow mt-8 text-cyan">
+          <h4 className="label-eyebrow mt-8 text-coral-deep">
             {t("consultation.walkAwayWith")}
           </h4>
           <ul className="mt-4 space-y-3">
             {consultationPoints.map((key) => (
-              <li key={key} className="flex gap-3 text-soft/80">
+              <li key={key} className="flex gap-3 text-navy/80">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                   className="mt-1 h-5 w-5 shrink-0"
                   fill="none"
-                  stroke="var(--color-cyan)"
+                  stroke="var(--color-coral-deep)"
                   strokeWidth="3"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -73,7 +73,7 @@ export async function Services() {
             <ButtonLink href="#contact" variant="primary">
               {t("consultation.cta")}
             </ButtonLink>
-            <p className="text-sm text-soft/70">{t("consultation.note")}</p>
+            <p className="text-sm text-navy/70">{t("consultation.note")}</p>
           </div>
         </Reveal>
 
@@ -83,11 +83,11 @@ export async function Services() {
             <Reveal
               key={key}
               delayMs={160 + i * 80}
-              className="flex-1 rounded-3xl border border-haze/25 p-8"
+              className="flex-1 rounded-3xl border border-fog/25 p-8"
             >
-              <span className="label-eyebrow text-violet-soft">{t("soonLabel")}</span>
-              <h3 className="mt-3 text-xl text-soft">{t(`${key}.name`)}</h3>
-              <p className="mt-3 text-[0.9375rem] leading-relaxed text-soft/80">
+              <span className="label-eyebrow text-coral">{t("soonLabel")}</span>
+              <h3 className="mt-3 text-xl text-canvas">{t(`${key}.name`)}</h3>
+              <p className="mt-3 text-[0.9375rem] leading-relaxed text-mist">
                 {t(`${key}.summary`)}
               </p>
             </Reveal>

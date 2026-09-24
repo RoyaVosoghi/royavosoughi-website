@@ -39,11 +39,11 @@ export default async function ChatPage({
   return (
     <Section tone="light" className="pt-14 md:pt-20">
       <div className="mx-auto max-w-3xl">
-        <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-        <h1 className="text-section mt-4 text-soft">{t("title")}</h1>
-        <p className="mt-6 text-lg text-soft/80">{t("lead")}</p>
+        <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+        <h1 className="text-section mt-4 text-navy">{t("title")}</h1>
+        <p className="mt-6 text-lg text-navy/80">{t("lead")}</p>
 
-        <div className="mt-10 h-[34rem] overflow-hidden rounded-3xl border-2 border-soft/15">
+        <div className="mt-10 h-[34rem] overflow-hidden rounded-3xl border-2 border-navy/15">
           <ChatWidget
             configured={configured}
             locale={locale as Locale}

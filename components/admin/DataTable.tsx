@@ -21,14 +21,14 @@ export function DataTable<T extends { id: string }>({
   rows: T[];
 }) {
   return (
-    <div className="overflow-x-auto rounded-3xl border-2 border-soft/10 bg-indigo">
+    <div className="overflow-x-auto rounded-3xl border-2 border-navy/10 bg-canvas">
       <table className="w-full min-w-[640px] border-collapse text-sm">
         <thead>
-          <tr className="border-b-2 border-soft/10 text-start">
+          <tr className="border-b-2 border-navy/10 text-start">
             {columns.map((col) => (
               <th
                 key={col.header}
-                className="px-5 py-3 font-display text-xs font-bold tracking-wide text-soft/70 uppercase"
+                className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase"
               >
                 {col.header}
               </th>
@@ -37,11 +37,11 @@ export function DataTable<T extends { id: string }>({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} className="border-b border-soft/5 last:border-0 hover:bg-violet/10">
+            <tr key={row.id} className="border-b border-navy/5 last:border-0 hover:bg-mist/30">
               {columns.map((col) => (
                 <td
                   key={col.header}
-                  className={`px-5 py-3 text-soft/85 ${col.numeric ? "tabular-nums" : ""}`}
+                  className={`px-5 py-3 text-navy/85 ${col.numeric ? "tabular-nums" : ""}`}
                 >
                   {col.cell(row)}
                 </td>

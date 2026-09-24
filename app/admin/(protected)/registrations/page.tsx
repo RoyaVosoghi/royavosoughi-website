@@ -7,9 +7,9 @@ import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 export const metadata = { title: "Registrations · Admin" };
 
 const STATUS_STYLES: Record<string, string> = {
-  confirmed: "bg-night text-cyan",
-  pending: "bg-amber/20 text-amber-soft",
-  cancelled: "bg-soft/10 text-soft/60",
+  confirmed: "bg-mist text-coral-deep",
+  pending: "bg-amber/20 text-amber-deep",
+  cancelled: "bg-navy/10 text-navy/60",
 };
 
 function buildColumns(
@@ -23,14 +23,14 @@ function buildColumns(
 
   return [
     { header: t("columnName"), cell: (row) => row.name },
-    { header: t("columnEmail"), cell: (row) => <a className="text-cyan hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
+    { header: t("columnEmail"), cell: (row) => <a className="text-coral-deep hover:underline" href={`mailto:${row.email}`}>{row.email}</a> },
     { header: t("columnEvent"), cell: (row) => row.eventType.replace("_", " ") },
     {
       header: t("columnStatus"),
       cell: (row) => (
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
-            STATUS_STYLES[row.status] ?? "bg-soft/10 text-soft/60"
+            STATUS_STYLES[row.status] ?? "bg-navy/10 text-navy/60"
           }`}
         >
           {STATUS_LABELS[row.status] ?? row.status}
@@ -57,9 +57,9 @@ export default async function AdminRegistrationsPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
-      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
+      <p className="mt-3 text-navy/70">{t("subtitle")}</p>
 
       <div className="mt-8">
         {registrations.length === 0 ? (

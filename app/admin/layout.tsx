@@ -52,7 +52,7 @@ export default async function AdminRootLayout({ children }: { children: ReactNod
       className={`${spaceGrotesk.variable} ${inter.variable} ${vazirmatn.variable}`}
       suppressHydrationWarning
     >
-      <body className={`locale-${locale} min-h-dvh bg-indigo`} suppressHydrationWarning>
+      <body className={`locale-${locale} min-h-dvh bg-canvas`} suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

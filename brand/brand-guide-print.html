@@ -7,58 +7,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=Vazirmatn:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap');
 
 :root{
-  --indigo:#0F0C29; --violet:#9D4EDD; --cyan:#00E5FF; --soft:#F8F9FA;
-  --night:#1A1640; --nightsoft:#262058; --haze:#AAA5D4; --violetsoft:#C79BF2; --amber:#F5B942;
-  --line:rgba(248,249,250,.1);
+  --canvas:#F5F5F7; --navy:#14213D; --coral:#E07A5F; --mist:#E6E6E6;
+  --navysoft:#1F3158; --fog:#A9B4CC; --coraldeep:#AD4428; --amber:#876012;
+  --line:rgba(20,33,61,.12);
 }
 *{ margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-body{ font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif; color:var(--soft); background:var(--indigo); font-size:10.5pt; line-height:1.7; direction:rtl; }
+body{ font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif; color:var(--navy); background:var(--canvas); font-size:10.5pt; line-height:1.7; direction:rtl; }
 .en{ font-family:'Inter','Segoe UI',sans-serif; direction:ltr; unicode-bidi:embed; }
 .sg{ font-family:'Space Grotesk','Segoe UI',sans-serif; direction:ltr; unicode-bidi:embed; }
 @page{ size:A4; margin:0; }
-.page{ width:210mm; height:296mm; padding:16mm 18mm; page-break-after:always; position:relative; overflow:hidden; background:var(--indigo); color:var(--soft); }
-.page.dark{ background:radial-gradient(120mm 90mm at 25% 30%, rgba(157,78,221,.30), transparent 70%), radial-gradient(90mm 70mm at 85% 85%, rgba(0,229,255,.10), transparent 70%), var(--indigo); }
-.pagenum{ position:absolute; bottom:8mm; left:18mm; font-size:8pt; color:var(--cyan); letter-spacing:1px; }
-.pagefoot{ position:absolute; bottom:8mm; right:18mm; font-size:8pt; color:var(--haze); }
-.kicker{ color:var(--violetsoft); font-size:9.5pt; font-weight:700; margin-bottom:2mm; }
-h1{ font-size:22pt; color:var(--soft); font-weight:700; margin-bottom:5mm; }
-h2{ font-size:12.5pt; color:var(--soft); font-weight:700; margin:5mm 0 2mm; }
+.page{ width:210mm; height:296mm; padding:16mm 18mm; page-break-after:always; position:relative; overflow:hidden; background:var(--canvas); color:var(--navy); }
+.page.dark{ background:radial-gradient(120mm 90mm at 25% 30%, rgba(224,122,95,.22), transparent 70%), var(--navy); color:var(--canvas); }
+.pagenum{ position:absolute; bottom:8mm; left:18mm; font-size:8pt; color:var(--coraldeep); letter-spacing:1px; }
+.pagefoot{ position:absolute; bottom:8mm; right:18mm; font-size:8pt; color:rgba(20,33,61,.6); }
+.kicker{ color:var(--coraldeep); font-size:9.5pt; font-weight:700; margin-bottom:2mm; }
+h1{ font-size:22pt; color:var(--navy); font-weight:700; margin-bottom:5mm; }
+h2{ font-size:12.5pt; color:var(--navy); font-weight:700; margin:5mm 0 2mm; }
 p{ margin-bottom:2.5mm; }
 .lead{ font-size:11pt; }
-.card{ background:var(--night); border:1px solid var(--line); border-radius:10px; padding:4.5mm 6mm; margin-bottom:3.5mm; }
-.mintcard{ background:rgba(157,78,221,.14); border:1px solid rgba(157,78,221,.35); border-radius:10px; padding:5mm 6mm; margin-bottom:4mm; }
+.card{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:4.5mm 6mm; margin-bottom:3.5mm; }
+.mintcard{ background:var(--mist); border:none; border-radius:10px; padding:5mm 6mm; margin-bottom:4mm; }
 .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:4mm; }
 .grid4{ display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:3mm; }
 table{ width:100%; border-collapse:collapse; font-size:9pt; margin-bottom:4mm; }
-th{ text-align:right; background:var(--nightsoft); color:var(--soft); padding:2mm 3mm; font-weight:500; }
-td{ padding:2mm 3mm; border-bottom:1px solid var(--line); vertical-align:top; background:var(--night); }
-td.lbl{ color:var(--cyan); font-weight:700; width:26mm; }
-.tag{ display:inline-block; background:rgba(157,78,221,.16); color:var(--violetsoft); border-radius:20px; padding:1mm 4mm; font-size:8.5pt; font-weight:700; margin:0 0 2mm 1.5mm; }
-.swatch{ border-radius:10px; overflow:hidden; border:1px solid var(--line); background:var(--night); }
+th{ text-align:right; background:var(--navy); color:var(--canvas); padding:2mm 3mm; font-weight:500; }
+td{ padding:2mm 3mm; border-bottom:1px solid var(--line); vertical-align:top; background:#fff; }
+td.lbl{ color:var(--coraldeep); font-weight:700; width:26mm; }
+.tag{ display:inline-block; background:var(--mist); color:var(--navy); border-radius:20px; padding:1mm 4mm; font-size:8.5pt; font-weight:700; margin:0 0 2mm 1.5mm; }
+.swatch{ border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#fff; }
 .swatch .c{ height:22mm; }
 .swatch .t{ padding:2mm 3mm; font-size:8pt; }
 .swatch .t b{ display:block; font-size:8.5pt; }
-.mono{ font-family:'JetBrains Mono',monospace; color:var(--haze); direction:ltr; unicode-bidi:embed; }
-.ok{ color:var(--cyan); font-family:'JetBrains Mono',monospace; font-size:7.5pt; direction:ltr; unicode-bidi:embed; }
+.mono{ font-family:'JetBrains Mono',monospace; color:rgba(20,33,61,.65); direction:ltr; unicode-bidi:embed; }
+.ok{ color:var(--coraldeep); font-family:'JetBrains Mono',monospace; font-size:7.5pt; direction:ltr; unicode-bidi:embed; }
 ul{ margin:0 5mm 3mm 0; }
 li{ margin-bottom:1.5mm; }
 .check li{ list-style:none; margin-right:-5mm; }
-.quote{ border-right:3px solid var(--cyan); padding:2mm 5mm 2mm 0; color:rgba(248,249,250,.85); margin-bottom:3mm; }
-b.acc{ color:var(--cyan); }
+.quote{ border-right:3px solid var(--coral); padding:2mm 5mm 2mm 0; color:rgba(20,33,61,.85); margin-bottom:3mm; }
+b.acc{ color:var(--coraldeep); }
 </style>
 </head>
 <body>
 
 <!-- COVER -->
 <div class="page dark" style="display:flex; flex-direction:column; justify-content:space-between;">
-  <div style="font-size:9.5pt; color:var(--haze); text-align:center;">برند گاید شخصی — هویت بصری و کلامی برند <span class="en" style="font-size:8pt; letter-spacing:2px;">· VERSION 5.0</span></div>
+  <div style="font-size:9.5pt; color:var(--fog); text-align:center;">برند گاید شخصی — هویت بصری و کلامی برند <span class="en" style="font-size:8pt; letter-spacing:2px;">· VERSION 5.1</span></div>
   <div style="text-align:center;">
-    <div style="width:120mm; margin:0 auto; direction:ltr;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290.0 100.0"><g transform="translate(0,0)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#9D4EDD" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#00E5FF"/><path fill="#F8F9FA" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
-    <div class="sg" style="margin-top:14mm; font-size:20pt; font-weight:700; color:var(--soft); letter-spacing:-0.5px;">Nura: AI engineered for <span style="color:var(--cyan);">reality</span>.</div>
-    <div style="font-size:12pt; color:var(--haze); margin-top:2mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
-    <div style="font-size:10pt; color:var(--violetsoft); margin-top:12mm;"><span class="sg" style="letter-spacing:3px;">BY ROYA VOSOUGHI · AI ENGINEER &amp; SOFTWARE DEVELOPER</span><br>مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار</div>
+    <div style="width:120mm; margin:0 auto; direction:ltr;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290.0 100.0"><g transform="translate(0,0)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/><path fill="#F5F5F7" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
+    <div class="sg" style="margin-top:14mm; font-size:20pt; font-weight:700; color:var(--canvas); letter-spacing:-0.5px;">Nura: AI engineered for <span style="color:var(--coral);">reality</span>.</div>
+    <div style="font-size:12pt; color:var(--fog); margin-top:2mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
+    <div style="font-size:10pt; color:var(--coral); margin-top:12mm;"><span class="sg" style="letter-spacing:3px;">BY ROYA VOSOUGHI · AI ENGINEER &amp; SOFTWARE DEVELOPER</span><br>مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار</div>
   </div>
-  <div style="display:flex; justify-content:space-between; font-size:8.5pt; color:var(--haze);">
+  <div style="display:flex; justify-content:space-between; font-size:8.5pt; color:var(--fog);">
     <span class="en">royavosoughi.com</span>
     <span>۲۰۲۶</span>
   </div>
@@ -76,12 +76,12 @@ b.acc{ color:var(--cyan); }
   <p>تبدیل شدن به مهندس هوش مصنوعی‌ای که پروژه‌هایش معرف او هستند — و راهنمای افرادی که می‌خواهند هوش مصنوعی را وارد کسب‌وکار خود کنند.</p>
 
   <h2>Values — ارزش‌های برند</h2>
-  <p style="font-size:8.5pt; color:var(--haze); margin:-1mm 0 2mm;">هدف: انتقال این حس که از این برند، یک تحویلِ خلاقانه، خاص و به‌موقع می‌گیری.</p>
+  <p style="font-size:8.5pt; color:rgba(20,33,61,.65); margin:-1mm 0 2mm;">هدف: انتقال این حس که از این برند، یک تحویلِ خلاقانه، خاص و به‌موقع می‌گیری.</p>
   <div class="grid4">
-    <div class="card"><b style="color:var(--cyan);">وقت‌شناسی</b><br><span style="font-size:8.5pt;">پروژه سر وقت و طبق قول تحویل داده می‌شود؛ به زمانِ مدیر احترام می‌گذارم.</span></div>
-    <div class="card"><b style="color:var(--cyan);">کاربردی بودن</b><br><span style="font-size:8.5pt;">راه‌حلی واقعی و قابل‌استفاده که در کسب‌وکار جواب می‌دهد — نه دموی نمایشی.</span></div>
-    <div class="card"><b style="color:var(--cyan);">خلاقیت در حل مسائل</b><br><span style="font-size:8.5pt;">برای هر مسئله راه‌حلی خاص و متفاوت طراحی می‌کنم، نه نسخه‌ی کپی‌شده.</span></div>
-    <div class="card"><b style="color:var(--cyan);">الهام‌بخشی</b><br><span style="font-size:8.5pt;">نشان می‌دهم هوش مصنوعی چطور می‌تواند کسب‌وکار را یک قدم جلوتر ببرد.</span></div>
+    <div class="card"><b style="color:var(--coraldeep);">وقت‌شناسی</b><br><span style="font-size:8.5pt;">پروژه سر وقت و طبق قول تحویل داده می‌شود؛ به زمانِ مدیر احترام می‌گذارم.</span></div>
+    <div class="card"><b style="color:var(--coraldeep);">کاربردی بودن</b><br><span style="font-size:8.5pt;">راه‌حلی واقعی و قابل‌استفاده که در کسب‌وکار جواب می‌دهد — نه دموی نمایشی.</span></div>
+    <div class="card"><b style="color:var(--coraldeep);">خلاقیت در حل مسائل</b><br><span style="font-size:8.5pt;">برای هر مسئله راه‌حلی خاص و متفاوت طراحی می‌کنم، نه نسخه‌ی کپی‌شده.</span></div>
+    <div class="card"><b style="color:var(--coraldeep);">الهام‌بخشی</b><br><span style="font-size:8.5pt;">نشان می‌دهم هوش مصنوعی چطور می‌تواند کسب‌وکار را یک قدم جلوتر ببرد.</span></div>
   </div>
 
   <h2>Target Audience — مخاطب هدف</h2>
@@ -99,10 +99,10 @@ b.acc{ color:var(--cyan); }
   <h2>Brand Positioning — جایگاه‌یابی برند</h2>
   <p style="font-size:9.5pt;">مدیرها بارها از کار با توسعه‌دهنده‌های هوش مصنوعی زخم خورده‌اند: <b>تاخیر در تحویل، ارتباط مبهم، و ناپدید شدن بعد از تحویل پروژه.</b> (طبق آمار مؤسسه‌ی مدیریت پروژه، ۵۶٪ پروژه‌های شکست‌خورده ریشه در ارتباط ضعیف دارند.) جایگاه برند من دقیقا حل همین مشکل‌هاست:</p>
   <div class="grid2" style="gap:3mm; margin-bottom:2mm;">
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cyan);">تحویل به‌موقع و سر قول</b><br><span style="font-size:8.5pt;">نه بهانه‌ی «پیچیدگی‌های پیش‌بینی‌نشده».</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cyan);">ارتباط شفاف در تمام مراحل</b><br><span style="font-size:8.5pt;">مدیر همیشه می‌داند کار کجاست.</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cyan);">پشتیبانی حتی بعد از تحویل</b><br><span style="font-size:8.5pt;">من ناپدید نمی‌شوم.</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cyan);">یک همکار، نه فقط یک اپلیکیشن</b><br><span style="font-size:8.5pt;">همین اعتماد، برند را متمایز می‌کند.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">تحویل به‌موقع و سر قول</b><br><span style="font-size:8.5pt;">نه بهانه‌ی «پیچیدگی‌های پیش‌بینی‌نشده».</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">ارتباط شفاف در تمام مراحل</b><br><span style="font-size:8.5pt;">مدیر همیشه می‌داند کار کجاست.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">پشتیبانی حتی بعد از تحویل</b><br><span style="font-size:8.5pt;">من ناپدید نمی‌شوم.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">یک همکار، نه فقط یک اپلیکیشن</b><br><span style="font-size:8.5pt;">همین اعتماد، برند را متمایز می‌کند.</span></div>
   </div>
 
   <h2>Unique Selling Point (USP) — ارزش پیشنهادی منحصربه‌فرد</h2>
@@ -129,34 +129,33 @@ b.acc{ color:var(--cyan); }
   <h1>رنگ و تایپوگرافی</h1>
 
   <h2>Color Palette — پالت رنگ</h2>
-  <div class="grid4" style="margin-bottom:3mm;">
-    <div class="swatch"><div class="c" style="background:#0F0C29; box-shadow:inset 0 0 0 1px rgba(248,249,250,.15);"></div><div class="t"><b>Deep Indigo</b><span class="mono">#0F0C29</span><br>پس‌زمینه‌ی اصلی<br><span class="ok">the ground</span></div></div>
-    <div class="swatch"><div class="c" style="background:#9D4EDD;"></div><div class="t"><b>Electric Violet</b><span class="mono">#9D4EDD</span><br>رنگ تاکید و لوگو<br><span class="ok">4.1:1 · large only</span></div></div>
-    <div class="swatch"><div class="c" style="background:#00E5FF;"></div><div class="t"><b>Neon Cyan</b><span class="mono">#00E5FF</span><br>دکمه‌ها و لینک‌ها<br><span class="ok">12.4:1 · AAA</span></div></div>
-    <div class="swatch"><div class="c" style="background:#F8F9FA;"></div><div class="t"><b>Soft White</b><span class="mono">#F8F9FA</span><br>متن بدنه<br><span class="ok">18.0:1 · AAA</span></div></div>
+  <div class="grid4" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:3mm;">
+    <div class="swatch"><div class="c" style="background:#F5F5F7; box-shadow:inset 0 0 0 1px rgba(20,33,61,.12);"></div><div class="t"><b>Canvas</b><span class="mono">#F5F5F7</span><br>پس‌زمینه‌ی اصلی<br><span class="ok">the ground</span></div></div>
+    <div class="swatch"><div class="c" style="background:#14213D;"></div><div class="t"><b>Navy</b><span class="mono">#14213D</span><br>متن، تیترها، بخش‌های تیره<br><span class="ok">14.7:1 on Canvas · AAA</span></div></div>
+    <div class="swatch"><div class="c" style="background:#E07A5F;"></div><div class="t"><b>Coral</b><span class="mono">#E07A5F</span><br>دکمه‌ها — همیشه با متن سرمه‌ای<br><span class="ok">navy on coral 5.4:1 · AA</span></div></div>
   </div>
   <div class="grid4">
-    <div class="swatch"><div class="c" style="background:#1A1640; height:10mm;"></div><div class="t"><b>Night</b><span class="mono">#1A1640</span><br>کارت‌ها و بخش‌های برجسته</div></div>
-    <div class="swatch"><div class="c" style="background:#AAA5D4; height:10mm;"></div><div class="t"><b>Haze</b><span class="mono">#AAA5D4</span><br>متن کم‌رنگ‌تر · 8.2:1</div></div>
-    <div class="swatch"><div class="c" style="background:#C79BF2; height:10mm;"></div><div class="t"><b>Violet Soft</b><span class="mono">#C79BF2</span><br>بنفش برای متن ریز · 8.5:1</div></div>
-    <div class="swatch"><div class="c" style="background:#F5B942; height:10mm;"></div><div class="t"><b>Amber</b><span class="mono">#F5B942</span><br>فقط رنگ وضعیت — نه برند</div></div>
+    <div class="swatch"><div class="c" style="background:#E6E6E6; height:10mm;"></div><div class="t"><b>Mist</b><span class="mono">#E6E6E6</span><br>کارت‌ها و بخش‌های ملایم</div></div>
+    <div class="swatch"><div class="c" style="background:#AD4428; height:10mm;"></div><div class="t"><b>Coral Deep</b><span class="mono">#AD4428</span><br>لینک و تاکید متنی · 5.3:1</div></div>
+    <div class="swatch"><div class="c" style="background:#A9B4CC; height:10mm;"></div><div class="t"><b>Fog</b><span class="mono">#A9B4CC</span><br>متن کم‌رنگ روی سرمه‌ای · 7.7:1</div></div>
+    <div class="swatch"><div class="c" style="background:#E3A72F; height:10mm;"></div><div class="t"><b>Amber</b><span class="mono">#E3A72F</span><br>فقط رنگ وضعیت — نه برند</div></div>
   </div>
-  <p style="font-size:8.5pt; color:var(--haze); margin-top:2mm;">نسبت‌های کنتراست روی Deep Indigo (WCAG 2.1). رنگ‌های ردیف دوم از همین چهار رنگ ساخته شده‌اند، رنگ جدید نیستند. نئون به‌اندازه: برند درباره‌ی «واقعیت» است، نه هیاهو.</p>
+  <p style="font-size:8.5pt; color:rgba(20,33,61,.65); margin-top:2mm;">سرمه‌ای = اعتماد (رنگ بانک‌ها، مشاوران و نرم‌افزارهای جدی)؛ مرجانی = گرما و دعوت به اقدام. رنگ‌های ردیف دوم از همین سه رنگ ساخته شده‌اند.</p>
 
   <h2 style="margin-top:5mm;">Typography — تایپوگرافی</h2>
   <div class="card">
-    <div style="font-size:13pt; font-weight:700; color:var(--soft);">وزیرمتن بولد — تیترهای فارسی</div>
+    <div style="font-size:13pt; font-weight:700; color:var(--navy);">وزیرمتن بولد — تیترهای فارسی</div>
     <div style="font-size:10.5pt;">وزیرمتن رگولار — متن بدنه‌ی فارسی. خوانا و هماهنگ با هویت انگلیسی برند.</div>
-    <div class="sg en" style="font-size:14pt; font-weight:700; color:var(--soft); margin-top:2mm; text-align:left;">Space Grotesk Bold — English headings &amp; the <span style="color:var(--cyan);">nura</span> wordmark</div>
+    <div class="sg en" style="font-size:14pt; font-weight:700; color:var(--navy); margin-top:2mm; text-align:left;">Space Grotesk Bold — English headings &amp; the <span style="color:var(--coraldeep);">nura</span> wordmark</div>
     <div class="en" style="font-size:10pt; text-align:left;">Inter Regular — English body text.</div>
     <div class="mono en" style="font-size:9pt; margin-top:1mm; text-align:left;">JetBrains Mono — code snippets</div>
   </div>
 
   <h2>قوانین دسترس‌پذیری</h2>
   <ul style="font-size:9.5pt;">
-    <li>زمینه همیشه Deep Indigo؛ متن بدنه Soft White؛ سطح‌ها با Night برجسته می‌شوند.</li>
-    <li>متن روی دکمه‌ی فیروزه‌ای همیشه Deep Indigo — متن سفید روی فیروزه‌ای فقط ۱٫۵:۱ است.</li>
-    <li>بنفش خام فقط برای لوگو و متن درشت؛ برای متن ریز Violet Soft.</li>
+    <li>زمینه Canvas، متن Navy؛ بخش‌های تیره Navy با متن Canvas.</li>
+    <li>متن روی دکمه‌ی مرجانی همیشه Navy — متن سفید روی مرجانی فقط ۳:۱ است.</li>
+    <li>مرجانی خام هرگز برای متن روی زمینه‌ی روشن؛ برای لینک و تاکید Coral Deep.</li>
   </ul>
   <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">04</div>
 </div>
@@ -166,28 +165,28 @@ b.acc{ color:var(--cyan); }
   <div class="kicker"><span class="en sg">02 — VISUAL IDENTITY</span> · هویت بصری</div>
   <h1>سیستم لوگو</h1>
   <div class="card" style="text-align:center; padding:6mm; direction:ltr;">
-    <div style="width:120mm; margin:0 auto;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370.0 180.0"><rect width="370.0" height="180.0" rx="28.8" fill="#0F0C29"/><g transform="translate(40,40)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#9D4EDD" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#00E5FF"/><path fill="#F8F9FA" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
-    <p style="font-size:9pt; margin:3mm 0 0; direction:rtl;"><b>لوگوی اصلی — علامت + وردمارک</b><br>حرف N با یک خط پیوسته‌ی بنفش که به یک نقطه‌ی فیروزه‌ای ختم می‌شود، + «nura» با فونت <span class="en">Space Grotesk Bold</span>.</p>
+    <div style="width:120mm; margin:0 auto;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370.0 180.0"><rect width="370.0" height="180.0" rx="28.8" fill="#14213D"/><g transform="translate(40,40)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/><path fill="#F5F5F7" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
+    <p style="font-size:9pt; margin:3mm 0 0; direction:rtl;"><b>لوگوی اصلی — علامت + وردمارک</b><br>حرف N با یک خط پیوسته‌ی سرمه‌ای که به یک نقطه‌ی مرجانی ختم می‌شود، + «nura» با فونت <span class="en">Space Grotesk Bold</span>.</p>
   </div>
   <div class="grid2" style="align-items:stretch;">
     <div class="card" style="text-align:center;">
-      <svg viewBox="0 0 120 120" style="width:30mm;"><rect width="120" height="120" rx="26" fill="#1A1640"/><g transform="translate(14,14) scale(0.92)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#9D4EDD" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#00E5FF"/></g></svg>
+      <svg viewBox="0 0 120 120" style="width:30mm;"><rect width="120" height="120" rx="26" fill="#14213D"/><g transform="translate(14,14) scale(0.92)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/></g></svg>
       <p style="font-size:9pt; margin-top:2mm;"><b>آیکون</b><br>برای فاوآیکون، آواتار و واترمارک اینستاگرام.</p>
     </div>
     <div class="card">
       <b class="acc">معنای علامت</b>
-      <p style="font-size:9pt; margin-top:1mm;"><span class="en">Nura</span> از «نور» می‌آید. خط پیوسته‌ی بنفش یعنی ساختنِ پیوسته و دقیق؛ نقطه‌ی فیروزه‌ای هم جرقه‌ی نور است و هم یک «نود» در شبکه — نماد هوش مصنوعی. تنها رنگ فیروزه‌ای علامت همین نقطه است.</p>
+      <p style="font-size:9pt; margin-top:1mm;"><span class="en">Nura</span> از «نور» می‌آید. خط پیوسته‌ی سرمه‌ای یعنی ساختنِ پیوسته و دقیق؛ نقطه‌ی مرجانی هم جرقه‌ی نور است و هم یک «نود» در شبکه — نماد هوش مصنوعی. تنها رنگ گرم علامت همین نقطه است.</p>
     </div>
   </div>
   <h2>قوانین استفاده</h2>
   <ul style="font-size:9.5pt;">
     <li>آیکون برای فضاهای کوچک، لوگوی کامل برای فضاهای بزرگ. فایل‌ها: <span class="mono">public/brand/nura-*.svg / .png</span></li>
-    <li>هرگز لوگو را نکشید، رنگ علامت را عوض نکنید یا نقطه را از N جدا نکنید؛ حداقل ارتفاع در وب: ۲۸ پیکسل.</li>
+    <li>هرگز لوگو را نکشید، رنگ نقطه‌ی مرجانی را عوض نکنید یا آن را از N جدا نکنید؛ حداقل ارتفاع در وب: ۲۸ پیکسل.</li>
     <li>وردمارک همیشه لاتین است («nura»)، حتی در متن فارسی.</li>
   </ul>
   <h2>Imagery Style — سبک تصاویر</h2>
-  <p style="font-size:9.5pt;"><span class="tag">واقعی، نه استیج‌شده</span><span class="tag">نور طبیعی پنجره</span><span class="tag">اکسنت بنفش و فیروزه‌ای</span><span class="tag">فرآیند، نه بی‌نقصی</span><br>
-  میز واقعی، صفحه‌ی واقعی، دفترچه‌ی واقعی — بدون فیلتر نئونی اغراق‌آمیز. اسکرین‌شات‌ها: پنل کد Deep Indigo در قاب با درخشش ملایم بنفش ← فیروزه‌ای.</p>
+  <p style="font-size:9.5pt;"><span class="tag">واقعی، نه استیج‌شده</span><span class="tag">نور طبیعی پنجره</span><span class="tag">اکسنت سرمه‌ای و مرجانی</span><span class="tag">فرآیند، نه بی‌نقصی</span><br>
+  میز واقعی، صفحه‌ی واقعی، دفترچه‌ی واقعی. روشن و ملایم. اسکرین‌شات‌ها: پنل کد سرمه‌ای در قاب Mist.</p>
   <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">05</div>
 </div>
 
@@ -198,27 +197,27 @@ b.acc{ color:var(--cyan); }
   <h2 style="margin-top:0;">Brand Personality — شخصیت برند</h2>
   <p style="font-size:9.5pt; margin-bottom:2mm;">اگر این برند یک آدم بود: <b>یک «سازنده‌ی قابل‌اعتماد»</b> — کسی که هم خلاقانه می‌سازد و هم دقیقا طبق قول تحویل می‌دهد.</p>
   <div class="grid4" style="margin-bottom:3mm;">
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cyan);">قابل‌اعتماد</b><br><span style="font-size:8pt;">می‌گوید پنجشنبه آماده است — و هست.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cyan);">عمل‌گرا</b><br><span style="font-size:8pt;">بدون هیاهو؛ هر حرف به کاری قابل‌استفاده می‌رسد.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cyan);">خلاق</b><br><span style="font-size:8pt;">خلاقیت در خودِ کار دیده می‌شود، نه در تبلیغِ خود.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cyan);">امیدبخش و گرم</b><br><span style="font-size:8pt;">یک همکار کنار تو، نه فروشنده‌ای بالای سر تو.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">قابل‌اعتماد</b><br><span style="font-size:8pt;">می‌گوید پنجشنبه آماده است — و هست.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">عمل‌گرا</b><br><span style="font-size:8pt;">بدون هیاهو؛ هر حرف به کاری قابل‌استفاده می‌رسد.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">خلاق</b><br><span style="font-size:8pt;">خلاقیت در خودِ کار دیده می‌شود، نه در تبلیغِ خود.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">امیدبخش و گرم</b><br><span style="font-size:8pt;">یک همکار کنار تو، نه فروشنده‌ای بالای سر تو.</span></div>
   </div>
   <div class="mintcard" style="text-align:center; padding:3.5mm;">
-    <div class="sg en" style="font-size:15pt; font-weight:700; color:var(--soft);">&ldquo;Nura: AI engineered for <span style="color:var(--cyan);">reality</span>.&rdquo;</div>
-    <div style="font-size:11.5pt; font-weight:700; color:var(--soft); margin-top:1mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
-    <div style="font-size:8.5pt; color:var(--haze); margin-top:1mm;">شعار برند · Nura از «نور»؛ «واقعیت» = راه‌حل کاربردی، نه دموی نمایشی</div>
+    <div class="sg en" style="font-size:15pt; font-weight:700; color:var(--navy);">&ldquo;Nura: AI engineered for <span style="color:var(--coraldeep);">reality</span>.&rdquo;</div>
+    <div style="font-size:11.5pt; font-weight:700; color:var(--navy); margin-top:1mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
+    <div style="font-size:8.5pt; color:rgba(20,33,61,.65); margin-top:1mm;">شعار برند · Nura از «نور»؛ «واقعیت» = راه‌حل کاربردی، نه دموی نمایشی</div>
   </div>
   <h2>Brand Voice — صدای برند</h2>
   <p style="font-size:9.5pt; margin-bottom:3mm;">صدای برند دقیقا از شخصیت برند می‌آید: سه صفت از شخصیت مستقیما صدا را می‌سازند (<b>عمل‌گرا، امیدبخش، خلاقانه</b>) و صفت چهارم — <b>قابل‌اعتماد بودن</b> — پایه‌ای است که همه‌چیز روی آن ساخته می‌شود. این سه صفت در هر متن، پست و ایمیل حاضرند:</p>
   <div class="grid2" style="margin-bottom:2mm;">
-    <div class="card"><b style="color:var(--cyan); font-size:11pt;">عمل‌گرا</b><br><span style="font-size:9pt;">مستقیم و کاربردی حرف می‌زنم؛ هر حرف به یک نتیجه یا اقدام مشخص ختم می‌شود، نه وعده‌ی توخالی.</span></div>
-    <div class="card"><b style="color:var(--cyan); font-size:11pt;">امیدبخش</b><br><span style="font-size:9pt;">با لحنی مثبت و مطمئن نشان می‌دهم که رسیدن به هدف ممکن است — بدون اغراق و بدون ترساندن.</span></div>
-    <div class="card" style="grid-column:1 / -1;"><b style="color:var(--cyan); font-size:11pt;">خلاقانه</b><br><span style="font-size:9pt;">مسائل را از زاویه‌ای تازه می‌بینم و راه‌حل‌هایی متفاوت و خاص ارائه می‌دهم — نه نسخه‌های تکراری و کلیشه‌ای.</span></div>
+    <div class="card"><b style="color:var(--coraldeep); font-size:11pt;">عمل‌گرا</b><br><span style="font-size:9pt;">مستقیم و کاربردی حرف می‌زنم؛ هر حرف به یک نتیجه یا اقدام مشخص ختم می‌شود، نه وعده‌ی توخالی.</span></div>
+    <div class="card"><b style="color:var(--coraldeep); font-size:11pt;">امیدبخش</b><br><span style="font-size:9pt;">با لحنی مثبت و مطمئن نشان می‌دهم که رسیدن به هدف ممکن است — بدون اغراق و بدون ترساندن.</span></div>
+    <div class="card" style="grid-column:1 / -1;"><b style="color:var(--coraldeep); font-size:11pt;">خلاقانه</b><br><span style="font-size:9pt;">مسائل را از زاویه‌ای تازه می‌بینم و راه‌حل‌هایی متفاوت و خاص ارائه می‌دهم — نه نسخه‌های تکراری و کلیشه‌ای.</span></div>
   </div>
   <h2>Do's &amp; Don'ts — بایدها و نبایدها</h2>
   <div class="grid2">
-    <div class="card"><b style="color:var(--cyan);">بایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>شکست <i>و</i> راه‌حل را با هم نشان بده — راه‌حل همان محتواست.</li><li>هر اصطلاح فنی را بار اول توضیح بده.</li><li>هر پست را با سوال یا قدم بعدی مشخص تمام کن.</li><li>داستان واقعی خودت را بگو — کپی هیچ‌کس نباش.</li></ul></div>
-    <div class="card"><b style="color:var(--amber);">نبایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>چیزی را که تجربه نکرده‌ای وعده نده («یادگیری AI در ۷ روز»).</li><li>کلمات پرهیاهو ممنوع: انقلابی، تحول‌آفرین، راز.</li><li>انگیزه بدون نکته‌ی عملی پست نکن.</li></ul></div>
+    <div class="card"><b style="color:var(--coraldeep);">بایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>شکست <i>و</i> راه‌حل را با هم نشان بده — راه‌حل همان محتواست.</li><li>هر اصطلاح فنی را بار اول توضیح بده.</li><li>هر پست را با سوال یا قدم بعدی مشخص تمام کن.</li><li>داستان واقعی خودت را بگو — کپی هیچ‌کس نباش.</li></ul></div>
+    <div class="card"><b style="color:#B3261E;">نبایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>چیزی را که تجربه نکرده‌ای وعده نده («یادگیری AI در ۷ روز»).</li><li>کلمات پرهیاهو ممنوع: انقلابی، تحول‌آفرین، راز.</li><li>انگیزه بدون نکته‌ی عملی پست نکن.</li></ul></div>
   </div>
   <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">06</div>
 </div>
@@ -233,7 +232,7 @@ b.acc{ color:var(--cyan); }
   <div class="card en" style="font-size:9.5pt; text-align:left;">
     <b>Headline:</b> AI Engineer &amp; Software Developer | Building AI-powered applications in public | Python · LLMs · RAG
   </div>
-  <p style="font-size:9pt;">بنر: پس‌زمینه‌ی Deep Indigo با درخشش ملایم بنفش + لوگوی <span class="en">Nura</span> + شعار. ریتم: ۱–۲ پست در هفته به انگلیسی — «این را ساختم، این را یاد گرفتم.»</p>
+  <p style="font-size:9pt;">بنر: پس‌زمینه‌ی سرمه‌ای + لوگوی سفید <span class="en">Nura</span> + شعار با خط زیر مرجانی. ریتم: ۱–۲ پست در هفته به انگلیسی — «این را ساختم، این را یاد گرفتم.»</p>
 
   <h2>اینستاگرام (فارسی)</h2>
   <div class="card" style="font-size:10pt;">
@@ -244,7 +243,7 @@ b.acc{ color:var(--cyan); }
   <p style="font-size:9pt;"><b>ستون‌های محتوا:</b> <span class="tag">مسیر من</span><span class="tag">هوش مصنوعی به زبان ساده</span><span class="tag">ساختم که ببینی</span><span class="tag">صادقانه</span></p>
 
   <h2>وب‌سایت — <span class="en">royavosoughi.com</span></h2>
-  <div class="card" style="font-size:9pt;"><b>برچسب Hero:</b> <span class="en">"Nura: AI engineered for reality"</span> · <b>تیتر:</b> <span class="en">"Automate the system, Live the life."</span> · <b>دکمه‌ها:</b> <span class="en">[Request a consultation] + [See my work]</span><br><b>ساختار:</b> Hero ← خدمات ← روند کار ← پروژه‌ها ← درباره‌ی من ← تماس · طراحی تیره با پالت <span class="en">Nura</span>.</div>
+  <div class="card" style="font-size:9pt;"><b>برچسب Hero:</b> <span class="en">"Nura: AI engineered for reality"</span> · <b>تیتر:</b> <span class="en">"Automate the system, Live the life."</span> · <b>دکمه‌ها:</b> <span class="en">[Request a consultation] + [See my work]</span><br><b>ساختار:</b> Hero ← خدمات ← روند کار ← پروژه‌ها ← درباره‌ی من ← تماس · طراحی روشن با پالت سرمه‌ای و مرجانی <span class="en">Nura</span>.</div>
 
   <h2>امضای ایمیل</h2>
   <div class="card" style="font-size:9pt;"><b class="en">Roya Vosoughi · Nura</b> · <span class="en">AI Engineer &amp; Software Developer</span> | مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار · <span class="en">royavosoughi.com · LinkedIn</span> · <i class="en">Nura: AI engineered for reality.</i></div>
@@ -262,9 +261,9 @@ b.acc{ color:var(--cyan); }
     <li>☑ وب‌سایت زنده با برند <span class="en">Nura</span></li>
   </ul>
 
-  <div style="position:absolute; bottom:14mm; left:18mm; right:18mm; background:var(--night); border:1px solid rgba(157,78,221,.35); color:var(--soft); border-radius:10px; padding:3.5mm 6mm; display:flex; justify-content:space-between; align-items:center;">
+  <div style="position:absolute; bottom:14mm; left:18mm; right:18mm; background:var(--navy); border:none; color:var(--canvas); border-radius:10px; padding:3.5mm 6mm; display:flex; justify-content:space-between; align-items:center;">
     <span class="sg en" style="font-size:11pt; font-weight:700;">nura</span>
-    <span class="sg en" style="font-size:9pt; color:var(--cyan);">AI engineered for reality.</span>
+    <span class="sg en" style="font-size:9pt; color:var(--coral);">AI engineered for reality.</span>
   </div>
   <div class="pagenum" style="bottom:8mm;">07</div>
 </div>

@@ -9,20 +9,20 @@ const base =
   "disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  // Neon Cyan solid — the one primary action per screen. Cyan is the
-  // brightest brand tone, so text on it is Deep Indigo (white on cyan fails
-  // contrast) and hover lifts to Soft White with a cyan glow.
+  // Coral solid — the one primary action per screen. Text on coral is
+  // always Navy (white on coral is only 3:1); hover lightens to coral-soft
+  // and the press-shadow is a Navy line, echoing the brand's two tones.
   primary:
-    "bg-cyan text-indigo shadow-[0_0_0_0_rgba(0,229,255,0)] " +
-    "hover:bg-soft hover:-translate-y-0.5 hover:shadow-[0_8px_28px_-6px_rgba(0,229,255,0.55)] active:translate-y-0",
-  // Outlined — Soft White line, fills cyan on hover
+    "bg-coral text-navy shadow-[0_2px_0_0_var(--color-navy)] " +
+    "hover:bg-coral-soft hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--color-navy)] active:translate-y-0",
+  // Outlined on light
   secondary:
-    "border-2 border-soft/40 text-soft hover:border-cyan hover:bg-cyan hover:text-indigo",
-  // On raised Night panels — same cyan action (buttons are always cyan)
+    "border-2 border-navy text-navy hover:bg-navy hover:text-canvas",
+  // Coral on Navy sections — the same action colour, 5.4:1
   onDark:
-    "bg-cyan text-indigo hover:bg-soft hover:-translate-y-0.5 active:translate-y-0",
+    "bg-coral text-navy hover:bg-canvas hover:-translate-y-0.5 active:translate-y-0",
   onDarkGhost:
-    "border-2 border-haze text-soft hover:bg-soft hover:text-indigo hover:border-soft",
+    "border-2 border-fog text-canvas hover:bg-canvas hover:text-navy hover:border-canvas",
 };
 
 type LinkProps = { href: string; variant?: Variant; children: ReactNode } & Omit<

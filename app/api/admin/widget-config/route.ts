@@ -6,7 +6,7 @@ import { writeAuditLog } from "@/lib/admin/queries";
 import { updateWidgetConfig } from "@/lib/ai/widget-config";
 
 const BodySchema = z.object({
-  primaryColor: z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex color like #00e5ff"),
+  primaryColor: z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex color like #e07a5f"),
   position: z.enum(["bottom-end", "bottom-start"]),
   welcomeMessageEn: z.string().trim().max(500).optional(),
   welcomeMessageFa: z.string().trim().max(500).optional(),

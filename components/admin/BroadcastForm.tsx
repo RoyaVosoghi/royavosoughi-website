@@ -48,8 +48,8 @@ export function BroadcastForm() {
   }
 
   return (
-    <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-      <label className="mb-2 block text-sm font-medium text-soft/80">{t("messageLabel")}</label>
+    <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+      <label className="mb-2 block text-sm font-medium text-navy/80">{t("messageLabel")}</label>
       <textarea
         value={message}
         onChange={(e) => {
@@ -59,7 +59,7 @@ export function BroadcastForm() {
         }}
         rows={6}
         placeholder={t("messagePlaceholder")}
-        className="w-full rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-3 text-soft transition-colors focus:border-cyan focus:outline-none"
+        className="w-full rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-3 text-navy transition-colors focus:border-coral focus:outline-none"
       />
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -68,7 +68,7 @@ export function BroadcastForm() {
             type="button"
             onClick={preview}
             disabled={!message.trim() || status === "previewing"}
-            className="rounded-full border-2 border-soft/40 text-soft px-6 py-3 text-sm font-semibold transition-colors hover:bg-cyan hover:text-indigo disabled:opacity-50"
+            className="rounded-full border-2 border-navy text-navy px-6 py-3 text-sm font-semibold transition-colors hover:bg-navy hover:text-canvas disabled:opacity-50"
           >
             {status === "previewing" ? t("previewing") : t("previewButton")}
           </button>
@@ -77,14 +77,14 @@ export function BroadcastForm() {
             type="button"
             onClick={send}
             disabled={status === "sending" || status === "sent"}
-            className="rounded-full bg-cyan px-6 py-3 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+            className="rounded-full bg-coral px-6 py-3 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
           >
             {status === "sending" ? t("sending") : t("sendButton", { count: recipientCount })}
           </button>
         )}
-        {status === "error" ? <span className="text-sm font-medium text-amber-soft">{t("errorGeneric")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-amber-deep">{t("errorGeneric")}</span> : null}
         {status === "sent" && result ? (
-          <span className="text-sm font-medium text-cyan">
+          <span className="text-sm font-medium text-coral-deep">
             {result.failed > 0 ? t("sentResultWithFailed", { sent: result.sent, failed: result.failed }) : t("sentResult", { sent: result.sent })}
           </span>
         ) : null}

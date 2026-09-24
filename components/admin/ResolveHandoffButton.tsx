@@ -27,8 +27,8 @@ export function ResolveHandoffButton({ id, resolved }: { id: string; resolved: b
       disabled={pending}
       className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
         resolved
-          ? "bg-soft/10 text-soft/60 hover:bg-soft/15"
-          : "bg-amber/20 text-amber-soft hover:bg-amber/30"
+          ? "bg-navy/10 text-navy/60 hover:bg-navy/15"
+          : "bg-amber/20 text-amber-deep hover:bg-amber/30"
       }`}
     >
       {resolved ? t("resolved") : t("markResolved")}

@@ -22,7 +22,7 @@ function buildColumns(t: Awaited<ReturnType<typeof getAdminTranslator<"activitie
         if (!row.dueAt) return "—";
         const overdue = !row.completedAt && new Date(row.dueAt) < new Date();
         return (
-          <span className={overdue ? "font-semibold text-amber-soft" : ""}>
+          <span className={overdue ? "font-semibold text-amber-deep" : ""}>
             {new Date(row.dueAt).toLocaleString()}
             {overdue ? <span className="ms-2 rounded-full bg-amber/20 px-2 py-0.5 text-[10px] font-semibold">{t("overdueBadge")}</span> : null}
           </span>
@@ -73,15 +73,15 @@ export default async function AdminActivitiesPage({
 
   return (
     <div>
-      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
-      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
+      <p className="mt-3 text-navy/70">{t("subtitle")}</p>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <div className="flex gap-1 rounded-full bg-soft/5 p-1">
+        <div className="flex gap-1 rounded-full bg-navy/5 p-1">
           <Link
             href={filterLink({ type: "" })}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!typeFilter ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!typeFilter ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
           >
             {t("filterAllTypes")}
           </Link>
@@ -89,7 +89,7 @@ export default async function AdminActivitiesPage({
             <Link
               key={ty}
               href={filterLink({ type: ty })}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${typeFilter === ty ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${typeFilter === ty ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
             >
               {TYPE_LABELS[ty]}
             </Link>
@@ -97,7 +97,7 @@ export default async function AdminActivitiesPage({
         </div>
         <Link
           href={filterLink({ overdue: overdueOnly ? "" : "1" })}
-          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${overdueOnly ? "bg-amber text-indigo" : "bg-soft/5 text-soft/60 hover:bg-soft/10"}`}
+          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${overdueOnly ? "bg-amber text-canvas" : "bg-navy/5 text-navy/60 hover:bg-navy/10"}`}
         >
           {t("filterOverdueOnly")}
         </Link>

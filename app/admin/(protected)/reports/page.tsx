@@ -28,35 +28,35 @@ export default async function AdminCrmReportsPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
-      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
+      <p className="mt-3 text-navy/70">{t("subtitle")}</p>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("funnelTitle")}</h2>
+        <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("funnelTitle")}</h2>
           <div className="mt-4">
             <LeadFunnelChart stats={funnel} />
           </div>
         </section>
 
-        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("pipelineValueTitle")}</h2>
+        <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("pipelineValueTitle")}</h2>
           <div className="mt-4">
             <PipelineValueChart stages={pipelineValue} noDataLabel={t("noData")} />
           </div>
         </section>
 
-        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("revenueTitle")}</h2>
-          <p className="text-sm text-soft/50">{t("revenueSubtitle")}</p>
+        <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("revenueTitle")}</h2>
+          <p className="text-sm text-navy/50">{t("revenueSubtitle")}</p>
           <div className="mt-4">
             <MonthlyRevenueChart months={revenue} noDataLabel={t("noData")} />
           </div>
         </section>
 
-        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("leadSourceTitle")}</h2>
+        <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("leadSourceTitle")}</h2>
           <div className="mt-4">
             <ChannelBreakdownChart sessionsByChannel={leadSource} />
           </div>

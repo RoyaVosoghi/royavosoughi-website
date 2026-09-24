@@ -32,16 +32,16 @@ export default async function AdminOverviewPage({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-          <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
+          <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+          <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
         </div>
-        <div className="flex gap-1 rounded-full bg-soft/5 p-1">
+        <div className="flex gap-1 rounded-full bg-navy/5 p-1">
           {RANGE_OPTIONS.map((d) => (
             <Link
               key={d}
               href={`/admin?days=${d}`}
               className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                days === d ? "bg-cyan text-indigo" : "text-soft/60 hover:bg-soft/10"
+                days === d ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"
               }`}
             >
               {d}
@@ -75,32 +75,32 @@ export default async function AdminOverviewPage({
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("chartByChannelTitle")}</h2>
+        <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("chartByChannelTitle")}</h2>
           <div className="mt-4">
             <ChannelBreakdownChart sessionsByChannel={analytics.sessionsByChannel} />
           </div>
         </div>
 
-        <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("chartCostTitle")}</h2>
-          <p className="mt-1 text-sm text-soft/60">{t("chartCostSubtitle", { amount: analytics.monthlySpendUsd.toFixed(2) })}</p>
+        <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("chartCostTitle")}</h2>
+          <p className="mt-1 text-sm text-navy/60">{t("chartCostSubtitle", { amount: analytics.monthlySpendUsd.toFixed(2) })}</p>
           <div className="mt-4">
             <CostByModelChart byModel={analytics.byModel} />
           </div>
         </div>
       </div>
 
-      <div className="mt-6 rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-        <h2 className="font-display text-lg font-bold text-soft">{t("topTopicsTitle")}</h2>
-        <p className="mt-1 text-sm text-soft/60">{t("topTopicsSubtitle", { days })}</p>
+      <div className="mt-6 rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+        <h2 className="font-display text-lg font-bold text-navy">{t("topTopicsTitle")}</h2>
+        <p className="mt-1 text-sm text-navy/60">{t("topTopicsSubtitle", { days })}</p>
         {analytics.topTopics.length === 0 ? (
-          <p className="mt-4 text-sm text-soft/60">{t("topTopicsEmpty")}</p>
+          <p className="mt-4 text-sm text-navy/60">{t("topTopicsEmpty")}</p>
         ) : (
           <div className="mt-4 flex flex-wrap gap-2">
             {analytics.topTopics.map((topic) => (
-              <span key={topic.title} className="rounded-full bg-violet/15 px-3 py-1.5 text-sm font-medium text-soft">
-                {topic.title} <span className="text-soft/50">· {topic.count}</span>
+              <span key={topic.title} className="rounded-full bg-mist/60 px-3 py-1.5 text-sm font-medium text-navy">
+                {topic.title} <span className="text-navy/50">· {topic.count}</span>
               </span>
             ))}
           </div>

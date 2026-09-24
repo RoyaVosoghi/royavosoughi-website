@@ -7,7 +7,7 @@ export const contentType = "image/png";
 export const alt = "Nura — AI engineered for reality";
 
 /**
- * Social share card: Deep Indigo background, Nura mark + wordmark, slogan.
+ * Social share card: Navy background, Nura mark + wordmark, slogan.
  *
  * DELIBERATELY LATIN-SCRIPT FOR BOTH LOCALES.
  * Satori (the renderer behind ImageResponse) performs no Arabic contextual
@@ -32,8 +32,8 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "90px",
-          backgroundColor: brandColors.indigo,
-          backgroundImage: `radial-gradient(circle at 18% 20%, ${brandColors.violet}55 0%, transparent 45%), radial-gradient(circle at 88% 85%, ${brandColors.cyan}26 0%, transparent 40%)`,
+          backgroundColor: brandColors.navy,
+          backgroundImage: `radial-gradient(circle at 18% 20%, ${brandColors.coral}33 0%, transparent 45%), radial-gradient(circle at 88% 85%, ${brandColors.navySoft} 0%, transparent 45%)`,
           fontFamily: "sans-serif",
         }}
       >
@@ -42,19 +42,19 @@ export default function OpengraphImage() {
             <path
               d="M22 80 V24 L76 76 V40"
               fill="none"
-              stroke={brandColors.violet}
+              stroke={brandColors.canvas}
               strokeWidth="15"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <circle cx="76" cy="17" r="10" fill={brandColors.cyan} />
+            <circle cx="76" cy="17" r="10" fill={brandColors.coral} />
           </svg>
           <span
             style={{
               fontSize: 56,
               fontWeight: 700,
               letterSpacing: -2,
-              color: brandColors.soft,
+              color: brandColors.canvas,
             }}
           >
             nura
@@ -66,7 +66,7 @@ export default function OpengraphImage() {
             display: "flex",
             fontSize: 88,
             fontWeight: 700,
-            color: brandColors.soft,
+            color: brandColors.canvas,
             lineHeight: 1.1,
             marginTop: 48,
             maxWidth: 980,
@@ -79,7 +79,7 @@ export default function OpengraphImage() {
           style={{
             display: "flex",
             fontSize: 32,
-            color: brandColors.cyan,
+            color: brandColors.coral,
             marginTop: 36,
           }}
         >

@@ -48,7 +48,7 @@ export function Header() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-50 focus:rounded-full focus:bg-night focus:px-5 focus:py-3 focus:text-soft"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-50 focus:rounded-full focus:bg-navy focus:px-5 focus:py-3 focus:text-canvas"
       >
         {t("skipToContent")}
       </a>
@@ -56,14 +56,14 @@ export function Header() {
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           scrolled
-            ? "bg-indigo/85 backdrop-blur-md shadow-[0_1px_0_0_rgba(157,78,221,0.25)]"
+            ? "bg-canvas/85 backdrop-blur-md shadow-[0_1px_0_0_rgba(20,33,61,0.1)]"
             : "bg-transparent"
         }`}
       >
         <div className="container-page flex h-20 items-center justify-between gap-4">
           <Link
             href="/"
-            className="text-soft transition-opacity hover:opacity-85"
+            className="text-navy transition-opacity hover:opacity-80"
             aria-label={t("home")}
           >
             <Wordmark />
@@ -77,7 +77,7 @@ export function Header() {
               <Link
                 key={item.key}
                 href={item.href}
-                className="text-[0.9375rem] font-medium text-soft/75 transition-colors hover:text-cyan"
+                className="text-[0.9375rem] font-medium text-navy/75 transition-colors hover:text-coral-deep"
               >
                 {t(item.key)}
               </Link>
@@ -100,7 +100,7 @@ export function Header() {
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="grid h-11 w-11 place-items-center rounded-full border-2 border-soft/20 text-soft md:hidden"
+              className="grid h-11 w-11 place-items-center rounded-full border-2 border-navy/20 text-navy md:hidden"
             >
               <span className="sr-only">{open ? t("close") : t("menu")}</span>
               <svg
@@ -126,7 +126,7 @@ export function Header() {
       {open ? (
         <div
           id="mobile-menu"
-          className="fixed inset-0 top-20 z-30 bg-indigo md:hidden"
+          className="fixed inset-0 top-20 z-30 bg-canvas md:hidden"
         >
           <nav
             className="container-page flex flex-col gap-1 py-8"
@@ -136,7 +136,7 @@ export function Header() {
               <Link
                 key={item.key}
                 href={item.href}
-                className="border-b border-soft/10 py-5 text-2xl font-semibold text-soft"
+                className="border-b border-navy/10 py-5 text-2xl font-semibold text-navy"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t(item.key)}

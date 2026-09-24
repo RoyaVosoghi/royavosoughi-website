@@ -28,8 +28,8 @@ export function ConversationStatusButton({ id, status }: { id: string; status: s
       disabled={pending}
       className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${
         isClosed
-          ? "border-soft/15 text-soft/60 hover:bg-soft/5"
-          : "border-soft/40 text-soft hover:bg-cyan hover:text-indigo"
+          ? "border-navy/15 text-navy/60 hover:bg-navy/5"
+          : "border-navy text-navy hover:bg-navy hover:text-canvas"
       }`}
     >
       {isClosed ? t("reopen") : t("close")}

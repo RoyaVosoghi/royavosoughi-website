@@ -92,30 +92,30 @@ export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-        <h2 className="font-display text-lg font-bold text-soft">{t("adminsTitle")}</h2>
+      <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+        <h2 className="font-display text-lg font-bold text-navy">{t("adminsTitle")}</h2>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-sm">
             <thead>
-              <tr className="border-b-2 border-soft/10 text-start">
-                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-soft/70 uppercase">{t("colEmail")}</th>
-                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-soft/70 uppercase">{t("colRole")}</th>
-                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-soft/70 uppercase">{t("colPassword")}</th>
-                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-soft/70 uppercase">{t("colActions")}</th>
+              <tr className="border-b-2 border-navy/10 text-start">
+                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("colEmail")}</th>
+                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("colRole")}</th>
+                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("colPassword")}</th>
+                <th className="px-4 py-2 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("colActions")}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-soft/5 last:border-0">
-                  <td className="px-4 py-3 text-soft/85">
+                <tr key={u.id} className="border-b border-navy/5 last:border-0">
+                  <td className="px-4 py-3 text-navy/85">
                     {u.email}
-                    {u.id === currentAdminId ? <span className="ms-2 text-xs text-cyan">{t("youSuffix")}</span> : null}
+                    {u.id === currentAdminId ? <span className="ms-2 text-xs text-coral-deep">{t("youSuffix")}</span> : null}
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={u.role}
                       onChange={(e) => changeRole(u.id, e.target.value as AdminRole)}
-                      className="rounded-lg border-2 border-soft/15 bg-indigo px-2 py-1 text-sm"
+                      className="rounded-lg border-2 border-navy/15 bg-canvas px-2 py-1 text-sm"
                     >
                       {ROLES.map((r) => (
                         <option key={r} value={r}>
@@ -124,13 +124,13 @@ export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow
                       ))}
                     </select>
                   </td>
-                  <td className="px-4 py-3 text-soft/70">{u.hasPassword ? t("passwordSet") : t("passwordBootstrap")}</td>
+                  <td className="px-4 py-3 text-navy/70">{u.hasPassword ? t("passwordSet") : t("passwordBootstrap")}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
-                      <button type="button" onClick={() => resetPassword(u.id)} className="text-sm font-medium text-cyan hover:underline">
+                      <button type="button" onClick={() => resetPassword(u.id)} className="text-sm font-medium text-coral-deep hover:underline">
                         {t("resetPassword")}
                       </button>
-                      <button type="button" onClick={() => removeUser(u.id)} className="text-sm font-medium text-amber-soft hover:underline">
+                      <button type="button" onClick={() => removeUser(u.id)} className="text-sm font-medium text-amber-deep hover:underline">
                         {t("remove")}
                       </button>
                     </div>
@@ -140,30 +140,30 @@ export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-soft/50">{ROLE_HINT[role]}</p>
+        <p className="mt-3 text-xs text-navy/50">{ROLE_HINT[role]}</p>
       </div>
 
-      <div className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-        <h2 className="font-display text-lg font-bold text-soft">{t("addAdminTitle")}</h2>
+      <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+        <h2 className="font-display text-lg font-bold text-navy">{t("addAdminTitle")}</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <input
             type="email"
             placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
+            className="rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
           />
           <input
             type="text"
             placeholder={t("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
+            className="rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as AdminRole)}
-            className="rounded-2xl border-2 border-soft/15 bg-indigo px-4 py-2.5 text-soft focus:border-cyan focus:outline-none"
+            className="rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
           >
             {ROLES.map((r) => (
               <option key={r} value={r}>
@@ -172,12 +172,12 @@ export function TeamManager({ initial, currentAdminId }: { initial: AdminUserRow
             ))}
           </select>
         </div>
-        {error ? <p className="mt-3 text-sm font-medium text-amber-soft">{error}</p> : null}
+        {error ? <p className="mt-3 text-sm font-medium text-amber-deep">{error}</p> : null}
         <button
           type="button"
           onClick={createUser}
           disabled={status === "submitting" || !email || password.length < 8}
-          className="mt-4 rounded-full bg-cyan px-6 py-2.5 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+          className="mt-4 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
         >
           {status === "submitting" ? t("adding") : t("addAdminButton")}
         </button>

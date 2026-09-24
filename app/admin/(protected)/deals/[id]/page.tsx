@@ -30,15 +30,15 @@ export default async function AdminDealDetailPage({ params }: { params: Promise<
 
   return (
     <div>
-      <Link href="/admin/deals" className="text-sm font-medium text-cyan hover:underline">
+      <Link href="/admin/deals" className="text-sm font-medium text-coral-deep hover:underline">
         {t("detail.backLink")}
       </Link>
 
-      <h1 className="text-section mt-4 text-soft">{deal.title}</h1>
+      <h1 className="text-section mt-4 text-navy">{deal.title}</h1>
       {contact ? (
-        <p className="mt-1 text-soft/70">
+        <p className="mt-1 text-navy/70">
           {t("detail.fieldContact")}:{" "}
-          <Link href={`/admin/contacts/${contact.id}`} className="text-cyan hover:underline">
+          <Link href={`/admin/contacts/${contact.id}`} className="text-coral-deep hover:underline">
             {contact.name}
           </Link>
         </p>
@@ -48,28 +48,28 @@ export default async function AdminDealDetailPage({ params }: { params: Promise<
         <div className="lg:col-span-2 flex flex-col gap-6">
           <DealEditForm deal={deal} stages={stages} />
 
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="font-display text-lg font-bold text-soft">{t("detail.aiNextActionTitle")}</h2>
+              <h2 className="font-display text-lg font-bold text-navy">{t("detail.aiNextActionTitle")}</h2>
               <SuggestNextActionButton dealId={deal.id} />
             </div>
             {deal.aiNextAction ? (
               <>
-                <p className="mt-3 text-sm text-soft/80">{deal.aiNextAction}</p>
+                <p className="mt-3 text-sm text-navy/80">{deal.aiNextAction}</p>
                 {deal.aiNextActionUpdatedAt ? (
-                  <p className="mt-2 text-xs text-soft/40">
+                  <p className="mt-2 text-xs text-navy/40">
                     {t("detail.aiNextActionUpdatedAt", { when: new Date(deal.aiNextActionUpdatedAt).toLocaleString() })}
                   </p>
                 ) : null}
               </>
             ) : (
-              <p className="mt-3 text-sm text-soft/50">{t("detail.aiNextActionEmpty")}</p>
+              <p className="mt-3 text-sm text-navy/50">{t("detail.aiNextActionEmpty")}</p>
             )}
           </section>
         </div>
 
-        <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-          <h2 className="font-display text-lg font-bold text-soft">{t("detail.activitiesTitle")}</h2>
+        <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+          <h2 className="font-display text-lg font-bold text-navy">{t("detail.activitiesTitle")}</h2>
           <div className="mt-3">
             <ActivityListSection activities={activities} contactId={deal.contactId} dealId={deal.id} />
           </div>

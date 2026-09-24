@@ -21,7 +21,7 @@ export function MessageBubble({
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"} gap-1`}>
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 whitespace-pre-wrap sm:max-w-[70%] ${
-          isUser ? "bg-night text-soft" : "bg-night text-soft"
+          isUser ? "bg-navy text-canvas" : "bg-mist text-navy"
         }`}
       >
         {content}
@@ -36,7 +36,7 @@ export function MessageBubble({
             aria-label="Good response"
             aria-pressed={feedback === 1}
             className={`grid h-7 w-7 place-items-center rounded-full transition-colors disabled:cursor-default ${
-              feedback === 1 ? "bg-cyan/15 text-cyan" : "text-soft/35 hover:bg-soft/5 hover:text-cyan"
+              feedback === 1 ? "bg-coral/15 text-coral-deep" : "text-navy/35 hover:bg-navy/5 hover:text-coral-deep"
             }`}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -50,7 +50,7 @@ export function MessageBubble({
             aria-label="Bad response"
             aria-pressed={feedback === -1}
             className={`grid h-7 w-7 place-items-center rounded-full transition-colors disabled:cursor-default ${
-              feedback === -1 ? "bg-amber/15 text-amber-soft" : "text-soft/35 hover:bg-soft/5 hover:text-amber-soft"
+              feedback === -1 ? "bg-amber-deep/15 text-amber-deep" : "text-navy/35 hover:bg-navy/5 hover:text-amber-deep"
             }`}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4 -scale-x-100 -scale-y-100" fill="none" stroke="currentColor" strokeWidth="2">

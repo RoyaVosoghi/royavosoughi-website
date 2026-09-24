@@ -21,39 +21,39 @@ export async function Contact() {
 
           <dl className="mt-10 space-y-6">
             <div>
-              <dt className="label-eyebrow text-cyan">{t("emailLabel")}</dt>
+              <dt className="label-eyebrow text-coral-deep">{t("emailLabel")}</dt>
               <dd className="mt-2">
                 <a
                   href={`mailto:${site.email}`}
                   dir="ltr"
-                  className="text-lg text-soft underline underline-offset-4 hover:text-cyan"
+                  className="text-lg text-navy underline underline-offset-4 hover:text-coral-deep"
                 >
                   {site.email}
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-cyan">LinkedIn</dt>
+              <dt className="label-eyebrow text-coral-deep">LinkedIn</dt>
               <dd className="mt-2">
                 <a
                   href={site.social.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
                   dir="ltr"
-                  className="text-lg text-soft underline underline-offset-4 hover:text-cyan"
+                  className="text-lg text-navy underline underline-offset-4 hover:text-coral-deep"
                 >
                   /in/royavosoughi
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-cyan">{t("responseLabel")}</dt>
-              <dd className="mt-2 text-lg text-soft/75">{t("responseValue")}</dd>
+              <dt className="label-eyebrow text-coral-deep">{t("responseLabel")}</dt>
+              <dd className="mt-2 text-lg text-navy/75">{t("responseValue")}</dd>
             </div>
           </dl>
         </Reveal>
 
-        <Reveal delayMs={100} className="rounded-3xl bg-violet/10 p-6 md:p-8">
+        <Reveal delayMs={100} className="rounded-3xl bg-mist/40 p-6 md:p-8">
           <ContactForm configured={isSupabaseConfigured()} email={site.email} />
         </Reveal>
       </div>

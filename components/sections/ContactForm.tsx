@@ -13,11 +13,11 @@ const validatedFields = ["name", "email", "message"] as const;
 
 function fieldClass(invalid: boolean) {
   return (
-    "w-full rounded-2xl border-2 bg-indigo px-4 py-3.5 text-soft " +
-    "transition-colors placeholder:text-soft/35 focus:outline-none " +
+    "w-full rounded-2xl border-2 bg-canvas px-4 py-3.5 text-navy " +
+    "transition-colors placeholder:text-navy/35 focus:outline-none " +
     (invalid
-      ? "border-amber focus:border-amber"
-      : "border-soft/15 hover:border-soft/30 focus:border-cyan")
+      ? "border-amber-deep focus:border-amber-deep"
+      : "border-navy/15 hover:border-navy/30 focus:border-coral")
   );
 }
 
@@ -124,11 +124,11 @@ export function ContactForm({
    */
   if (!configured) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-soft/20 bg-violet/12 p-8">
-        <p className="text-lg text-soft/80">{t("fallbackIntro")}</p>
+      <div className="rounded-3xl border-2 border-dashed border-navy/20 bg-mist/50 p-8">
+        <p className="text-lg text-navy/80">{t("fallbackIntro")}</p>
         <a
           href={`mailto:${email}`}
-          className="mt-5 inline-block text-xl font-semibold text-cyan underline underline-offset-4 hover:text-soft"
+          className="mt-5 inline-block text-xl font-semibold text-coral-deep underline underline-offset-4 hover:text-navy"
         >
           {email}
         </a>
@@ -138,14 +138,14 @@ export function ContactForm({
 
   if (status === "sent") {
     return (
-      <div className="rounded-3xl bg-night p-8 text-center">
+      <div className="rounded-3xl bg-mist p-8 text-center">
         {statusAnnouncer}
         <svg
           viewBox="0 0 24 24"
           aria-hidden="true"
           className="mx-auto h-12 w-12"
           fill="none"
-          stroke="var(--color-cyan)"
+          stroke="var(--color-coral-deep)"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -153,8 +153,8 @@ export function ContactForm({
           <circle cx="12" cy="12" r="10" />
           <path d="M7.5 12.5 L10.5 15.5 L16.5 9" />
         </svg>
-        <h3 className="mt-4 text-2xl text-soft">{t("successTitle")}</h3>
-        <p className="mt-2 text-soft/75">{t("successBody")}</p>
+        <h3 className="mt-4 text-2xl text-navy">{t("successTitle")}</h3>
+        <p className="mt-2 text-navy/75">{t("successBody")}</p>
       </div>
     );
   }
@@ -164,7 +164,7 @@ export function ContactForm({
       {statusAnnouncer}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block font-medium text-soft">
+          <label htmlFor="name" className="mb-2 block font-medium text-navy">
             {t("nameLabel")}
           </label>
           <input
@@ -180,13 +180,13 @@ export function ContactForm({
             placeholder={t("namePlaceholder")}
           />
           {errors.name ? (
-            <p id="name-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-soft">
+            <p id="name-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
               {errors.name}
             </p>
           ) : null}
         </div>
         <div>
-          <label htmlFor="email" className="mb-2 block font-medium text-soft">
+          <label htmlFor="email" className="mb-2 block font-medium text-navy">
             {t("emailLabel")}
           </label>
           <input
@@ -203,7 +203,7 @@ export function ContactForm({
             placeholder="name@company.com"
           />
           {errors.email ? (
-            <p id="email-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-soft">
+            <p id="email-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
               {errors.email}
             </p>
           ) : null}
@@ -211,9 +211,9 @@ export function ContactForm({
       </div>
 
       <div>
-        <label htmlFor="company" className="mb-2 block font-medium text-soft">
+        <label htmlFor="company" className="mb-2 block font-medium text-navy">
           {t("companyLabel")}{" "}
-          <span className="font-normal text-soft/70">{t("optional")}</span>
+          <span className="font-normal text-navy/70">{t("optional")}</span>
         </label>
         <input
           id="company"
@@ -228,10 +228,10 @@ export function ContactForm({
         <div>
           <label
             htmlFor="businessStage"
-            className="mb-2 block font-medium text-soft"
+            className="mb-2 block font-medium text-navy"
           >
             {t("businessStageLabel")}{" "}
-            <span className="font-normal text-soft/70">{t("optional")}</span>
+            <span className="font-normal text-navy/70">{t("optional")}</span>
           </label>
           <select
             id="businessStage"
@@ -251,10 +251,10 @@ export function ContactForm({
         <div>
           <label
             htmlFor="preferredTime"
-            className="mb-2 block font-medium text-soft"
+            className="mb-2 block font-medium text-navy"
           >
             {t("preferredTimeLabel")}{" "}
-            <span className="font-normal text-soft/70">{t("optional")}</span>
+            <span className="font-normal text-navy/70">{t("optional")}</span>
           </label>
           <select
             id="preferredTime"
@@ -273,7 +273,7 @@ export function ContactForm({
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-2 block font-medium text-soft">
+        <label htmlFor="message" className="mb-2 block font-medium text-navy">
           {t("messageLabel")}
         </label>
         <textarea
@@ -289,7 +289,7 @@ export function ContactForm({
           placeholder={t("messagePlaceholder")}
         />
         {errors.message ? (
-          <p id="message-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-soft">
+          <p id="message-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
             {errors.message}
           </p>
         ) : null}
@@ -306,7 +306,7 @@ export function ContactForm({
           {status === "sending" ? t("sending") : t("submit")}
         </Button>
         {status === "error" ? (
-          <p role="alert" className="text-sm font-medium text-amber-soft">
+          <p role="alert" className="text-sm font-medium text-amber-deep">
             {t("errorBody")}{" "}
             <a
               href={`mailto:${email}`}

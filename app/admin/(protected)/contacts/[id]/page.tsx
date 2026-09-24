@@ -30,17 +30,17 @@ export default async function AdminContactDetailPage({ params }: { params: Promi
 
   return (
     <div>
-      <Link href="/admin/contacts" className="text-sm font-medium text-cyan hover:underline">
+      <Link href="/admin/contacts" className="text-sm font-medium text-coral-deep hover:underline">
         {t("detail.backLink")}
       </Link>
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-section text-soft">{contact.name}</h1>
-          <p className="mt-1 text-soft/70">{contact.email}</p>
-          <p className="mt-1 text-sm text-soft/50">
+          <h1 className="text-section text-navy">{contact.name}</h1>
+          <p className="mt-1 text-navy/70">{contact.email}</p>
+          <p className="mt-1 text-sm text-navy/50">
             {contact.companyId ? (
-              <Link href={`/admin/companies/${contact.companyId}`} className="text-cyan hover:underline">
+              <Link href={`/admin/companies/${contact.companyId}`} className="text-coral-deep hover:underline">
                 {contact.companyName}
               </Link>
             ) : (
@@ -53,54 +53,54 @@ export default async function AdminContactDetailPage({ params }: { params: Promi
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="font-display text-lg font-bold text-soft">{t("detail.aiSummaryTitle")}</h2>
+              <h2 className="font-display text-lg font-bold text-navy">{t("detail.aiSummaryTitle")}</h2>
               <RegenerateSummaryButton contactId={contact.id} />
             </div>
             {contact.aiSummary ? (
               <>
-                <p className="mt-3 text-sm text-soft/80">{contact.aiSummary}</p>
+                <p className="mt-3 text-sm text-navy/80">{contact.aiSummary}</p>
                 {contact.aiSummaryUpdatedAt ? (
-                  <p className="mt-2 text-xs text-soft/40">
+                  <p className="mt-2 text-xs text-navy/40">
                     {t("detail.aiSummaryUpdatedAt", { when: new Date(contact.aiSummaryUpdatedAt).toLocaleString() })}
                   </p>
                 ) : null}
               </>
             ) : (
-              <p className="mt-3 text-sm text-soft/50">{t("detail.aiSummaryEmpty")}</p>
+              <p className="mt-3 text-sm text-navy/50">{t("detail.aiSummaryEmpty")}</p>
             )}
           </section>
 
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-            <h2 className="font-display text-lg font-bold text-soft">{t("detail.timelineTitle")}</h2>
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+            <h2 className="font-display text-lg font-bold text-navy">{t("detail.timelineTitle")}</h2>
             {timeline.length === 0 ? (
-              <p className="mt-3 text-sm text-soft/50">{t("detail.timelineEmpty")}</p>
+              <p className="mt-3 text-sm text-navy/50">{t("detail.timelineEmpty")}</p>
             ) : (
               <ul className="mt-4 flex flex-col gap-2">
                 {timeline.map((item) =>
                   item.kind === "activity" ? (
-                    <li key={`a-${item.id}`} className="rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3">
-                      <p className="text-sm font-medium text-soft/85">
-                        <span className="me-2 rounded-full bg-soft/10 px-2 py-0.5 text-xs font-semibold text-soft capitalize">
+                    <li key={`a-${item.id}`} className="rounded-2xl border border-navy/10 bg-mist/20 px-4 py-3">
+                      <p className="text-sm font-medium text-navy/85">
+                        <span className="me-2 rounded-full bg-navy/10 px-2 py-0.5 text-xs font-semibold text-navy capitalize">
                           {item.type}
                         </span>
                         {item.subject}
                       </p>
-                      <p className="mt-1 text-xs text-soft/40">{new Date(item.createdAt).toLocaleString()}</p>
+                      <p className="mt-1 text-xs text-navy/40">{new Date(item.createdAt).toLocaleString()}</p>
                     </li>
                   ) : (
                     <li
                       key={`c-${item.id}`}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3"
+                      className="flex items-center justify-between gap-3 rounded-2xl border border-navy/10 bg-mist/20 px-4 py-3"
                     >
                       <div>
-                        <p className="text-sm font-medium text-soft/85">
+                        <p className="text-sm font-medium text-navy/85">
                           {t("detail.timelineConversation", { channel: item.channel })}
                         </p>
-                        <p className="mt-1 text-xs text-soft/40">{new Date(item.lastActiveAt).toLocaleString()}</p>
+                        <p className="mt-1 text-xs text-navy/40">{new Date(item.lastActiveAt).toLocaleString()}</p>
                       </div>
-                      <Link href={`/admin/conversations/${item.id}`} className="text-sm font-medium text-cyan hover:underline">
+                      <Link href={`/admin/conversations/${item.id}`} className="text-sm font-medium text-coral-deep hover:underline">
                         {t("detail.viewConversation")}
                       </Link>
                     </li>
@@ -112,41 +112,41 @@ export default async function AdminContactDetailPage({ params }: { params: Promi
         </div>
 
         <div className="flex flex-col gap-6">
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
             <dl className="flex flex-col gap-3 text-sm">
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldPhone")}</dt>
-                <dd className="mt-0.5 text-soft/80">{contact.phone ?? t("detail.notSet")}</dd>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-navy/40">{t("detail.fieldPhone")}</dt>
+                <dd className="mt-0.5 text-navy/80">{contact.phone ?? t("detail.notSet")}</dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldTitle")}</dt>
-                <dd className="mt-0.5 text-soft/80">{contact.title ?? t("detail.notSet")}</dd>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-navy/40">{t("detail.fieldTitle")}</dt>
+                <dd className="mt-0.5 text-navy/80">{contact.title ?? t("detail.notSet")}</dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldSource")}</dt>
-                <dd className="mt-0.5 text-soft/80">{contact.source ?? t("detail.notSet")}</dd>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-navy/40">{t("detail.fieldSource")}</dt>
+                <dd className="mt-0.5 text-navy/80">{contact.source ?? t("detail.notSet")}</dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-soft/40">{t("detail.fieldLocale")}</dt>
-                <dd className="mt-0.5 text-soft/80">{contact.locale.toUpperCase()}</dd>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-navy/40">{t("detail.fieldLocale")}</dt>
+                <dd className="mt-0.5 text-navy/80">{contact.locale.toUpperCase()}</dd>
               </div>
             </dl>
           </section>
 
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-            <h2 className="font-display text-lg font-bold text-soft">{t("detail.dealsTitle")}</h2>
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+            <h2 className="font-display text-lg font-bold text-navy">{t("detail.dealsTitle")}</h2>
             {deals.length === 0 ? (
-              <p className="mt-3 text-sm text-soft/50">{t("detail.dealsEmpty")}</p>
+              <p className="mt-3 text-sm text-navy/50">{t("detail.dealsEmpty")}</p>
             ) : (
               <ul className="mt-3 flex flex-col gap-2">
                 {deals.map((deal) => (
                   <li key={deal.id}>
                     <Link
                       href={`/admin/deals/${deal.id}`}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-soft/10 bg-violet/8 px-4 py-3 hover:bg-violet/10"
+                      className="flex items-center justify-between gap-3 rounded-2xl border border-navy/10 bg-mist/20 px-4 py-3 hover:bg-mist/40"
                     >
-                      <span className="text-sm font-medium text-soft/85">{deal.title}</span>
-                      <span className="text-sm font-semibold text-soft">
+                      <span className="text-sm font-medium text-navy/85">{deal.title}</span>
+                      <span className="text-sm font-semibold text-navy">
                         {(deal.amountCents / 100).toLocaleString(undefined, { style: "currency", currency: deal.currency })}
                       </span>
                     </Link>
@@ -156,8 +156,8 @@ export default async function AdminContactDetailPage({ params }: { params: Promi
             )}
           </section>
 
-          <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-            <h2 className="font-display text-lg font-bold text-soft">{t("detail.activitiesTitle")}</h2>
+          <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+            <h2 className="font-display text-lg font-bold text-navy">{t("detail.activitiesTitle")}</h2>
             <div className="mt-3">
               <ActivityListSection activities={activities} contactId={contact.id} />
             </div>

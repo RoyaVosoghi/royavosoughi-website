@@ -36,50 +36,50 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
   }
 
   return (
-    <section className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-      <h2 className="font-display text-lg font-bold text-soft">{t("title")}</h2>
-      <p className="mt-1 text-sm text-soft/60">{t("subtitle")}</p>
+    <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-navy">{t("title")}</h2>
+      <p className="mt-1 text-sm text-navy/60">{t("subtitle")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("accentColorLabel")}
           <div className="mt-1 flex items-center gap-2">
             <input
               type="color"
               value={values.primaryColor}
               onChange={(e) => setValues({ ...values, primaryColor: e.target.value })}
-              className="h-10 w-12 shrink-0 rounded-lg border-2 border-soft/15"
+              className="h-10 w-12 shrink-0 rounded-lg border-2 border-navy/15"
             />
             <input
               type="text"
               value={values.primaryColor}
               onChange={(e) => setValues({ ...values, primaryColor: e.target.value })}
-              className="w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+              className="w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
             />
           </div>
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("positionLabel")}
           <select
             value={values.position}
             onChange={(e) => setValues({ ...values, position: e.target.value as "bottom-end" | "bottom-start" })}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           >
             <option value="bottom-end">{t("positionTrailing")}</option>
             <option value="bottom-start">{t("positionLeading")}</option>
           </select>
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("welcomeEnLabel")}
           <input
             type="text"
             value={values.welcomeMessageEn}
             onChange={(e) => setValues({ ...values, welcomeMessageEn: e.target.value })}
             placeholder="Say hello, or ask a question."
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("welcomeFaLabel")}
           <input
             type="text"
@@ -87,17 +87,17 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
             value={values.welcomeMessageFa}
             onChange={(e) => setValues({ ...values, welcomeMessageFa: e.target.value })}
             placeholder="سلام کنید یا سوالی بپرسید."
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
-        <label className="sm:col-span-2 text-xs font-medium text-soft/70">
+        <label className="sm:col-span-2 text-xs font-medium text-navy/70">
           {t("allowedDomainsLabel")}
           <textarea
             value={domainsText}
             onChange={(e) => setDomainsText(e.target.value)}
             rows={4}
             placeholder={t("allowedDomainsPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 font-mono text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 font-mono text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
       </div>
@@ -107,12 +107,12 @@ export function WidgetConfigForm({ initial }: { initial: WidgetConfigValues }) {
           type="button"
           onClick={save}
           disabled={status === "saving"}
-          className="rounded-full bg-cyan px-5 py-2 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+          className="rounded-full bg-coral px-5 py-2 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
         >
           {status === "saving" ? t("saving") : t("save")}
         </button>
-        {status === "saved" ? <span className="text-sm font-medium text-cyan">{t("saved")}</span> : null}
-        {status === "error" ? <span className="text-sm font-medium text-amber-soft">{t("saveError")}</span> : null}
+        {status === "saved" ? <span className="text-sm font-medium text-coral-deep">{t("saved")}</span> : null}
+        {status === "error" ? <span className="text-sm font-medium text-amber-deep">{t("saveError")}</span> : null}
       </div>
     </section>
   );

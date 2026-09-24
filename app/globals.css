@@ -3,26 +3,26 @@
 /* ==========================================================================
    Nura — brand tokens
    "Nura: AI engineered for reality"
-   Four brand colours. Everything else below is a tint derived from them or a
-   functional status colour — do not introduce new hues.
+   Navy & coral palette (2026-09-24). Three brand colours; everything else is
+   a tint derived from them or a functional status colour — no new hues.
    ========================================================================== */
 
 @theme {
   /* Core palette */
-  --color-indigo: #0f0c29; /* Deep Indigo — main background */
-  --color-violet: #9d4edd; /* Electric Violet — accent & logo */
-  --color-cyan: #00e5ff; /* Neon Cyan — buttons & links */
-  --color-soft: #f8f9fa; /* Soft White — body text */
+  --color-canvas: #f5f5f7; /* Canvas — main background */
+  --color-navy: #14213d; /* Navy — text, headings, dark sections */
+  --color-coral: #e07a5f; /* Coral — buttons (always with navy text) */
 
   /* Derived tints (not new colours) */
-  --color-night: #1a1640; /* Indigo, raised — cards, panels, feature sections */
-  --color-night-soft: #262058; /* hover state on night surfaces */
-  --color-haze: #aaa5d4; /* muted text on indigo — Soft White mixed into Indigo */
-  --color-violet-soft: #c79bf2; /* Violet for SMALL text — raw Violet is ~4:1 on Indigo, below AA for body copy */
+  --color-mist: #e6e6e6; /* soft grey — cards, quotes, soft sections */
+  --color-navy-soft: #1f3158; /* hover state on navy surfaces */
+  --color-fog: #a9b4cc; /* muted text on navy — 7.7:1 */
+  --color-coral-soft: #eb9a85; /* coral hover — navy text stays 7.2:1 */
+  --color-coral-deep: #ad4428; /* coral for TEXT links/emphasis on light — raw coral is 2.7:1, this is 5.3:1 */
 
-  /* Functional status colour (warnings, "needs attention") — not a brand colour */
-  --color-amber: #f5b942;
-  --color-amber-soft: #ffd27a; /* amber for text on indigo */
+  /* Functional status colours (warnings) — not brand colours */
+  --color-amber: #e3a72f;
+  --color-amber-deep: #876012; /* amber for text on light — 5.2:1 */
 
   /* Type families. --font-display / --font-body are re-pointed per locale below. */
   --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
@@ -62,9 +62,8 @@
   }
 
   body {
-    background-color: var(--color-indigo);
-    color: var(--color-soft);
-    color-scheme: dark;
+    background-color: var(--color-canvas);
+    color: var(--color-navy);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -78,7 +77,7 @@
   h4 {
     font-family: var(--font-display);
     font-weight: 700;
-    color: var(--color-soft);
+    color: var(--color-navy);
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
@@ -108,7 +107,7 @@
 
   /* Visible, on-brand focus ring everywhere */
   :focus-visible {
-    outline: 3px solid var(--color-cyan);
+    outline: 3px solid var(--color-coral-deep);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -124,8 +123,8 @@
   }
 
   ::selection {
-    background-color: var(--color-violet);
-    color: var(--color-soft);
+    background-color: var(--color-coral);
+    color: var(--color-navy);
   }
 }
 
@@ -192,7 +191,7 @@
    Motion — every animation here must no-op under prefers-reduced-motion
    -------------------------------------------------------------------------- */
 
-/* The Cyan underline that draws itself under "line by line".
+/* The Coral underline that draws itself under "line by line".
    A literal reading of the tagline: the line is built, left to right. */
 @keyframes draw-underline {
   from {
@@ -265,13 +264,13 @@
   transform: translateY(0);
 }
 
-/* Subtle technical texture for dark (Night) sections — a fine dot grid,
+/* Subtle technical texture for dark (Navy) sections — a fine dot grid,
    deliberately faint so it reads as texture, never competes with content.
    The alpha lives in the dot colour itself (not element opacity), so it
    never dims the section's actual content. */
 .bg-dot-grid {
   background-image: radial-gradient(
-    color-mix(in srgb, var(--color-haze) 12%, transparent) 1px,
+    color-mix(in srgb, var(--color-fog) 12%, transparent) 1px,
     transparent 1px
   );
   background-size: 28px 28px;

@@ -21,12 +21,12 @@ export const site = {
 
 /** Brand palette, mirrored from app/globals.css for use in TS (OG image, charts, email). */
 export const brandColors = {
-  indigo: "#0F0C29",
-  violet: "#9D4EDD",
-  cyan: "#00E5FF",
-  soft: "#F8F9FA",
-  night: "#1A1640",
-  haze: "#AAA5D4",
-  violetSoft: "#C79BF2",
-  amber: "#F5B942",
+  canvas: "#F5F5F7",
+  navy: "#14213D",
+  coral: "#E07A5F",
+  mist: "#E6E6E6",
+  navySoft: "#1F3158",
+  fog: "#A9B4CC",
+  coralDeep: "#AD4428",
+  amber: "#E3A72F",
 } as const;

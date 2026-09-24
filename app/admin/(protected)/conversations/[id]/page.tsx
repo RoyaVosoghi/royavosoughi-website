@@ -12,9 +12,9 @@ import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 export const metadata = { title: "Conversation · Admin" };
 
 const ROLE_STYLES: Record<string, string> = {
-  user: "self-end bg-night text-soft",
-  assistant: "self-start bg-night text-soft",
-  tool: "self-start bg-amber/15 text-amber-soft font-mono text-xs",
+  user: "self-end bg-navy text-canvas",
+  assistant: "self-start bg-mist text-navy",
+  tool: "self-start bg-amber/15 text-amber-deep font-mono text-xs",
 };
 
 export default async function AdminConversationDetailPage({
@@ -38,21 +38,21 @@ export default async function AdminConversationDetailPage({
 
   return (
     <div>
-      <Link href="/admin/conversations" className="text-sm font-medium text-cyan hover:underline">
+      <Link href="/admin/conversations" className="text-sm font-medium text-coral-deep hover:underline">
         {t("detail.backLink")}
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-soft capitalize">
+          <h1 className="font-display text-2xl font-bold text-navy capitalize">
             {t("detail.title", { channel: conversation.channel })}
             {conversation.botPaused ? (
-              <span className="ms-2 rounded-full bg-amber/20 px-2.5 py-0.5 text-xs font-semibold text-amber-soft align-middle">
+              <span className="ms-2 rounded-full bg-amber/20 px-2.5 py-0.5 text-xs font-semibold text-amber-deep align-middle">
                 {t("detail.pausedBadge")}
               </span>
             ) : null}
           </h1>
-          <p className="mt-1 text-sm text-soft/60">
+          <p className="mt-1 text-sm text-navy/60">
             {conversation.leadEmail ?? t("detail.anonymous")} · {conversation.locale.toUpperCase()} ·{" "}
             {t("detail.startedAt")} {new Date(conversation.startedAt).toLocaleString()}
           </p>
@@ -63,9 +63,9 @@ export default async function AdminConversationDetailPage({
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-3xl border-2 border-soft/10 bg-indigo p-6">
+      <div className="mt-8 flex flex-col gap-3 rounded-3xl border-2 border-navy/10 bg-canvas p-6">
         {messages.length === 0 ? (
-          <p className="text-soft/60">{t("detail.noMessages")}</p>
+          <p className="text-navy/60">{t("detail.noMessages")}</p>
         ) : (
           messages.map((message) => {
             const messageSources = (message.retrievedChunkIds ?? [])
@@ -76,7 +76,7 @@ export default async function AdminConversationDetailPage({
               <div
                 key={message.id}
                 className={`flex max-w-[75%] flex-col rounded-2xl px-4 py-3 whitespace-pre-wrap ${
-                  ROLE_STYLES[message.role] ?? "self-start bg-soft/5 text-soft"
+                  ROLE_STYLES[message.role] ?? "self-start bg-navy/5 text-navy"
                 }`}
               >
                 {message.toolName ? (

@@ -65,8 +65,8 @@ export function DocumentUploadForm() {
       ((kind === "pdf" || kind === "docx") && file !== null));
 
   return (
-    <form onSubmit={onSubmit} className="rounded-3xl border-2 border-soft/10 bg-indigo p-6">
-      <h2 className="font-display text-lg font-bold text-soft">{t("upload.heading")}</h2>
+    <form onSubmit={onSubmit} className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-navy">{t("upload.heading")}</h2>
 
       <div className="mt-4 flex flex-wrap gap-2">
         {(Object.keys(KIND_LABELS) as Kind[]).map((k) => (
@@ -75,7 +75,7 @@ export function DocumentUploadForm() {
             type="button"
             onClick={() => setKind(k)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-              kind === k ? "bg-cyan text-indigo" : "bg-soft/5 text-soft/60 hover:bg-soft/10"
+              kind === k ? "bg-coral text-navy" : "bg-navy/5 text-navy/60 hover:bg-navy/10"
             }`}
           >
             {KIND_LABELS[k]}
@@ -84,35 +84,35 @@ export function DocumentUploadForm() {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("upload.sourceKeyLabel")}
           <input
             type="text"
             value={sourceKey}
             onChange={(e) => setSourceKey(e.target.value)}
             placeholder={t("upload.sourceKeyPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("upload.localeLabel")}
           <select
             value={locale}
             onChange={(e) => setLocale(e.target.value as "en" | "fa")}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           >
             <option value="en">{t("localeEnglish")}</option>
             <option value="fa">{t("localeFa")}</option>
           </select>
         </label>
-        <label className="text-xs font-medium text-soft/70">
+        <label className="text-xs font-medium text-navy/70">
           {t("upload.tagsLabel")}
           <input
             type="text"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             placeholder={t("upload.tagsPlaceholder")}
-            className="mt-1 w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="mt-1 w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         </label>
       </div>
@@ -124,7 +124,7 @@ export function DocumentUploadForm() {
             onChange={(e) => setText(e.target.value)}
             rows={6}
             placeholder={t("upload.textPlaceholder")}
-            className="w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         ) : null}
         {kind === "url" ? (
@@ -133,7 +133,7 @@ export function DocumentUploadForm() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder={t("upload.urlPlaceholder")}
-            className="w-full rounded-xl border-2 border-soft/15 bg-indigo px-3 py-2 text-sm text-soft focus:border-cyan focus:outline-none"
+            className="w-full rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
           />
         ) : null}
         {kind === "pdf" || kind === "docx" ? (
@@ -141,17 +141,17 @@ export function DocumentUploadForm() {
             type="file"
             accept={kind === "pdf" ? ".pdf" : ".docx"}
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="block w-full text-sm text-soft/70"
+            className="block w-full text-sm text-navy/70"
           />
         ) : null}
       </div>
 
-      {error ? <p className="mt-3 text-sm font-medium text-amber-soft">{error}</p> : null}
+      {error ? <p className="mt-3 text-sm font-medium text-amber-deep">{error}</p> : null}
 
       <button
         type="submit"
         disabled={status === "submitting" || !canSubmit}
-        className="mt-4 rounded-full bg-cyan px-6 py-2.5 text-sm font-semibold text-indigo transition-colors hover:bg-soft disabled:opacity-50"
+        className="mt-4 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
       >
         {status === "submitting" ? t("upload.submitting") : t("upload.submit")}
       </button>

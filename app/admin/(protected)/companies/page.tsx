@@ -14,7 +14,7 @@ function buildColumns(t: Awaited<ReturnType<typeof getAdminTranslator<"companies
     {
       header: t("columnName"),
       cell: (row) => (
-        <Link href={`/admin/companies/${row.id}`} className="font-medium text-soft hover:underline">
+        <Link href={`/admin/companies/${row.id}`} className="font-medium text-navy hover:underline">
           {row.name}
         </Link>
       ),
@@ -41,9 +41,9 @@ export default async function AdminCompaniesPage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-cyan">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-soft">{t("title")}</h1>
-      <p className="mt-3 text-soft/70">{t("subtitle")}</p>
+      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
+      <p className="mt-3 text-navy/70">{t("subtitle")}</p>
 
       <div className="mt-8 flex flex-col gap-6">
         <AddCompanyForm />

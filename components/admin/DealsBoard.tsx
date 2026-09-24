@@ -34,13 +34,13 @@ function DealCard({ deal }: { deal: DealWithRelations }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`cursor-grab rounded-2xl border-2 border-soft/10 bg-indigo p-3 shadow-sm active:cursor-grabbing ${isDragging ? "opacity-40" : ""}`}
+      className={`cursor-grab rounded-2xl border-2 border-navy/10 bg-canvas p-3 shadow-sm active:cursor-grabbing ${isDragging ? "opacity-40" : ""}`}
     >
       <Link href={`/admin/deals/${deal.id}`} onClick={(e) => isDragging && e.preventDefault()} className="block">
-        <p className="text-sm font-semibold text-soft/85">{deal.title}</p>
-        <p className="mt-1 text-xs text-soft/50">{deal.contactName}</p>
-        <p className="mt-2 text-sm font-bold text-soft">{formatAmount(deal.amountCents, deal.currency)}</p>
-        {deal.aiNextAction ? <p className="mt-2 line-clamp-2 text-xs text-cyan">{deal.aiNextAction}</p> : null}
+        <p className="text-sm font-semibold text-navy/85">{deal.title}</p>
+        <p className="mt-1 text-xs text-navy/50">{deal.contactName}</p>
+        <p className="mt-2 text-sm font-bold text-navy">{formatAmount(deal.amountCents, deal.currency)}</p>
+        {deal.aiNextAction ? <p className="mt-2 line-clamp-2 text-xs text-coral-deep">{deal.aiNextAction}</p> : null}
       </Link>
     </div>
   );
@@ -54,17 +54,17 @@ function StageColumn({ stage, deals, noDealsLabel }: { stage: PipelineStage; dea
     <div
       ref={setNodeRef}
       className={`flex w-72 shrink-0 flex-col gap-3 rounded-3xl border-2 p-4 transition-colors ${
-        isOver ? "border-cyan bg-violet/10" : "border-soft/10 bg-violet/5"
+        isOver ? "border-coral bg-mist/40" : "border-navy/10 bg-mist/10"
       }`}
     >
       <div>
-        <p className="font-display text-sm font-bold text-soft">{stage.name}</p>
-        <p className="text-xs text-soft/50">
+        <p className="font-display text-sm font-bold text-navy">{stage.name}</p>
+        <p className="text-xs text-navy/50">
           {deals.length} · {formatAmount(totalCents, deals[0]?.currency ?? "USD")}
         </p>
       </div>
       <div className="flex flex-col gap-2">
-        {deals.length === 0 ? <p className="text-xs text-soft/40">{noDealsLabel}</p> : null}
+        {deals.length === 0 ? <p className="text-xs text-navy/40">{noDealsLabel}</p> : null}
         {deals.map((deal) => (
           <DealCard key={deal.id} deal={deal} />
         ))}

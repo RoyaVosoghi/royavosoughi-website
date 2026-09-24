@@ -100,7 +100,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
     <nav className="flex flex-col gap-6">
       {GROUPS.map((group) => (
         <div key={group.labelKey}>
-          <p className="label-eyebrow px-3 text-haze/70">{t(group.labelKey)}</p>
+          <p className="label-eyebrow px-3 text-fog/70">{t(group.labelKey)}</p>
           <div className="mt-2 flex flex-col gap-1">
             {group.links.map((link) => {
               const active = isActive(pathname, link.href);
@@ -111,8 +111,8 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
                   onClick={onNavigate}
                   className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                     active
-                      ? "bg-violet/25 text-soft ring-1 ring-violet/50"
-                      : "text-haze hover:bg-night-soft hover:text-soft"
+                      ? "bg-coral text-navy"
+                      : "text-fog hover:bg-navy-soft hover:text-canvas"
                   }`}
                 >
                   {t(link.labelKey)}
@@ -143,33 +143,33 @@ export function AdminNav() {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="flex items-center justify-between gap-4 bg-night px-5 py-4 lg:hidden">
-        <p className="font-display text-lg font-bold text-soft">
+      <header className="flex items-center justify-between gap-4 bg-navy px-5 py-4 lg:hidden">
+        <p className="font-display text-lg font-bold text-canvas">
           {t("brand")}
-          <span className="text-violet-soft">.</span>
+          <span className="text-coral">.</span>
           {t("brandSuffix")}
         </p>
         <div className="flex items-center gap-2">
-          <AdminLocaleSwitcher className="rounded-full border-2 border-haze px-3 py-1.5 text-sm font-medium text-soft" />
+          <AdminLocaleSwitcher className="rounded-full border-2 border-fog px-3 py-1.5 text-sm font-medium text-canvas" />
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-controls="admin-mobile-nav"
-            className="rounded-full border-2 border-haze px-3 py-1.5 text-sm font-medium text-soft"
+            className="rounded-full border-2 border-fog px-3 py-1.5 text-sm font-medium text-canvas"
           >
             {mobileOpen ? t("close") : t("menu")}
           </button>
         </div>
       </header>
       {mobileOpen ? (
-        <div id="admin-mobile-nav" className="border-b-2 border-night-soft bg-night px-4 py-4 lg:hidden">
+        <div id="admin-mobile-nav" className="border-b-2 border-navy-soft bg-navy px-4 py-4 lg:hidden">
           <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           <button
             type="button"
             onClick={handleLogout}
             disabled={loggingOut}
-            className="mt-6 w-full rounded-full border-2 border-haze px-4 py-2 text-sm font-medium text-soft disabled:opacity-50"
+            className="mt-6 w-full rounded-full border-2 border-fog px-4 py-2 text-sm font-medium text-canvas disabled:opacity-50"
           >
             {loggingOut ? t("signingOut") : t("signOut")}
           </button>
@@ -177,14 +177,14 @@ export function AdminNav() {
       ) : null}
 
       {/* Desktop sidebar */}
-      <aside aria-label="Admin navigation" className="fixed inset-y-0 inset-inline-start-0 z-10 hidden w-64 flex-col bg-night px-4 py-6 lg:flex">
+      <aside aria-label="Admin navigation" className="fixed inset-y-0 inset-inline-start-0 z-10 hidden w-64 flex-col bg-navy px-4 py-6 lg:flex">
         <div className="flex items-center justify-between gap-2 px-3">
-          <p className="font-display text-lg font-bold text-soft">
+          <p className="font-display text-lg font-bold text-canvas">
             {t("brand")}
-            <span className="text-violet-soft">.</span>
+            <span className="text-coral">.</span>
             {t("brandSuffix")}
           </p>
-          <AdminLocaleSwitcher className="rounded-full border-2 border-haze px-2.5 py-1 text-xs font-medium text-soft transition-colors hover:border-soft" />
+          <AdminLocaleSwitcher className="rounded-full border-2 border-fog px-2.5 py-1 text-xs font-medium text-canvas transition-colors hover:border-canvas" />
         </div>
         <div className="mt-8 flex-1 overflow-y-auto">
           <NavLinks pathname={pathname} />
@@ -193,7 +193,7 @@ export function AdminNav() {
           type="button"
           onClick={handleLogout}
           disabled={loggingOut}
-          className="mt-6 rounded-full border-2 border-haze px-4 py-2 text-sm font-medium text-soft transition-colors hover:border-soft hover:bg-night-soft disabled:opacity-50"
+          className="mt-6 rounded-full border-2 border-fog px-4 py-2 text-sm font-medium text-canvas transition-colors hover:border-canvas hover:bg-navy-soft disabled:opacity-50"
         >
           {loggingOut ? t("signingOut") : t("signOut")}
         </button>
