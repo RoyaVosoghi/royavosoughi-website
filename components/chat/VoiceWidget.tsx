@@ -143,16 +143,16 @@ export function VoiceWidget() {
         <div
           role="dialog"
           aria-label={t("title")}
-          className="flex h-[min(28rem,60vh)] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-navy/15 bg-canvas shadow-[0_20px_50px_rgba(20,33,61,0.25)]"
+          className="flex h-[min(28rem,60vh)] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-ink/15 bg-canvas shadow-[0_20px_50px_rgba(30,30,30,0.25)]"
         >
-          <header className="flex shrink-0 items-center justify-between bg-navy px-[18px] py-3.5">
+          <header className="flex shrink-0 items-center justify-between bg-ink px-[18px] py-3.5">
             <p className="text-[15px] font-semibold text-canvas">{t("title")}</p>
             <button
               type="button"
               onClick={endCall}
               disabled={phase === "ending"}
               aria-label={t("close")}
-              className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full text-mist transition-colors hover:bg-navy-soft hover:text-canvas disabled:opacity-50"
+              className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full text-mist transition-colors hover:bg-ink-soft hover:text-canvas disabled:opacity-50"
             >
               <CloseIcon />
             </button>
@@ -164,16 +164,16 @@ export function VoiceWidget() {
                 phase === "active" && mode === "speaking" ? "scale-110" : "scale-100"
               }`}
             >
-              <PhoneIcon className="h-8 w-8 text-navy" />
+              <PhoneIcon className="h-8 w-8 text-ink" />
             </div>
-            <p aria-live="polite" className="text-navy/70">
+            <p aria-live="polite" className="text-ink/70">
               {statusText}
             </p>
             {phase === "active" ? (
               <button
                 type="button"
                 onClick={endCall}
-                className="rounded-full bg-navy px-6 py-2.5 text-sm font-semibold text-canvas transition-colors hover:bg-navy-soft"
+                className="rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-canvas transition-colors hover:bg-ink-soft"
               >
                 {t("close")}
               </button>
@@ -185,7 +185,7 @@ export function VoiceWidget() {
           type="button"
           onClick={startCall}
           aria-label={t("start")}
-          className="grid h-[60px] w-[60px] place-items-center rounded-full bg-navy text-canvas shadow-[0_8px_24px_rgba(20,33,61,0.35)] transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft"
+          className="grid h-[60px] w-[60px] place-items-center rounded-full bg-ink text-canvas shadow-[0_8px_24px_rgba(30,30,30,0.35)] transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
         >
           <PhoneIcon className="h-[18px] w-[18px]" />
         </button>

@@ -28,7 +28,7 @@ export function PauseBotButton({ id, paused }: { id: string; paused: boolean }) 
       className={`rounded-full border-2 px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${
         paused
           ? "border-amber-deep bg-amber/15 text-amber-deep hover:bg-amber/25"
-          : "border-navy/15 text-navy/60 hover:bg-navy/5"
+          : "border-ink/15 text-ink/60 hover:bg-ink/5"
       }`}
     >
       {paused ? t("resume") : t("pause")}

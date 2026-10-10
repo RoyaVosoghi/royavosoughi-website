@@ -27,7 +27,7 @@ export function ResolveHandoffButton({ id, resolved }: { id: string; resolved: b
       disabled={pending}
       className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
         resolved
-          ? "bg-navy/10 text-navy/60 hover:bg-navy/15"
+          ? "bg-ink/10 text-ink/60 hover:bg-ink/15"
           : "bg-amber/20 text-amber-deep hover:bg-amber/30"
       }`}
     >

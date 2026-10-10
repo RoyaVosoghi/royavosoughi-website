@@ -111,8 +111,8 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
                   onClick={onNavigate}
                   className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                     active
-                      ? "bg-coral text-navy"
-                      : "text-fog hover:bg-navy-soft hover:text-canvas"
+                      ? "bg-cobalt text-white"
+                      : "text-fog hover:bg-ink-soft hover:text-canvas"
                   }`}
                 >
                   {t(link.labelKey)}
@@ -143,10 +143,10 @@ export function AdminNav() {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="flex items-center justify-between gap-4 bg-navy px-5 py-4 lg:hidden">
+      <header className="flex items-center justify-between gap-4 bg-ink px-5 py-4 lg:hidden">
         <p className="font-display text-lg font-bold text-canvas">
           {t("brand")}
-          <span className="text-coral">.</span>
+          <span className="text-cobalt-light">.</span>
           {t("brandSuffix")}
         </p>
         <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function AdminNav() {
         </div>
       </header>
       {mobileOpen ? (
-        <div id="admin-mobile-nav" className="border-b-2 border-navy-soft bg-navy px-4 py-4 lg:hidden">
+        <div id="admin-mobile-nav" className="border-b-2 border-ink-soft bg-ink px-4 py-4 lg:hidden">
           <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           <button
             type="button"
@@ -177,11 +177,11 @@ export function AdminNav() {
       ) : null}
 
       {/* Desktop sidebar */}
-      <aside aria-label="Admin navigation" className="fixed inset-y-0 inset-inline-start-0 z-10 hidden w-64 flex-col bg-navy px-4 py-6 lg:flex">
+      <aside aria-label="Admin navigation" className="fixed inset-y-0 inset-inline-start-0 z-10 hidden w-64 flex-col bg-ink px-4 py-6 lg:flex">
         <div className="flex items-center justify-between gap-2 px-3">
           <p className="font-display text-lg font-bold text-canvas">
             {t("brand")}
-            <span className="text-coral">.</span>
+            <span className="text-cobalt-light">.</span>
             {t("brandSuffix")}
           </p>
           <AdminLocaleSwitcher className="rounded-full border-2 border-fog px-2.5 py-1 text-xs font-medium text-canvas transition-colors hover:border-canvas" />
@@ -193,7 +193,7 @@ export function AdminNav() {
           type="button"
           onClick={handleLogout}
           disabled={loggingOut}
-          className="mt-6 rounded-full border-2 border-fog px-4 py-2 text-sm font-medium text-canvas transition-colors hover:border-canvas hover:bg-navy-soft disabled:opacity-50"
+          className="mt-6 rounded-full border-2 border-fog px-4 py-2 text-sm font-medium text-canvas transition-colors hover:border-canvas hover:bg-ink-soft disabled:opacity-50"
         >
           {loggingOut ? t("signingOut") : t("signOut")}
         </button>

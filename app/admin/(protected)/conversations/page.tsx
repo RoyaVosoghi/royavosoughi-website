@@ -9,9 +9,9 @@ import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 export const metadata = { title: "Conversations · Admin" };
 
 const CHANNEL_STYLES: Record<string, string> = {
-  web: "bg-mist text-coral-deep",
-  widget: "bg-coral/20 text-coral-deep",
-  telegram: "bg-navy/10 text-navy",
+  web: "bg-mist text-cobalt",
+  widget: "bg-cobalt/20 text-cobalt",
+  telegram: "bg-ink/10 text-ink",
 };
 
 function buildColumns(
@@ -23,7 +23,7 @@ function buildColumns(
       cell: (row) => (
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
-            CHANNEL_STYLES[row.channel] ?? "bg-navy/10 text-navy/60"
+            CHANNEL_STYLES[row.channel] ?? "bg-ink/10 text-ink/60"
           }`}
         >
           {row.channel}
@@ -34,7 +34,7 @@ function buildColumns(
       header: t("list.columnStatus"),
       cell: (row) => (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className={`text-xs font-medium capitalize ${row.status === "closed" ? "text-navy/40" : "text-coral-deep"}`}>
+          <span className={`text-xs font-medium capitalize ${row.status === "closed" ? "text-ink/40" : "text-cobalt"}`}>
             {row.status}
           </span>
           {row.botPaused ? (
@@ -43,7 +43,7 @@ function buildColumns(
             </span>
           ) : null}
           {row.flagged ? (
-            <span className="rounded-full bg-navy/10 px-2 py-0.5 text-[10px] font-semibold text-navy">
+            <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-semibold text-ink">
               {t("list.statusFlagged")}
             </span>
           ) : null}
@@ -60,7 +60,7 @@ function buildColumns(
     {
       header: "",
       cell: (row) => (
-        <Link href={`/admin/conversations/${row.id}`} className="font-medium text-coral-deep hover:underline">
+        <Link href={`/admin/conversations/${row.id}`} className="font-medium text-cobalt hover:underline">
           {t("list.viewLink")}
         </Link>
       ),
@@ -113,15 +113,15 @@ export default async function AdminConversationsPage({
 
   return (
     <div>
-      <p className="label-eyebrow text-coral-deep">{t("list.eyebrow")}</p>
-      <h1 className="text-section mt-3 text-navy">{t("list.title")}</h1>
-      <p className="mt-3 text-navy/70">{t("list.subtitle")}</p>
+      <p className="label-eyebrow text-cobalt">{t("list.eyebrow")}</p>
+      <h1 className="text-section mt-3 text-ink">{t("list.title")}</h1>
+      <p className="mt-3 text-ink/70">{t("list.subtitle")}</p>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <div className="flex gap-1 rounded-full bg-navy/5 p-1">
+        <div className="flex gap-1 rounded-full bg-ink/5 p-1">
           <Link
             href={filterLink({ channel: "" })}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!channelFilter ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!channelFilter ? "bg-cobalt text-white" : "text-ink/60 hover:bg-ink/10"}`}
           >
             {t("list.filterAllChannels")}
           </Link>
@@ -129,16 +129,16 @@ export default async function AdminConversationsPage({
             <Link
               key={c}
               href={filterLink({ channel: c })}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${channelFilter === c ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${channelFilter === c ? "bg-cobalt text-white" : "text-ink/60 hover:bg-ink/10"}`}
             >
               {CHANNEL_LABELS[c]}
             </Link>
           ))}
         </div>
-        <div className="flex gap-1 rounded-full bg-navy/5 p-1">
+        <div className="flex gap-1 rounded-full bg-ink/5 p-1">
           <Link
             href={filterLink({ status: "" })}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!statusFilter ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${!statusFilter ? "bg-cobalt text-white" : "text-ink/60 hover:bg-ink/10"}`}
           >
             {t("list.filterAnyStatus")}
           </Link>
@@ -146,7 +146,7 @@ export default async function AdminConversationsPage({
             <Link
               key={s}
               href={filterLink({ status: s })}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${statusFilter === s ? "bg-coral text-navy" : "text-navy/60 hover:bg-navy/10"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition-colors ${statusFilter === s ? "bg-cobalt text-white" : "text-ink/60 hover:bg-ink/10"}`}
             >
               {STATUS_LABELS[s]}
             </Link>
@@ -160,7 +160,7 @@ export default async function AdminConversationsPage({
             name="q"
             defaultValue={q ?? ""}
             placeholder={t("list.searchPlaceholder")}
-            className="rounded-full border-2 border-navy/15 bg-canvas px-4 py-1.5 text-sm text-navy focus:border-coral focus:outline-none"
+            className="rounded-full border-2 border-ink/15 bg-canvas px-4 py-1.5 text-sm text-ink focus:border-cobalt focus:outline-none"
           />
         </form>
       </div>

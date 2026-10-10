@@ -45,10 +45,10 @@ function ActionsCell({ doc }: { doc: DocumentRow }) {
 
   return (
     <div className="flex flex-wrap gap-3">
-      <button type="button" onClick={toggleStatus} disabled={busy !== null} className="text-sm font-medium text-coral-deep hover:underline disabled:opacity-50">
+      <button type="button" onClick={toggleStatus} disabled={busy !== null} className="text-sm font-medium text-cobalt hover:underline disabled:opacity-50">
         {doc.status === "active" ? t("table.actionArchive") : t("table.actionActivate")}
       </button>
-      <button type="button" onClick={reindex} disabled={busy !== null} className="text-sm font-medium text-navy hover:underline disabled:opacity-50">
+      <button type="button" onClick={reindex} disabled={busy !== null} className="text-sm font-medium text-ink hover:underline disabled:opacity-50">
         {t("table.actionReindex")}
       </button>
       <button type="button" onClick={remove} disabled={busy !== null} className="text-sm font-medium text-amber-deep hover:underline disabled:opacity-50">
@@ -63,39 +63,39 @@ export function DocumentTable({ documents }: { documents: DocumentRow[] }) {
 
   if (documents.length === 0) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-navy/20 bg-mist/40 p-10 text-center">
-        <p className="font-display text-lg font-bold text-navy">{t("table.emptyTitle")}</p>
-        <p className="mt-2 text-navy/70">{t("table.emptyBody")}</p>
+      <div className="rounded-3xl border-2 border-dashed border-ink/20 bg-mist/40 p-10 text-center">
+        <p className="font-display text-lg font-bold text-ink">{t("table.emptyTitle")}</p>
+        <p className="mt-2 text-ink/70">{t("table.emptyBody")}</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-3xl border-2 border-navy/10 bg-canvas">
+    <div className="overflow-x-auto rounded-3xl border-2 border-ink/10 bg-canvas">
       <table className="w-full min-w-[800px] border-collapse text-sm">
         <thead>
-          <tr className="border-b-2 border-navy/10 text-start">
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerTitle")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerType")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerLocale")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerTags")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerChunks")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerStatus")}</th>
-            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-navy/70 uppercase">{t("table.headerActions")}</th>
+          <tr className="border-b-2 border-ink/10 text-start">
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerTitle")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerType")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerLocale")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerTags")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerChunks")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerStatus")}</th>
+            <th className="px-5 py-3 font-display text-xs font-bold tracking-wide text-ink/70 uppercase">{t("table.headerActions")}</th>
           </tr>
         </thead>
         <tbody>
           {documents.map((doc) => (
-            <tr key={doc.id} className="border-b border-navy/5 last:border-0 hover:bg-mist/30">
-              <td className="px-5 py-3 text-navy/85">{doc.title}</td>
-              <td className="px-5 py-3 text-navy/70 uppercase">{doc.sourceType}</td>
-              <td className="px-5 py-3 text-navy/70 uppercase">{doc.locale}</td>
-              <td className="px-5 py-3 text-navy/70">{doc.tags.join(", ") || "—"}</td>
-              <td className="px-5 py-3 tabular-nums text-navy/70">{doc.chunkCount}</td>
+            <tr key={doc.id} className="border-b border-ink/5 last:border-0 hover:bg-mist/30">
+              <td className="px-5 py-3 text-ink/85">{doc.title}</td>
+              <td className="px-5 py-3 text-ink/70 uppercase">{doc.sourceType}</td>
+              <td className="px-5 py-3 text-ink/70 uppercase">{doc.locale}</td>
+              <td className="px-5 py-3 text-ink/70">{doc.tags.join(", ") || "—"}</td>
+              <td className="px-5 py-3 tabular-nums text-ink/70">{doc.chunkCount}</td>
               <td className="px-5 py-3">
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    doc.status === "active" ? "bg-coral/15 text-coral-deep" : "bg-navy/10 text-navy/50"
+                    doc.status === "active" ? "bg-cobalt/15 text-cobalt" : "bg-ink/10 text-ink/50"
                   }`}
                 >
                   {doc.status === "active" ? t("table.statusActive") : t("table.statusArchived")}

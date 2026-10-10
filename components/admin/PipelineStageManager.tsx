@@ -51,22 +51,22 @@ export function PipelineStageManager({ initial }: { initial: PipelineStage[] }) 
   }
 
   return (
-    <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
-      <h2 className="font-display text-lg font-bold text-navy">{t("title")}</h2>
+    <div className="rounded-3xl border-2 border-ink/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-ink">{t("title")}</h2>
       {error ? <p className="mt-2 text-sm font-medium text-amber-deep">{error}</p> : null}
       <ul className="mt-4 flex flex-col gap-2">
         {stages.map((stage, index) => (
-          <li key={stage.id} className="flex items-center justify-between gap-3 rounded-2xl border border-navy/10 bg-mist/20 px-4 py-2">
-            <span className="text-sm font-medium text-navy/85">
+          <li key={stage.id} className="flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-mist/20 px-4 py-2">
+            <span className="text-sm font-medium text-ink/85">
               {stage.name}
-              {stage.isWon ? <span className="ms-2 rounded-full bg-coral/20 px-2 py-0.5 text-xs text-coral-deep">{t("won")}</span> : null}
+              {stage.isWon ? <span className="ms-2 rounded-full bg-cobalt/20 px-2 py-0.5 text-xs text-cobalt">{t("won")}</span> : null}
               {stage.isLost ? <span className="ms-2 rounded-full bg-amber/20 px-2 py-0.5 text-xs text-amber-deep">{t("lost")}</span> : null}
             </span>
             <div className="flex items-center gap-2">
-              <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="text-sm text-navy disabled:opacity-30" aria-label={t("moveUp")}>
+              <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="text-sm text-ink disabled:opacity-30" aria-label={t("moveUp")}>
                 ↑
               </button>
-              <button type="button" onClick={() => move(index, 1)} disabled={index === stages.length - 1} className="text-sm text-navy disabled:opacity-30" aria-label={t("moveDown")}>
+              <button type="button" onClick={() => move(index, 1)} disabled={index === stages.length - 1} className="text-sm text-ink disabled:opacity-30" aria-label={t("moveDown")}>
                 ↓
               </button>
               <button type="button" onClick={() => deleteStage(stage.id)} className="text-sm font-medium text-amber-deep hover:underline">
@@ -82,13 +82,13 @@ export function PipelineStageManager({ initial }: { initial: PipelineStage[] }) 
           placeholder={t("namePlaceholder")}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
+          className="flex-1 rounded-2xl border-2 border-ink/15 bg-canvas px-4 py-2.5 text-ink focus:border-cobalt focus:outline-none"
         />
         <button
           type="button"
           onClick={addStage}
           disabled={!name}
-          className="rounded-full bg-coral px-6 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
+          className="rounded-full bg-cobalt px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:opacity-50"
         >
           {t("addButton")}
         </button>

@@ -9,10 +9,10 @@ import type { LeadStatus } from "@/lib/admin/queries";
 const STATUSES: LeadStatus[] = ["new", "contacted", "qualified", "converted", "lost"];
 
 const STATUS_STYLES: Record<LeadStatus, string> = {
-  new: "bg-navy/10 text-navy",
-  contacted: "bg-mist text-coral-deep",
-  qualified: "bg-coral/20 text-coral-deep",
-  converted: "bg-coral/20 text-coral-deep",
+  new: "bg-ink/10 text-ink",
+  contacted: "bg-mist text-cobalt",
+  qualified: "bg-cobalt/20 text-cobalt",
+  converted: "bg-cobalt/20 text-cobalt",
   lost: "bg-amber/15 text-amber-deep",
 };
 

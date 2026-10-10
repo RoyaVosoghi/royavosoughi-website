@@ -14,8 +14,8 @@ export default function RootNotFound() {
           minHeight: "100dvh",
           display: "grid",
           placeItems: "center",
-          backgroundColor: "#F5F5F7",
-          color: "#14213D",
+          backgroundColor: "#F5EBE0",
+          color: "#1E1E1E",
           fontFamily: "system-ui, sans-serif",
           textAlign: "center",
           padding: "2rem",
@@ -27,15 +27,15 @@ export default function RootNotFound() {
               margin: 0,
               fontSize: "3.5rem",
               fontWeight: 700,
-              color: "#AD4428",
+              color: "#0047AB",
             }}
           >
             404
           </p>
-          <h1 style={{ margin: "1rem 0 0", color: "#14213D" }}>
+          <h1 style={{ margin: "1rem 0 0", color: "#1E1E1E" }}>
             This page doesn&apos;t exist.
           </h1>
-          <p style={{ color: "rgba(20,33,61,0.75)" }}>
+          <p style={{ color: "rgba(30,30,30,0.75)" }}>
             The link may be old, or the page may not be built yet.
           </p>
           <Link
@@ -45,8 +45,8 @@ export default function RootNotFound() {
               marginTop: "1.5rem",
               padding: "0.875rem 1.75rem",
               borderRadius: "999px",
-              backgroundColor: "#E07A5F",
-              color: "#14213D",
+              backgroundColor: "#0047AB",
+              color: "#FFFFFF",
               fontWeight: 600,
               textDecoration: "none",
             }}

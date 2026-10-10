@@ -35,9 +35,9 @@ export function RagTestSearch() {
   }
 
   return (
-    <section className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
-      <h2 className="font-display text-lg font-bold text-navy">{t("testSearch.heading")}</h2>
-      <p className="mt-1 text-sm text-navy/60">{t("testSearch.subtitle")}</p>
+    <section className="rounded-3xl border-2 border-ink/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-ink">{t("testSearch.heading")}</h2>
+      <p className="mt-1 text-sm text-ink/60">{t("testSearch.subtitle")}</p>
 
       <div className="mt-4 flex flex-wrap gap-3">
         <input
@@ -46,12 +46,12 @@ export function RagTestSearch() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && search()}
           placeholder={t("testSearch.placeholder")}
-          className="min-w-[240px] flex-1 rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
+          className="min-w-[240px] flex-1 rounded-xl border-2 border-ink/15 bg-canvas px-3 py-2 text-sm text-ink focus:border-cobalt focus:outline-none"
         />
         <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as "en" | "fa")}
-          className="rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
+          className="rounded-xl border-2 border-ink/15 bg-canvas px-3 py-2 text-sm text-ink focus:border-cobalt focus:outline-none"
         >
           <option value="en">{t("localeEnglish")}</option>
           <option value="fa">{t("localeFa")}</option>
@@ -60,7 +60,7 @@ export function RagTestSearch() {
           type="button"
           onClick={search}
           disabled={status === "searching" || !query.trim()}
-          className="rounded-full bg-coral px-5 py-2 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
+          className="rounded-full bg-cobalt px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:opacity-50"
         >
           {status === "searching" ? t("testSearch.searching") : t("testSearch.search")}
         </button>
@@ -71,15 +71,15 @@ export function RagTestSearch() {
       {results ? (
         <div className="mt-5 flex flex-col gap-2">
           {results.length === 0 ? (
-            <p className="text-sm text-navy/60">{t("testSearch.empty")}</p>
+            <p className="text-sm text-ink/60">{t("testSearch.empty")}</p>
           ) : (
             results.map((r) => (
-              <div key={r.id} className="rounded-xl border border-navy/10 bg-mist/20 p-3">
+              <div key={r.id} className="rounded-xl border border-ink/10 bg-mist/20 p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-navy">{r.documentTitle}</span>
-                  <span className="tabular-nums text-xs text-navy/60">{(r.similarity * 100).toFixed(1)}%</span>
+                  <span className="text-xs font-semibold text-ink">{r.documentTitle}</span>
+                  <span className="tabular-nums text-xs text-ink/60">{(r.similarity * 100).toFixed(1)}%</span>
                 </div>
-                <p className="mt-1 text-sm text-navy/80">{r.content}</p>
+                <p className="mt-1 text-sm text-ink/80">{r.content}</p>
               </div>
             ))
           )}

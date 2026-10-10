@@ -9,20 +9,20 @@ const base =
   "disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  // Coral solid — the one primary action per screen. Text on coral is
-  // always Navy (white on coral is only 3:1); hover lightens to coral-soft
-  // and the press-shadow is a Navy line, echoing the brand's two tones.
+  // Cobalt solid — the one primary action per screen. Text on cobalt is
+  // always white (8:1; ink on cobalt is only 2.2:1); hover deepens to
+  // cobalt-dark and the press-shadow is an Ink line.
   primary:
-    "bg-coral text-navy shadow-[0_2px_0_0_var(--color-navy)] " +
-    "hover:bg-coral-soft hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--color-navy)] active:translate-y-0",
+    "bg-cobalt text-white shadow-[0_2px_0_0_var(--color-ink)] " +
+    "hover:bg-cobalt-dark hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--color-ink)] active:translate-y-0",
   // Outlined on light
   secondary:
-    "border-2 border-navy text-navy hover:bg-navy hover:text-canvas",
-  // Coral on Navy sections — the same action colour, 5.4:1
+    "border-2 border-ink text-ink hover:bg-ink hover:text-canvas",
+  // Cobalt on Ink sections — white text keeps 8:1; hover flips to cream
   onDark:
-    "bg-coral text-navy hover:bg-canvas hover:-translate-y-0.5 active:translate-y-0",
+    "bg-cobalt text-white hover:bg-canvas hover:text-ink hover:-translate-y-0.5 active:translate-y-0",
   onDarkGhost:
-    "border-2 border-fog text-canvas hover:bg-canvas hover:text-navy hover:border-canvas",
+    "border-2 border-fog text-canvas hover:bg-canvas hover:text-ink hover:border-canvas",
 };
 
 type LinkProps = { href: string; variant?: Variant; children: ReactNode } & Omit<

@@ -21,7 +21,7 @@ export function ScoreUnscoredLeadsButton() {
       type="button"
       onClick={run}
       disabled={pending}
-      className="rounded-full border-2 border-navy/20 px-5 py-2 text-sm font-semibold text-navy transition-colors hover:bg-mist/40 disabled:opacity-50"
+      className="rounded-full border-2 border-ink/20 px-5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-mist/40 disabled:opacity-50"
     >
       {pending ? t("scoringBatch") : t("scoreUnscoredButton")}
     </button>

@@ -33,14 +33,14 @@ export async function Process() {
             >
               <span
                 aria-hidden="true"
-                className="font-mono text-sm font-bold text-coral-deep"
+                className="font-mono text-sm font-bold text-cobalt"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-3 text-xl text-navy">
+              <h3 className="mt-3 text-xl text-ink">
                 {t(`steps.${key}.name`)}
               </h3>
-              <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-navy/75">
+              <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-ink/75">
                 {t(`steps.${key}.body`)}
               </p>
             </Reveal>

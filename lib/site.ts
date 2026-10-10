@@ -3,9 +3,9 @@
  * Change it here, it changes everywhere (header, footer, metadata, JSON-LD).
  */
 export const site = {
-  name: "Nura",
+  name: "Roya Vosoughi",
   slogan: "AI engineered for reality",
-  /** The person behind the brand — used for authorship / JSON-LD Person. */
+  /** The person — the brand is her own name. Used for authorship / JSON-LD Person. */
   founder: "Roya Vosoughi",
   domain: "royavosoughi.com",
   url:
@@ -21,12 +21,12 @@ export const site = {
 
 /** Brand palette, mirrored from app/globals.css for use in TS (OG image, charts, email). */
 export const brandColors = {
-  canvas: "#F5F5F7",
-  navy: "#14213D",
-  coral: "#E07A5F",
-  mist: "#E6E6E6",
-  navySoft: "#1F3158",
-  fog: "#A9B4CC",
-  coralDeep: "#AD4428",
+  canvas: "#F5EBE0",
+  ink: "#1E1E1E",
+  cobalt: "#0047AB",
+  mist: "#EBDFD1",
+  inkSoft: "#2E2E2E",
+  fog: "#B8B0A6",
+  cobaltLight: "#7FA6E8",
   amber: "#E3A72F",
 } as const;

@@ -15,7 +15,7 @@ export function StageManagerToggle({ stages }: { stages: PipelineStage[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full border-2 border-navy/20 px-5 py-2 text-sm font-semibold text-navy transition-colors hover:bg-mist/40"
+        className="rounded-full border-2 border-ink/20 px-5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-mist/40"
       >
         {open ? t("doneManagingStages") : t("manageStages")}
       </button>

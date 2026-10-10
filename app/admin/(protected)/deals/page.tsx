@@ -30,9 +30,9 @@ export default async function AdminDealsPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
-          <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
-          <p className="mt-3 text-navy/70">{t("subtitle")}</p>
+          <p className="label-eyebrow text-cobalt">{t("eyebrow")}</p>
+          <h1 className="text-section mt-3 text-ink">{t("title")}</h1>
+          <p className="mt-3 text-ink/70">{t("subtitle")}</p>
         </div>
         {canManageStages ? <StageManagerToggle stages={stages} /> : null}
       </div>

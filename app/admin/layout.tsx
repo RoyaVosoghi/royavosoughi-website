@@ -36,7 +36,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: "Admin · Nura",
+  title: "Admin · Roya Vosoughi",
   robots: { index: false, follow: false },
 };
 

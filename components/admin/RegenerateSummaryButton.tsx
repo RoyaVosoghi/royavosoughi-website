@@ -28,7 +28,7 @@ export function RegenerateSummaryButton({ contactId }: { contactId: string }) {
         type="button"
         onClick={run}
         disabled={pending}
-        className="rounded-full border-2 border-navy/20 px-4 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-mist/40 disabled:opacity-50"
+        className="rounded-full border-2 border-ink/20 px-4 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-mist/40 disabled:opacity-50"
       >
         {pending ? t("regenerating") : t("regenerateButton")}
       </button>

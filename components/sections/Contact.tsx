@@ -21,34 +21,34 @@ export async function Contact() {
 
           <dl className="mt-10 space-y-6">
             <div>
-              <dt className="label-eyebrow text-coral-deep">{t("emailLabel")}</dt>
+              <dt className="label-eyebrow text-cobalt">{t("emailLabel")}</dt>
               <dd className="mt-2">
                 <a
                   href={`mailto:${site.email}`}
                   dir="ltr"
-                  className="text-lg text-navy underline underline-offset-4 hover:text-coral-deep"
+                  className="text-lg text-ink underline underline-offset-4 hover:text-cobalt"
                 >
                   {site.email}
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-coral-deep">LinkedIn</dt>
+              <dt className="label-eyebrow text-cobalt">LinkedIn</dt>
               <dd className="mt-2">
                 <a
                   href={site.social.linkedin}
                   target="_blank"
                   rel="noreferrer noopener"
                   dir="ltr"
-                  className="text-lg text-navy underline underline-offset-4 hover:text-coral-deep"
+                  className="text-lg text-ink underline underline-offset-4 hover:text-cobalt"
                 >
                   /in/royavosoughi
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="label-eyebrow text-coral-deep">{t("responseLabel")}</dt>
-              <dd className="mt-2 text-lg text-navy/75">{t("responseValue")}</dd>
+              <dt className="label-eyebrow text-cobalt">{t("responseLabel")}</dt>
+              <dd className="mt-2 text-lg text-ink/75">{t("responseValue")}</dd>
             </div>
           </dl>
         </Reveal>

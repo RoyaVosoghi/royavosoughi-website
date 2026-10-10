@@ -12,7 +12,7 @@ export async function Proof() {
   const t = await getTranslations("proof");
 
   return (
-    <section className="border-y border-navy/8 bg-canvas py-16 md:py-20">
+    <section className="border-y border-ink/8 bg-canvas py-16 md:py-20">
       <div className="container-page">
         <h2 className="sr-only">{t("title")}</h2>
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -24,14 +24,14 @@ export async function Proof() {
               >
                 <span
                   aria-hidden="true"
-                  className="block font-mono text-sm font-bold text-coral-deep"
+                  className="block font-mono text-sm font-bold text-cobalt"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="mt-3 text-lg text-navy">
+                <h3 className="mt-3 text-lg text-ink">
                   {t(`${key}.title`)}
                 </h3>
-                <p className="mt-2 text-[0.9375rem] leading-relaxed text-navy/75">
+                <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink/75">
                   {t(`${key}.body`)}
                 </p>
               </Reveal>

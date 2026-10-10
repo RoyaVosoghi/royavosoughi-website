@@ -18,7 +18,7 @@ export async function AboutTeaser() {
     <Section id="about" tone="mint">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16">
         <Reveal className="mx-auto w-full max-w-sm lg:mx-0">
-          <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-navy">
+          <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-ink">
             <Image
               src="/photos/roya-about.jpg"
               alt={t("photoAlt")}
@@ -32,18 +32,18 @@ export async function AboutTeaser() {
         </Reveal>
 
         <Reveal delayMs={100}>
-          <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
-          <h2 className="text-section mt-4 text-navy">{t("title")}</h2>
-          <p className="mt-6 text-lg text-navy/80">{t("p1")}</p>
-          <p className="mt-4 text-lg text-navy/80">{t("p2")}</p>
+          <p className="label-eyebrow text-cobalt">{t("eyebrow")}</p>
+          <h2 className="text-section mt-4 text-ink">{t("title")}</h2>
+          <p className="mt-6 text-lg text-ink/80">{t("p1")}</p>
+          <p className="mt-4 text-lg text-ink/80">{t("p2")}</p>
 
-          <blockquote className="mt-8 border-s-4 border-coral ps-5 text-xl text-navy italic">
+          <blockquote className="mt-8 border-s-4 border-cobalt ps-5 text-xl text-ink italic">
             {t("quote")}
           </blockquote>
 
           <Link
             href="/about"
-            className="mt-8 inline-block font-semibold text-coral-deep underline underline-offset-4 hover:text-navy"
+            className="mt-8 inline-block font-semibold text-cobalt underline underline-offset-4 hover:text-ink"
           >
             {t("readMore")} →
           </Link>

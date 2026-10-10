@@ -19,9 +19,9 @@ export default async function AdminKnowledgePage() {
 
   return (
     <div>
-      <p className="label-eyebrow text-coral-deep">{t("eyebrow")}</p>
-      <h1 className="text-section mt-3 text-navy">{t("title")}</h1>
-      <p className="mt-3 text-navy/70">
+      <p className="label-eyebrow text-cobalt">{t("eyebrow")}</p>
+      <h1 className="text-section mt-3 text-ink">{t("title")}</h1>
+      <p className="mt-3 text-ink/70">
         {t("descriptionBefore")} <span className="font-mono">npm run ingest</span>
         {t("descriptionAfter")}
       </p>

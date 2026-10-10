@@ -13,11 +13,11 @@ const validatedFields = ["name", "email", "message"] as const;
 
 function fieldClass(invalid: boolean) {
   return (
-    "w-full rounded-2xl border-2 bg-canvas px-4 py-3.5 text-navy " +
-    "transition-colors placeholder:text-navy/35 focus:outline-none " +
+    "w-full rounded-2xl border-2 bg-canvas px-4 py-3.5 text-ink " +
+    "transition-colors placeholder:text-ink/35 focus:outline-none " +
     (invalid
       ? "border-amber-deep focus:border-amber-deep"
-      : "border-navy/15 hover:border-navy/30 focus:border-coral")
+      : "border-ink/15 hover:border-ink/30 focus:border-cobalt")
   );
 }
 
@@ -124,11 +124,11 @@ export function ContactForm({
    */
   if (!configured) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-navy/20 bg-mist/50 p-8">
-        <p className="text-lg text-navy/80">{t("fallbackIntro")}</p>
+      <div className="rounded-3xl border-2 border-dashed border-ink/20 bg-mist/50 p-8">
+        <p className="text-lg text-ink/80">{t("fallbackIntro")}</p>
         <a
           href={`mailto:${email}`}
-          className="mt-5 inline-block text-xl font-semibold text-coral-deep underline underline-offset-4 hover:text-navy"
+          className="mt-5 inline-block text-xl font-semibold text-cobalt underline underline-offset-4 hover:text-ink"
         >
           {email}
         </a>
@@ -145,7 +145,7 @@ export function ContactForm({
           aria-hidden="true"
           className="mx-auto h-12 w-12"
           fill="none"
-          stroke="var(--color-coral-deep)"
+          stroke="var(--color-cobalt)"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -153,8 +153,8 @@ export function ContactForm({
           <circle cx="12" cy="12" r="10" />
           <path d="M7.5 12.5 L10.5 15.5 L16.5 9" />
         </svg>
-        <h3 className="mt-4 text-2xl text-navy">{t("successTitle")}</h3>
-        <p className="mt-2 text-navy/75">{t("successBody")}</p>
+        <h3 className="mt-4 text-2xl text-ink">{t("successTitle")}</h3>
+        <p className="mt-2 text-ink/75">{t("successBody")}</p>
       </div>
     );
   }
@@ -164,7 +164,7 @@ export function ContactForm({
       {statusAnnouncer}
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block font-medium text-navy">
+          <label htmlFor="name" className="mb-2 block font-medium text-ink">
             {t("nameLabel")}
           </label>
           <input
@@ -186,7 +186,7 @@ export function ContactForm({
           ) : null}
         </div>
         <div>
-          <label htmlFor="email" className="mb-2 block font-medium text-navy">
+          <label htmlFor="email" className="mb-2 block font-medium text-ink">
             {t("emailLabel")}
           </label>
           <input
@@ -211,9 +211,9 @@ export function ContactForm({
       </div>
 
       <div>
-        <label htmlFor="company" className="mb-2 block font-medium text-navy">
+        <label htmlFor="company" className="mb-2 block font-medium text-ink">
           {t("companyLabel")}{" "}
-          <span className="font-normal text-navy/70">{t("optional")}</span>
+          <span className="font-normal text-ink/70">{t("optional")}</span>
         </label>
         <input
           id="company"
@@ -228,10 +228,10 @@ export function ContactForm({
         <div>
           <label
             htmlFor="businessStage"
-            className="mb-2 block font-medium text-navy"
+            className="mb-2 block font-medium text-ink"
           >
             {t("businessStageLabel")}{" "}
-            <span className="font-normal text-navy/70">{t("optional")}</span>
+            <span className="font-normal text-ink/70">{t("optional")}</span>
           </label>
           <select
             id="businessStage"
@@ -251,10 +251,10 @@ export function ContactForm({
         <div>
           <label
             htmlFor="preferredTime"
-            className="mb-2 block font-medium text-navy"
+            className="mb-2 block font-medium text-ink"
           >
             {t("preferredTimeLabel")}{" "}
-            <span className="font-normal text-navy/70">{t("optional")}</span>
+            <span className="font-normal text-ink/70">{t("optional")}</span>
           </label>
           <select
             id="preferredTime"
@@ -273,7 +273,7 @@ export function ContactForm({
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-2 block font-medium text-navy">
+        <label htmlFor="message" className="mb-2 block font-medium text-ink">
           {t("messageLabel")}
         </label>
         <textarea

@@ -38,7 +38,7 @@ export function LocaleSwitch({ onDark = false }: { onDark?: boolean }) {
   return (
     <div
       className={`inline-flex items-center rounded-full border p-0.5 ${
-        onDark ? "border-fog/40" : "border-navy/20"
+        onDark ? "border-fog/40" : "border-ink/20"
       } ${isPending ? "opacity-60" : ""}`}
       role="group"
       aria-label="Language"
@@ -54,10 +54,10 @@ export function LocaleSwitch({ onDark = false }: { onDark?: boolean }) {
             lang={code}
             className={`min-h-11 min-w-11 rounded-full px-3.5 py-2.5 text-sm font-semibold transition-colors ${
               active
-                ? "bg-navy text-canvas"
+                ? "bg-ink text-canvas"
                 : onDark
                   ? "text-mist hover:text-canvas"
-                  : "text-navy/70 hover:text-navy"
+                  : "text-ink/70 hover:text-ink"
             }`}
           >
             {labels[code] ?? code.toUpperCase()}

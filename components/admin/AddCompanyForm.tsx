@@ -29,28 +29,28 @@ export function AddCompanyForm() {
   }
 
   return (
-    <div className="rounded-3xl border-2 border-navy/10 bg-canvas p-6">
-      <h2 className="font-display text-lg font-bold text-navy">{t("title")}</h2>
+    <div className="rounded-3xl border-2 border-ink/10 bg-canvas p-6">
+      <h2 className="font-display text-lg font-bold text-ink">{t("title")}</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <input
           type="text"
           placeholder={t("namePlaceholder")}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
+          className="rounded-2xl border-2 border-ink/15 bg-canvas px-4 py-2.5 text-ink focus:border-cobalt focus:outline-none"
         />
         <input
           type="text"
           placeholder={t("domainPlaceholder")}
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
-          className="rounded-2xl border-2 border-navy/15 bg-canvas px-4 py-2.5 text-navy focus:border-coral focus:outline-none"
+          className="rounded-2xl border-2 border-ink/15 bg-canvas px-4 py-2.5 text-ink focus:border-cobalt focus:outline-none"
         />
         <button
           type="button"
           onClick={submit}
           disabled={status === "submitting" || !name}
-          className="rounded-full bg-coral px-6 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
+          className="rounded-full bg-cobalt px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:opacity-50"
         >
           {status === "submitting" ? t("adding") : t("addButton")}
         </button>

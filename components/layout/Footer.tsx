@@ -16,15 +16,15 @@ export async function Footer() {
   ];
 
   return (
-    <footer className="bg-navy text-canvas">
+    <footer className="bg-ink text-canvas">
       <div className="container-page py-16 md:py-20">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
-            <Wordmark className="text-canvas" />
+            <Wordmark className="text-canvas" onDark />
             <p className="mt-5 text-lg text-mist">{t("tagline")}</p>
             <a
               href={`mailto:${site.email}`}
-              className="mt-6 inline-block text-fog underline underline-offset-4 transition-colors hover:text-coral"
+              className="mt-6 inline-block text-fog underline underline-offset-4 transition-colors hover:text-cobalt-light"
             >
               {site.email}
             </a>
@@ -39,7 +39,7 @@ export async function Footer() {
                     <li key={key}>
                       <Link
                         href={key === "about" ? "/about" : `/#${key}`}
-                        className="text-mist transition-colors hover:text-coral"
+                        className="text-mist transition-colors hover:text-cobalt-light"
                       >
                         {nav(key)}
                       </Link>
@@ -58,7 +58,7 @@ export async function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="text-mist transition-colors hover:text-coral"
+                      className="text-mist transition-colors hover:text-cobalt-light"
                     >
                       {link.label}
                     </a>
@@ -70,7 +70,7 @@ export async function Footer() {
         </div>
 
         <p className="mt-14 border-t border-fog/20 pt-8 text-sm text-fog">
-          © {year} {site.name} · {site.founder}. {t("rights")}
+          © {year} {site.name}. {t("rights")}
         </p>
       </div>
     </footer>

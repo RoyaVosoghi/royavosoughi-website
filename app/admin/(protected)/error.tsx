@@ -18,19 +18,19 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
 
   return (
     <div role="alert" className="rounded-3xl border-2 border-dashed border-amber-deep/30 bg-amber-deep/5 p-10 text-center">
-      <p className="font-display text-lg font-bold text-navy">{t("title")}</p>
-      <p className="mt-2 text-navy/70">{t("body")}</p>
+      <p className="font-display text-lg font-bold text-ink">{t("title")}</p>
+      <p className="mt-2 text-ink/70">{t("body")}</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <button
           type="button"
           onClick={() => reset()}
-          className="rounded-full bg-coral px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-coral-soft"
+          className="rounded-full bg-cobalt px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cobalt-dark"
         >
           {t("retry")}
         </button>
         <a
           href="/admin"
-          className="rounded-full border-2 border-navy/15 px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-coral hover:text-coral-deep"
+          className="rounded-full border-2 border-ink/15 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-cobalt hover:text-cobalt"
         >
           {t("backToDashboard")}
         </a>

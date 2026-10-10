@@ -1,13 +1,16 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+
 import { ImageResponse } from "next/og";
 
 import { brandColors, site } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Nura — AI engineered for reality";
+export const alt = "Roya Vosoughi — AI engineered for reality";
 
 /**
- * Social share card: Navy background, Nura mark + wordmark, slogan.
+ * Social share card: Ink background, Signal R wordmark, slogan.
  *
  * DELIBERATELY LATIN-SCRIPT FOR BOTH LOCALES.
  * Satori (the renderer behind ImageResponse) performs no Arabic contextual
@@ -21,7 +24,12 @@ export const alt = "Nura — AI engineered for reality";
  * fa locale at it. Do not try to fix this by loading Vazirmatn here — the
  * missing piece is the shaping engine, not the font.
  */
-export default function OpengraphImage() {
+export default async function OpengraphImage() {
+  // Space Grotesk Bold (OFL) so the card matches the site's wordmark.
+  const spaceGrotesk = await readFile(
+    join(process.cwd(), "assets/fonts/SpaceGrotesk-Bold.woff"),
+  );
+
   return new ImageResponse(
     (
       <div
@@ -32,32 +40,33 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "90px",
-          backgroundColor: brandColors.navy,
-          backgroundImage: `radial-gradient(circle at 18% 20%, ${brandColors.coral}33 0%, transparent 45%), radial-gradient(circle at 88% 85%, ${brandColors.navySoft} 0%, transparent 45%)`,
-          fontFamily: "sans-serif",
+          backgroundColor: brandColors.ink,
+          backgroundImage: `radial-gradient(circle at 18% 20%, ${brandColors.cobaltLight}33 0%, transparent 45%), radial-gradient(circle at 88% 85%, ${brandColors.inkSoft} 0%, transparent 45%)`,
+          fontFamily: "Space Grotesk",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <svg width="64" height="64" viewBox="0 0 100 100">
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
+          <svg width="29" height="39" viewBox="0 0 74 100" style={{ marginBottom: 11 }}>
             <path
-              d="M22 80 V24 L76 76 V40"
+              d="M10 90 V10 H40 a22 22 0 0 1 0 44 H10"
               fill="none"
               stroke={brandColors.canvas}
-              strokeWidth="15"
+              strokeWidth="20"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <circle cx="76" cy="17" r="10" fill={brandColors.coral} />
+            <line x1="26" y1="54" x2="64" y2="90" stroke={brandColors.cobaltLight} strokeWidth="20" strokeLinecap="round" />
           </svg>
           <span
             style={{
               fontSize: 56,
               fontWeight: 700,
               letterSpacing: -2,
+              lineHeight: 1,
               color: brandColors.canvas,
             }}
           >
-            nura
+            oya Vosoughi
           </span>
         </div>
 
@@ -79,14 +88,17 @@ export default function OpengraphImage() {
           style={{
             display: "flex",
             fontSize: 32,
-            color: brandColors.coral,
+            color: brandColors.cobaltLight,
             marginTop: 36,
           }}
         >
-          {site.name} · by {site.founder} · AI Engineer &amp; Software Developer
+          AI Engineer &amp; Software Developer
         </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [{ name: "Space Grotesk", data: spaceGrotesk, weight: 700, style: "normal" }],
+    },
   );
 }

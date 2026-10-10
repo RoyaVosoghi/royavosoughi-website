@@ -36,7 +36,7 @@ export function ActivityQuickAddForm({ contactId, dealId }: { contactId: string;
       <select
         value={type}
         onChange={(e) => setType(e.target.value as ActivityType)}
-        className="rounded-xl border-2 border-navy/15 bg-canvas px-2.5 py-2 text-sm text-navy focus:border-coral focus:outline-none"
+        className="rounded-xl border-2 border-ink/15 bg-canvas px-2.5 py-2 text-sm text-ink focus:border-cobalt focus:outline-none"
       >
         {TYPES.map((ty) => (
           <option key={ty} value={ty}>
@@ -49,13 +49,13 @@ export function ActivityQuickAddForm({ contactId, dealId }: { contactId: string;
         placeholder={t("addForm.subjectPlaceholder")}
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        className="min-w-[200px] flex-1 rounded-xl border-2 border-navy/15 bg-canvas px-3 py-2 text-sm text-navy focus:border-coral focus:outline-none"
+        className="min-w-[200px] flex-1 rounded-xl border-2 border-ink/15 bg-canvas px-3 py-2 text-sm text-ink focus:border-cobalt focus:outline-none"
       />
       <button
         type="button"
         onClick={submit}
         disabled={status === "submitting" || !subject}
-        className="rounded-full bg-coral px-4 py-2 text-xs font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
+        className="rounded-full bg-cobalt px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:opacity-50"
       >
         {status === "submitting" ? t("addForm.adding") : t("addForm.addButton")}
       </button>

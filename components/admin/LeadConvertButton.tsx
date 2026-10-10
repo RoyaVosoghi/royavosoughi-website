@@ -38,7 +38,7 @@ export function LeadConvertButton({ id, companyName }: { id: string; companyName
         type="button"
         onClick={convert}
         disabled={pending}
-        className="rounded-full bg-coral px-3 py-1 text-xs font-semibold text-navy transition-colors hover:bg-coral-soft disabled:opacity-50"
+        className="rounded-full bg-cobalt px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-cobalt-dark disabled:opacity-50"
       >
         {pending ? t("converting") : t("button")}
       </button>

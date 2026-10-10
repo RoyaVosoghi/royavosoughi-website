@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 type Tone = "light" | "mint" | "forest";
 
 const tones: Record<Tone, string> = {
-  light: "bg-canvas text-navy",
-  mint: "bg-mist text-navy",
-  forest: "bg-navy text-canvas",
+  light: "bg-canvas text-ink",
+  mint: "bg-mist text-ink",
+  forest: "bg-ink text-canvas",
 };
 
 export function Section({
@@ -46,19 +46,19 @@ export function SectionHeading({
   return (
     <header className="max-w-3xl">
       <p
-        className={`label-eyebrow ${onForest ? "text-coral" : "text-coral-deep"}`}
+        className={`label-eyebrow ${onForest ? "text-cobalt-light" : "text-cobalt"}`}
       >
         {eyebrow}
       </p>
       <h2
-        className={`text-section mt-4 ${onForest ? "text-canvas" : "text-navy"}`}
+        className={`text-section mt-4 ${onForest ? "text-canvas" : "text-ink"}`}
       >
         {title}
       </h2>
       {intro ? (
         <p
           className={`mt-6 text-lg md:text-xl ${
-            onForest ? "text-mist" : "text-navy/80"
+            onForest ? "text-mist" : "text-ink/80"
           }`}
         >
           {intro}
