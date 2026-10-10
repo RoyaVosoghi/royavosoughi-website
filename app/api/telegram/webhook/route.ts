@@ -51,8 +51,8 @@ const RATE_LIMITED: Record<Locale, string> = {
 };
 
 const WELCOME: Record<Locale, string> = {
-  en: "Hi! I'm Roya's assistant — ask me anything about her work, services, or how to get in touch.",
-  fa: "سلام! من دستیار رویا هستم — هر سوالی درباره کار، خدمات یا راه ارتباط با او دارید بپرسید.",
+  en: "Hi! I'm Nura, Roya's AI assistant — ask me anything about her work, services, or how to get in touch.",
+  fa: "سلام! من نورا هستم، دستیار هوشمند رویا — هر سوالی درباره کار، خدمات یا راه ارتباط با او دارید بپرسید.",
 };
 
 const HELP: Record<Locale, string> = {

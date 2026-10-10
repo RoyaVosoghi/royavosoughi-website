@@ -156,9 +156,11 @@
     "metaDescription": "Ask about Roya Vosoughi's services, work, and how to get in touch.",
     "eyebrow": "Chat",
     "title": "Ask me anything.",
-    "lead": "This assistant knows about my services, background and projects. Ask a question, or tell it what you're working on."
+    "lead": "Nura, my AI assistant, knows about my services, background and projects. Ask a question, or tell Nura what you're working on."
   },
   "chat": {
+    "greetingTitle": "Hi! I'm Nura 👋",
+    "assistantRole": "Roya's AI assistant",
     "inputPlaceholder": "Type a message…",
     "send": "Send",
     "sending": "Sending…",

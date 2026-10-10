@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import type { Locale } from "@/lib/ai/types";
 import { MessageBubble } from "./MessageBubble";
+import { NuraAvatar } from "./NuraAvatar";
 
 type Status = "idle" | "sending" | "streaming" | "error" | "rateLimited" | "waitingForHuman";
 
@@ -315,6 +316,13 @@ export function ChatWidget({
       <div ref={listRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">
         {messages.length === 0 ? (
           <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <NuraAvatar className="h-11 w-11" />
+              <div>
+                <p className="font-display text-lg font-bold text-ink">{t("greetingTitle")}</p>
+                <p className="text-sm text-ink/60">{t("assistantRole")}</p>
+              </div>
+            </div>
             <p className="text-ink/60">{welcomeOverride || t("emptyState")}</p>
             {showStarters ? (
               <div className="flex flex-wrap gap-2">

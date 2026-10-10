@@ -77,9 +77,20 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     return L > 0.18 ? COLORS.ink : COLORS.canvas;
   }
 
+  /** Nura's avatar — "nur" means light, so a cream four-point spark on cobalt. Fixed brand colours (not the admin accent) so the assistant looks the same everywhere. */
+  const AVATAR_SVG =
+    '<svg class="rv-avatar" viewBox="0 0 40 40" aria-hidden="true">' +
+    '<circle cx="20" cy="20" r="20" fill="#0047ab"/>' +
+    '<path d="M20 8.5C21 15.5 24.5 19 31.5 20C24.5 21 21 24.5 20 31.5C19 24.5 15.5 21 8.5 20C15.5 19 19 15.5 20 8.5Z" fill="#f5ebe0"/>' +
+    '<circle cx="29" cy="11" r="2.2" fill="#f5ebe0"/>' +
+    "</svg>";
+
   const STRINGS: Record<Locale, Record<string, string>> = {
     en: {
-      bubbleTitle: "Ask me anything",
+      assistantName: "Nura",
+      assistantRole: "Roya's AI assistant",
+      greetingTitle: "Hi! I'm Nura",
+      greetingBody: "Roya's AI assistant. Ask me about her work, projects, or how to get in touch.",
       openChat: "Open chat",
       closeChat: "Close chat",
       inputPlaceholder: "Type a message…",
@@ -97,7 +108,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       checkInNudge: "Still there? Is there anything else I can help you with?",
     },
     fa: {
-      bubbleTitle: "هر چیزی بپرسید",
+      assistantName: "نورا",
+      assistantRole: "دستیار هوشمند رویا",
+      greetingTitle: "سلام! من نورا هستم",
+      greetingBody: "دستیار هوشمند رویا. درباره‌ی کارها، پروژه‌ها یا راه‌های ارتباط با رویا از من بپرسید.",
       openChat: "باز کردن گفتگو",
       closeChat: "بستن گفتگو",
       inputPlaceholder: "پیامی بنویسید…",
@@ -191,12 +205,34 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       padding: 14px 18px;
       flex-shrink: 0;
     }
-    .rv-header-title {
+    .rv-header-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .rv-avatar { width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px; display: block; }
+    .rv-header-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .rv-header-name {
       color: ${COLORS.canvas};
-      font-weight: 600;
+      font-weight: 700;
       font-size: 15px;
+      line-height: 1.2;
       margin: 0;
     }
+    .rv-header-role {
+      color: ${COLORS.fog};
+      font-size: 12px;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .rv-empty {
+      margin: auto 0;
+      padding: 12px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .rv-empty-wave { font-size: 32px; line-height: 1; }
+    .rv-empty-title { font-size: 16px; font-weight: 700; color: ${COLORS.ink}; margin: 4px 0 0; }
+    .rv-empty-body { font-size: 13.5px; line-height: 1.5; color: rgba(30, 30, 30, 0.65); margin: 0; max-width: 17rem; }
     .rv-header-close {
       background: none;
       border: none;
@@ -403,7 +439,9 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     }
     const positionSide = config?.position === "bottom-start" ? "start" : "end";
     const starters = (locale === "fa" ? config?.quickRepliesFa : config?.quickRepliesEn) ?? [];
-    const welcomeMessage = (locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn) || null;
+    /** Body of the empty-state greeting: the admin-editable widget_config.welcome_message_* when set, else the built-in default. Read per render so a locale switch picks the right language. */
+    const greetingBody = () =>
+      (locale === "fa" ? config?.welcomeMessageFa : config?.welcomeMessageEn) || t("greetingBody");
 
     const host = document.createElement("div");
     host.setAttribute("dir", dir);
@@ -422,13 +460,21 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     root.appendChild(panel);
 
     const header = el("div", "rv-header");
-    const title = el("p", "rv-header-title");
-    title.textContent = t("bubbleTitle");
+    const headerId = el("div", "rv-header-id");
+    headerId.innerHTML = AVATAR_SVG;
+    const headerText = el("div", "rv-header-text");
+    const title = el("p", "rv-header-name");
+    title.textContent = t("assistantName");
+    const role = el("p", "rv-header-role");
+    role.textContent = t("assistantRole");
+    headerText.appendChild(title);
+    headerText.appendChild(role);
+    headerId.appendChild(headerText);
     const closeBtn = el("button", "rv-header-close");
     closeBtn.type = "button";
     closeBtn.innerHTML = CLOSE_ICON;
     closeBtn.setAttribute("aria-label", t("closeChat"));
-    header.appendChild(title);
+    header.appendChild(headerId);
     header.appendChild(closeBtn);
     panel.appendChild(header);
 
@@ -517,11 +563,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
     const messages: DisplayMessage[] = [];
 
-    /** Client-rendered greeting bubble from widget_config.welcome_message_* — never sent to/from the backend, never eligible for thumbs feedback (no `id`). */
-    function pushWelcomeMessage() {
-      if (welcomeMessage) messages.push({ role: "assistant", content: welcomeMessage, feedback: null, synthetic: true });
-    }
-    pushWelcomeMessage();
 
     async function rate(message: DisplayMessage, rating: 1 | -1) {
       if (!message.id || message.feedback !== null) return;
@@ -540,6 +581,22 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     function renderMessages() {
       messagesEl.innerHTML = "";
+
+      // Before anything is said: Nura introduces herself (client-only, never sent to the backend).
+      if (messages.length === 0) {
+        const empty = el("div", "rv-empty");
+        const wave = el("div", "rv-empty-wave");
+        wave.textContent = "👋";
+        wave.setAttribute("aria-hidden", "true");
+        const emptyTitle = el("p", "rv-empty-title");
+        emptyTitle.textContent = t("greetingTitle");
+        const emptyBody = el("p", "rv-empty-body");
+        emptyBody.textContent = greetingBody();
+        empty.appendChild(wave);
+        empty.appendChild(emptyTitle);
+        empty.appendChild(emptyBody);
+        messagesEl.appendChild(empty);
+      }
 
       for (const message of messages) {
         // Bubble + feedback icons are appended straight into the row (itself
@@ -625,7 +682,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     function resetToFresh() {
       ended = false;
       messages.length = 0;
-      pushWelcomeMessage();
       endScreen.dataset.visible = "false";
       messagesEl.style.display = "";
       inputRow.style.display = "";
@@ -890,7 +946,8 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       dir = locale === "fa" ? "rtl" : "ltr";
       host.setAttribute("dir", dir);
       style.textContent = buildStyles(positionSide);
-      title.textContent = t("bubbleTitle");
+      title.textContent = t("assistantName");
+      role.textContent = t("assistantRole");
       closeBtn.setAttribute("aria-label", t("closeChat"));
       input.placeholder = t("inputPlaceholder");
       if (!sending) sendBtn.textContent = t("send");
@@ -899,6 +956,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       endBody.textContent = t("endedBody");
       rateQuestion.textContent = t("rateQuestion");
       thanksEl.textContent = t("thanksForRating");
+      renderMessages();
     }
 
     new MutationObserver(() => applyLocale(detectLocale())).observe(
