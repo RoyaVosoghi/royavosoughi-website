@@ -233,7 +233,7 @@ royavosoughi.com
 
 طراحی روشن با پالت کرم، جوهری و آبی کبالت (زنده، ۲۰۲۶/۱۰/۱۰):
 
-1. **Hero:** برچسب «AI engineered for reality» بالای تیتر اصلی + زیرتیتر. دکمه‌ها: **[Request a consultation]** (آبی، اصلی) + [See my work] (ثانویه). *(تیتر فعلی «Automate the system, Live the life.» در حال بازبینی است.)*
+1. **Hero:** برچسب «AI engineered for reality» بالای تیتر «Practical AI for real business problems.» (فارسی: «هوش مصنوعی کاربردی برای مسائل واقعی کسب‌وکار.») + زیرتیتر. دکمه‌ها: **[Request a consultation]** (آبی، اصلی) + [See my work] (ثانویه). *(تیتر قبلی «Automate the system, Live the life.» در ۲۰۲۶/۱۰/۱۰ کنار گذاشته شد: «Live the life» لحن تبلیغات سبک‌زندگی دارد و نمی‌گوید چه چیزی ارائه می‌شود.)*
 2. **Services / Process / Projects:** خدمات، روند چهارمرحله‌ای، و پروژه‌ها با دموی زنده و GitHub.
 3. **About:** معرفی رویا + عکس با نور طبیعی.
 4. **Contact:** فرم تماس + ایمیل + LinkedIn. دستیار چت و تماس صوتی در گوشه‌ی صفحه.

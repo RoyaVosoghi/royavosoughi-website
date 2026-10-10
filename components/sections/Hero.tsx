@@ -7,8 +7,8 @@ import { HeroCodeCard } from "./HeroCodeCard";
  * The first screenful. Text carries the sentence; the code card (desktop
  * only) gives it something to point at, the way Vercel/Stripe/Linear pair a
  * headline with a product visual instead of leaving it text-only. The
- * headline itself is split into two parts so the second half can carry the
- * cobalt underline; the slogan sits above it as the eyebrow.
+ * headline is split into three parts so the word "real" (the slogan's
+ * "reality") can carry the cobalt underline; the slogan sits above it as the eyebrow.
  */
 export async function Hero() {
   const t = await getTranslations("hero");
@@ -36,14 +36,15 @@ export async function Hero() {
             className="rise-in-solid text-display mx-auto mt-8 max-w-[19ch] text-ink lg:mx-0"
             style={{ animationDelay: "80ms" }}
           >
-            <span className="block">{t("lineA")}</span>
+            {t("lineA")}{" "}
             <span className="relative inline-block">
               {t("lineB")}
               <span
                 aria-hidden="true"
                 className="underline-draw absolute inset-x-0 -bottom-1 h-[0.12em] rounded-full bg-cobalt"
               />
-            </span>
+            </span>{" "}
+            {t("lineC")}
           </h1>
 
           <p

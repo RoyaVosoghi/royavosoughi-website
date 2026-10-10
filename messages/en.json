@@ -20,8 +20,9 @@
   },
   "hero": {
     "eyebrow": "AI engineered for reality",
-    "lineA": "Automate the system,",
-    "lineB": "Live the life.",
+    "lineA": "Practical AI for",
+    "lineB": "real",
+    "lineC": "business problems.",
     "subtitle": "RAG tools, assistants and agents that do a specific job for your business — deployed, documented, and supported after handoff. Never a demo pretending to be a product.",
     "ctaPrimary": "Request a consultation",
     "ctaSecondary": "See my work",
