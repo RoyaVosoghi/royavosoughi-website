@@ -146,4 +146,4 @@ Filled at runtime: `{{retrieved_context}}` (retrieved knowledge), `{{channel}}` 
 
 ---
 
-*Roya Vosoughi | Building a dream, line by line.*
+*Roya Vosoughi | AI engineered for reality.*
