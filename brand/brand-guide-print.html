@@ -2,27 +2,27 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Nura — برند گاید شخصی Roya Vosoughi</title>
+<title>Roya Vosoughi — برند گاید شخصی</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=Vazirmatn:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap');
 
 :root{
-  --canvas:#F5F5F7; --navy:#14213D; --coral:#E07A5F; --mist:#E6E6E6;
-  --navysoft:#1F3158; --fog:#A9B4CC; --coraldeep:#AD4428; --amber:#876012;
-  --line:rgba(20,33,61,.12);
+  --canvas:#F5EBE0; --ink:#1E1E1E; --cobalt:#0047AB; --cobaltlight:#7FA6E8; --mist:#EBDFD1;
+  --inksoft:#2E2E2E; --fog:#B8B0A6; --amber:#876012;
+  --line:rgba(30,30,30,.12);
 }
 *{ margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-body{ font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif; color:var(--navy); background:var(--canvas); font-size:10.5pt; line-height:1.7; direction:rtl; }
+body{ font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif; color:var(--ink); background:var(--canvas); font-size:10.5pt; line-height:1.7; direction:rtl; }
 .en{ font-family:'Inter','Segoe UI',sans-serif; direction:ltr; unicode-bidi:embed; }
 .sg{ font-family:'Space Grotesk','Segoe UI',sans-serif; direction:ltr; unicode-bidi:embed; }
 @page{ size:A4; margin:0; }
-.page{ width:210mm; height:296mm; padding:16mm 18mm; page-break-after:always; position:relative; overflow:hidden; background:var(--canvas); color:var(--navy); }
-.page.dark{ background:radial-gradient(120mm 90mm at 25% 30%, rgba(224,122,95,.22), transparent 70%), var(--navy); color:var(--canvas); }
-.pagenum{ position:absolute; bottom:8mm; left:18mm; font-size:8pt; color:var(--coraldeep); letter-spacing:1px; }
-.pagefoot{ position:absolute; bottom:8mm; right:18mm; font-size:8pt; color:rgba(20,33,61,.6); }
-.kicker{ color:var(--coraldeep); font-size:9.5pt; font-weight:700; margin-bottom:2mm; }
-h1{ font-size:22pt; color:var(--navy); font-weight:700; margin-bottom:5mm; }
-h2{ font-size:12.5pt; color:var(--navy); font-weight:700; margin:5mm 0 2mm; }
+.page{ width:210mm; height:296mm; padding:16mm 18mm; page-break-after:always; position:relative; overflow:hidden; background:var(--canvas); color:var(--ink); }
+.page.dark{ background:radial-gradient(120mm 90mm at 25% 30%, rgba(127,166,232,.16), transparent 70%), var(--ink); color:var(--canvas); }
+.pagenum{ position:absolute; bottom:8mm; left:18mm; font-size:8pt; color:var(--cobalt); letter-spacing:1px; }
+.pagefoot{ position:absolute; bottom:8mm; right:18mm; font-size:8pt; color:rgba(30,30,30,.6); }
+.kicker{ color:var(--cobalt); font-size:9.5pt; font-weight:700; margin-bottom:2mm; }
+h1{ font-size:22pt; color:var(--ink); font-weight:700; margin-bottom:5mm; }
+h2{ font-size:12.5pt; color:var(--ink); font-weight:700; margin:5mm 0 2mm; }
 p{ margin-bottom:2.5mm; }
 .lead{ font-size:11pt; }
 .card{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:4.5mm 6mm; margin-bottom:3.5mm; }
@@ -30,33 +30,33 @@ p{ margin-bottom:2.5mm; }
 .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:4mm; }
 .grid4{ display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:3mm; }
 table{ width:100%; border-collapse:collapse; font-size:9pt; margin-bottom:4mm; }
-th{ text-align:right; background:var(--navy); color:var(--canvas); padding:2mm 3mm; font-weight:500; }
+th{ text-align:right; background:var(--ink); color:var(--canvas); padding:2mm 3mm; font-weight:500; }
 td{ padding:2mm 3mm; border-bottom:1px solid var(--line); vertical-align:top; background:#fff; }
-td.lbl{ color:var(--coraldeep); font-weight:700; width:26mm; }
-.tag{ display:inline-block; background:var(--mist); color:var(--navy); border-radius:20px; padding:1mm 4mm; font-size:8.5pt; font-weight:700; margin:0 0 2mm 1.5mm; }
+td.lbl{ color:var(--cobalt); font-weight:700; width:26mm; }
+.tag{ display:inline-block; background:var(--mist); color:var(--ink); border-radius:20px; padding:1mm 4mm; font-size:8.5pt; font-weight:700; margin:0 0 2mm 1.5mm; }
 .swatch{ border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#fff; }
 .swatch .c{ height:22mm; }
 .swatch .t{ padding:2mm 3mm; font-size:8pt; }
 .swatch .t b{ display:block; font-size:8.5pt; }
-.mono{ font-family:'JetBrains Mono',monospace; color:rgba(20,33,61,.65); direction:ltr; unicode-bidi:embed; }
-.ok{ color:var(--coraldeep); font-family:'JetBrains Mono',monospace; font-size:7.5pt; direction:ltr; unicode-bidi:embed; }
+.mono{ font-family:'JetBrains Mono',monospace; color:rgba(30,30,30,.65); direction:ltr; unicode-bidi:embed; }
+.ok{ color:var(--cobalt); font-family:'JetBrains Mono',monospace; font-size:7.5pt; direction:ltr; unicode-bidi:embed; }
 ul{ margin:0 5mm 3mm 0; }
 li{ margin-bottom:1.5mm; }
 .check li{ list-style:none; margin-right:-5mm; }
-.quote{ border-right:3px solid var(--coral); padding:2mm 5mm 2mm 0; color:rgba(20,33,61,.85); margin-bottom:3mm; }
-b.acc{ color:var(--coraldeep); }
+.quote{ border-right:3px solid var(--cobalt); padding:2mm 5mm 2mm 0; color:rgba(30,30,30,.85); margin-bottom:3mm; }
+b.acc{ color:var(--cobalt); }
 </style>
 </head>
 <body>
 
 <!-- COVER -->
 <div class="page dark" style="display:flex; flex-direction:column; justify-content:space-between;">
-  <div style="font-size:9.5pt; color:var(--fog); text-align:center;">برند گاید شخصی — هویت بصری و کلامی برند <span class="en" style="font-size:8pt; letter-spacing:2px;">· VERSION 5.1</span></div>
+  <div style="font-size:9.5pt; color:var(--fog); text-align:center;">برند گاید شخصی — هویت بصری و کلامی برند <span class="en" style="font-size:8pt; letter-spacing:2px;">· VERSION 6</span></div>
   <div style="text-align:center;">
-    <div style="width:120mm; margin:0 auto; direction:ltr;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290.0 100.0"><g transform="translate(0,0)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/><path fill="#F5F5F7" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
-    <div class="sg" style="margin-top:14mm; font-size:20pt; font-weight:700; color:var(--canvas); letter-spacing:-0.5px;">Nura: AI engineered for <span style="color:var(--coral);">reality</span>.</div>
-    <div style="font-size:12pt; color:var(--fog); margin-top:2mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
-    <div style="font-size:10pt; color:var(--coral); margin-top:12mm;"><span class="sg" style="letter-spacing:3px;">BY ROYA VOSOUGHI · AI ENGINEER &amp; SOFTWARE DEVELOPER</span><br>مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار</div>
+    <div style="width:120mm; margin:0 auto; direction:ltr;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 679.6 100.0"><g transform="translate(4,4)"><g transform="scale(0.7000)"><path d="M10 90 V10 H40 a22 22 0 0 1 0 44 H10" fill="none" stroke="#F5EBE0" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><line x1="26" y1="54" x2="64" y2="90" stroke="#7FA6E8" stroke-width="20" stroke-linecap="round"/></g><path fill="#F5EBE0" d="M84.40 71.40L84.40 71.40Q77 71.40 71.10 68.40Q65.20 65.40 61.80 59.70Q58.40 54 58.40 46L58.40 46L58.40 44.40Q58.40 36.40 61.80 30.70Q65.20 25 71.10 22Q77 19 84.40 19L84.40 19Q91.80 19 97.70 22Q103.60 25 107 30.70Q110.40 36.40 110.40 44.40L110.40 44.40L110.40 46Q110.40 54 107 59.70Q103.60 65.40 97.70 68.40Q91.80 71.40 84.40 71.40ZM84.40 60.20L84.40 60.20Q90.20 60.20 94 56.45Q97.80 52.70 97.80 45.70L97.80 45.70L97.80 44.70Q97.80 37.70 94.05 33.95Q90.30 30.20 84.40 30.20L84.40 30.20Q78.60 30.20 74.80 33.95Q71 37.70 71 44.70L71 44.70L71 45.70Q71 52.70 74.80 56.45Q78.60 60.20 84.40 60.20ZM154.60 90L123.40 90L123.40 79L150.40 79Q153.20 79 153.20 76L153.20 76L153.20 63.50L151.40 63.50Q150.60 65.20 148.90 66.90Q147.20 68.60 144.30 69.70Q141.40 70.80 136.90 70.80L136.90 70.80Q131.10 70.80 126.75 68.15Q122.40 65.50 120 60.80Q117.60 56.10 117.60 50L117.60 50L117.60 20.40L130.20 20.40L130.20 49Q130.20 54.60 132.95 57.40Q135.70 60.20 140.80 60.20L140.80 60.20Q146.60 60.20 149.80 56.35Q153 52.50 153 45.60L153 45.60L153 20.40L165.60 20.40L165.60 78.80Q165.60 83.90 162.60 86.95Q159.60 90 154.60 90L154.60 90ZM191 71.40L191 71.40Q185.70 71.40 181.50 69.55Q177.30 67.70 174.85 64.15Q172.40 60.60 172.40 55.50L172.40 55.50Q172.40 50.40 174.85 46.95Q177.30 43.50 181.65 41.75Q186 40 191.60 40L191.60 40L205.20 40L205.20 37.20Q205.20 33.70 203 31.45Q200.80 29.20 196 29.20L196 29.20Q191.30 29.20 189 31.35Q186.70 33.50 186 36.90L186 36.90L174.40 33Q175.60 29.20 178.25 26.05Q180.90 22.90 185.35 20.95Q189.80 19 196.20 19L196.20 19Q206 19 211.70 23.90Q217.40 28.80 217.40 38.10L217.40 38.10L217.40 56.60Q217.40 59.60 220.20 59.60L220.20 59.60L224.20 59.60L224.20 70L215.80 70Q212.10 70 209.70 68.20Q207.30 66.40 207.30 63.40L207.30 63.40L207.30 63.30L205.40 63.30Q205 64.50 203.60 66.45Q202.20 68.40 199.20 69.90Q196.20 71.40 191 71.40ZM193.20 61.20L193.20 61.20Q198.50 61.20 201.85 58.25Q205.20 55.30 205.20 50.40L205.20 50.40L205.20 49.40L192.50 49.40Q189 49.40 187 50.90Q185 52.40 185 55.10L185 55.10Q185 57.80 187.10 59.50Q189.20 61.20 193.20 61.20ZM294.60 70L272 70L254.20 0L267.80 0L282.60 61.50L284 61.50L298.80 0L312.40 0L294.60 70ZM337.80 71.40L337.80 71.40Q330.40 71.40 324.50 68.40Q318.60 65.40 315.20 59.70Q311.80 54 311.80 46L311.80 46L311.80 44.40Q311.80 36.40 315.20 30.70Q318.60 25 324.50 22Q330.40 19 337.80 19L337.80 19Q345.20 19 351.10 22Q357 25 360.40 30.70Q363.80 36.40 363.80 44.40L363.80 44.40L363.80 46Q363.80 54 360.40 59.70Q357 65.40 351.10 68.40Q345.20 71.40 337.80 71.40ZM337.80 60.20L337.80 60.20Q343.60 60.20 347.40 56.45Q351.20 52.70 351.20 45.70L351.20 45.70L351.20 44.70Q351.20 37.70 347.45 33.95Q343.70 30.20 337.80 30.20L337.80 30.20Q332 30.20 328.20 33.95Q324.40 37.70 324.40 44.70L324.40 44.70L324.40 45.70Q324.40 52.70 328.20 56.45Q332 60.20 337.80 60.20ZM392 71.40L392 71.40Q382.30 71.40 376.10 67.20Q369.90 63 368.60 55.20L368.60 55.20L380.20 52.20Q380.90 55.70 382.55 57.70Q384.20 59.70 386.65 60.55Q389.10 61.40 392 61.40L392 61.40Q396.40 61.40 398.50 59.85Q400.60 58.30 400.60 56L400.60 56Q400.60 53.70 398.60 52.45Q396.60 51.20 392.20 50.40L392.20 50.40L389.40 49.90Q384.20 48.90 379.90 47.15Q375.60 45.40 373 42.30Q370.40 39.20 370.40 34.30L370.40 34.30Q370.40 26.90 375.80 22.95Q381.20 19 390 19L390 19Q398.30 19 403.80 22.70Q409.30 26.40 411 32.40L411 32.40L399.30 36Q398.50 32.20 396.05 30.60Q393.60 29 390 29L390 29Q386.40 29 384.50 30.25Q382.60 31.50 382.60 33.70L382.60 33.70Q382.60 36.10 384.60 37.25Q386.60 38.40 390 39L390 39L392.80 39.50Q398.40 40.50 402.95 42.15Q407.50 43.80 410.15 46.85Q412.80 49.90 412.80 55.10L412.80 55.10Q412.80 62.90 407.15 67.15Q401.50 71.40 392 71.40ZM443.40 71.40L443.40 71.40Q436.00 71.40 430.10 68.40Q424.20 65.40 420.80 59.70Q417.40 54 417.40 46L417.40 46L417.40 44.40Q417.40 36.40 420.80 30.70Q424.20 25 430.10 22Q436.00 19 443.40 19L443.40 19Q450.80 19 456.70 22Q462.60 25 466.00 30.70Q469.40 36.40 469.40 44.40L469.40 44.40L469.40 46Q469.40 54 466.00 59.70Q462.60 65.40 456.70 68.40Q450.80 71.40 443.40 71.40ZM443.40 60.20L443.40 60.20Q449.20 60.20 453.00 56.45Q456.80 52.70 456.80 45.70L456.80 45.70L456.80 44.70Q456.80 37.70 453.05 33.95Q449.30 30.20 443.40 30.20L443.40 30.20Q437.60 30.20 433.80 33.95Q430.00 37.70 430.00 44.70L430.00 44.70L430.00 45.70Q430.00 52.70 433.80 56.45Q437.60 60.20 443.40 60.20ZM495.90 70.80L495.90 70.80Q490.10 70.80 485.75 68.15Q481.40 65.50 479.00 60.80Q476.60 56.10 476.60 50L476.60 50L476.60 20.40L489.20 20.40L489.20 49Q489.20 54.60 491.95 57.40Q494.70 60.20 499.80 60.20L499.80 60.20Q505.60 60.20 508.80 56.35Q512.00 52.50 512.00 45.60L512.00 45.60L512.00 20.40L524.60 20.40L524.60 70L512.20 70L512.20 63.50L510.40 63.50Q509.20 66 505.90 68.40Q502.60 70.80 495.90 70.80ZM532.20 45.40L532.20 45.40L532.20 43.80Q532.20 36 535.30 30.45Q538.40 24.90 543.55 21.95Q548.70 19 554.80 19L554.80 19Q561.60 19 565.10 21.40Q568.60 23.80 570.20 26.40L570.20 26.40L572.00 26.40L572.00 20.40L584.40 20.40L584.40 78.80Q584.40 83.90 581.40 86.95Q578.40 90 573.40 90L573.40 90L540.20 90L540.20 79L569.00 79Q571.80 79 571.80 76L571.80 76L571.80 63.10L570.00 63.10Q569.00 64.70 567.20 66.35Q565.40 68 562.40 69.10Q559.40 70.20 554.80 70.20L554.80 70.20Q548.70 70.20 543.55 67.25Q538.40 64.30 535.30 58.75Q532.20 53.20 532.20 45.40ZM558.40 59.20L558.40 59.20Q564.20 59.20 568.10 55.50Q572.00 51.80 572.00 45.10L572.00 45.10L572.00 44.10Q572.00 37.30 568.15 33.65Q564.30 30 558.40 30L558.40 30Q552.60 30 548.70 33.65Q544.80 37.30 544.80 44.10L544.80 44.10L544.80 45.10Q544.80 51.80 548.70 55.50Q552.60 59.20 558.40 59.20ZM607.00 70L594.40 70L594.40 0L607.00 0L607.00 26.50L608.80 26.50Q609.60 24.90 611.30 23.30Q613.00 21.70 615.85 20.65Q618.70 19.60 623.10 19.60L623.10 19.60Q628.90 19.60 633.25 22.25Q637.60 24.90 640.00 29.55Q642.40 34.20 642.40 40.40L642.40 40.40L642.40 70L629.80 70L629.80 41.40Q629.80 35.80 627.05 33Q624.30 30.20 619.20 30.20L619.20 30.20Q613.40 30.20 610.20 34.05Q607.00 37.90 607.00 44.80L607.00 44.80L607.00 70ZM664.60 70L652.00 70L652.00 20.40L664.60 20.40L664.60 70ZM658.30 14.60L658.30 14.60Q654.90 14.60 652.55 12.40Q650.20 10.20 650.20 6.60L650.20 6.60Q650.20 3 652.55 0.80Q654.90-1.40 658.30-1.40L658.30-1.40Q661.80-1.40 664.10 0.80Q666.40 3 666.40 6.60L666.40 6.60Q666.40 10.20 664.10 12.40Q661.80 14.60 658.30 14.60Z"/></g></svg></div>
+    <div class="sg" style="margin-top:14mm; font-size:20pt; font-weight:700; color:var(--canvas); letter-spacing:-0.5px;">AI engineered for <span style="color:var(--cobaltlight);">reality</span>.</div>
+    <div style="font-size:12pt; color:var(--fog); margin-top:2mm;">«هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
+    <div style="font-size:10pt; color:var(--cobaltlight); margin-top:12mm;"><span class="sg" style="letter-spacing:3px;">AI ENGINEER &amp; SOFTWARE DEVELOPER</span><br>مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار</div>
   </div>
   <div style="display:flex; justify-content:space-between; font-size:8.5pt; color:var(--fog);">
     <span class="en">royavosoughi.com</span>
@@ -76,18 +76,18 @@ b.acc{ color:var(--coraldeep); }
   <p>تبدیل شدن به مهندس هوش مصنوعی‌ای که پروژه‌هایش معرف او هستند — و راهنمای افرادی که می‌خواهند هوش مصنوعی را وارد کسب‌وکار خود کنند.</p>
 
   <h2>Values — ارزش‌های برند</h2>
-  <p style="font-size:8.5pt; color:rgba(20,33,61,.65); margin:-1mm 0 2mm;">هدف: انتقال این حس که از این برند، یک تحویلِ خلاقانه، خاص و به‌موقع می‌گیری.</p>
+  <p style="font-size:8.5pt; color:rgba(30,30,30,.65); margin:-1mm 0 2mm;">هدف: انتقال این حس که از این برند، یک تحویلِ خلاقانه، خاص و به‌موقع می‌گیری.</p>
   <div class="grid4">
-    <div class="card"><b style="color:var(--coraldeep);">وقت‌شناسی</b><br><span style="font-size:8.5pt;">پروژه سر وقت و طبق قول تحویل داده می‌شود؛ به زمانِ مدیر احترام می‌گذارم.</span></div>
-    <div class="card"><b style="color:var(--coraldeep);">کاربردی بودن</b><br><span style="font-size:8.5pt;">راه‌حلی واقعی و قابل‌استفاده که در کسب‌وکار جواب می‌دهد — نه دموی نمایشی.</span></div>
-    <div class="card"><b style="color:var(--coraldeep);">خلاقیت در حل مسائل</b><br><span style="font-size:8.5pt;">برای هر مسئله راه‌حلی خاص و متفاوت طراحی می‌کنم، نه نسخه‌ی کپی‌شده.</span></div>
-    <div class="card"><b style="color:var(--coraldeep);">الهام‌بخشی</b><br><span style="font-size:8.5pt;">نشان می‌دهم هوش مصنوعی چطور می‌تواند کسب‌وکار را یک قدم جلوتر ببرد.</span></div>
+    <div class="card"><b style="color:var(--cobalt);">وقت‌شناسی</b><br><span style="font-size:8.5pt;">پروژه سر وقت و طبق قول تحویل داده می‌شود؛ به زمانِ مدیر احترام می‌گذارم.</span></div>
+    <div class="card"><b style="color:var(--cobalt);">کاربردی بودن</b><br><span style="font-size:8.5pt;">راه‌حلی واقعی و قابل‌استفاده که در کسب‌وکار جواب می‌دهد — نه دموی نمایشی.</span></div>
+    <div class="card"><b style="color:var(--cobalt);">خلاقیت در حل مسائل</b><br><span style="font-size:8.5pt;">برای هر مسئله راه‌حلی خاص و متفاوت طراحی می‌کنم، نه نسخه‌ی کپی‌شده.</span></div>
+    <div class="card"><b style="color:var(--cobalt);">الهام‌بخشی</b><br><span style="font-size:8.5pt;">نشان می‌دهم هوش مصنوعی چطور می‌تواند کسب‌وکار را یک قدم جلوتر ببرد.</span></div>
   </div>
 
   <h2>Target Audience — مخاطب هدف</h2>
   <div class="card"><span style="font-size:9.5pt;">کارفرمایان و مدیران کسب‌وکارهای کوچک و بزرگ — از شرکت‌های تازه‌تاسیس با حداقل کارمند تا شرکت‌های بزرگ با بیش از ۳۰۰ کارمند — که نیاز دارند مسیر کاری شرکت خود را با هوش مصنوعی ترکیب کنند و پیش ببرند.</span></div>
   <div class="mintcard" style="padding:3.5mm 6mm;"><span style="font-size:9pt;"><b>دو کانال، یک مخاطب:</b> در <span class="en">LinkedIn</span> و وب‌سایت به انگلیسی (بازار ایتالیا و اروپا) و در اینستاگرام به فارسی (کسب‌وکارهای فارسی‌زبان) با همین مدیران و کارفرمایان ارتباط می‌گیرم.</span></div>
-  <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">02</div>
+  <div class="pagefoot">Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">02</div>
 </div>
 
 <!-- PAGE 3 — POSITIONING -->
@@ -99,10 +99,10 @@ b.acc{ color:var(--coraldeep); }
   <h2>Brand Positioning — جایگاه‌یابی برند</h2>
   <p style="font-size:9.5pt;">مدیرها بارها از کار با توسعه‌دهنده‌های هوش مصنوعی زخم خورده‌اند: <b>تاخیر در تحویل، ارتباط مبهم، و ناپدید شدن بعد از تحویل پروژه.</b> (طبق آمار مؤسسه‌ی مدیریت پروژه، ۵۶٪ پروژه‌های شکست‌خورده ریشه در ارتباط ضعیف دارند.) جایگاه برند من دقیقا حل همین مشکل‌هاست:</p>
   <div class="grid2" style="gap:3mm; margin-bottom:2mm;">
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">تحویل به‌موقع و سر قول</b><br><span style="font-size:8.5pt;">نه بهانه‌ی «پیچیدگی‌های پیش‌بینی‌نشده».</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">ارتباط شفاف در تمام مراحل</b><br><span style="font-size:8.5pt;">مدیر همیشه می‌داند کار کجاست.</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">پشتیبانی حتی بعد از تحویل</b><br><span style="font-size:8.5pt;">من ناپدید نمی‌شوم.</span></div>
-    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--coraldeep);">یک همکار، نه فقط یک اپلیکیشن</b><br><span style="font-size:8.5pt;">همین اعتماد، برند را متمایز می‌کند.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cobalt);">تحویل به‌موقع و سر قول</b><br><span style="font-size:8.5pt;">نه بهانه‌ی «پیچیدگی‌های پیش‌بینی‌نشده».</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cobalt);">ارتباط شفاف در تمام مراحل</b><br><span style="font-size:8.5pt;">مدیر همیشه می‌داند کار کجاست.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cobalt);">پشتیبانی حتی بعد از تحویل</b><br><span style="font-size:8.5pt;">من ناپدید نمی‌شوم.</span></div>
+    <div class="card" style="padding:3mm 5mm;"><b style="color:var(--cobalt);">یک همکار، نه فقط یک اپلیکیشن</b><br><span style="font-size:8.5pt;">همین اعتماد، برند را متمایز می‌کند.</span></div>
   </div>
 
   <h2>Unique Selling Point (USP) — ارزش پیشنهادی منحصربه‌فرد</h2>
@@ -110,8 +110,8 @@ b.acc{ color:var(--coraldeep); }
   <p style="font-size:9.5pt;">مهم‌ترین چیزی که یک مدیر می‌خواهد، <b>اطمینان</b> است: اطمینان از اینکه پروژه به‌موقع تحویل می‌شود، واقعا کار می‌کند، و بعد از تحویل رها نمی‌شود. این دقیقا همان‌جایی است که رقبا ضعف دارند و برند من روی آن ساخته شده.</p>
 
   <h2>Elevator Pitch — معرفی ۳۰ ثانیه‌ای</h2>
-  <div class="quote">من <span class="en">Roya Vosoughi</span> هستم، مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار و سازنده‌ی <span class="en">Nura</span>. اپلیکیشن‌هایی می‌سازم که با مدل‌های زبانی (LLM) کار می‌کنند — ابزارهایی مثل RAG و ایجنت‌های هوشمند. یک قانون برای خودم دارم: همه‌چیز را در معرض دید عموم می‌سازم. هر پروژه‌ی من دیپلوی‌شده، متن‌باز و مستند است — پورتفولیویی که می‌توانی اجرایش کنی، نه فقط ادعایی که باید باورش کنی.</div>
-  <div class="card en" style="font-size:8.5pt; text-align:left; padding:3mm 5mm;"><b>English version:</b> I'm Roya Vosoughi, an AI engineer and software developer, and Nura is how I work: AI engineered for reality. I build applications powered by LLMs — RAG tools, AI assistants, and agents. My rule: build everything in public. Every project is deployed, open source, and documented — a portfolio you can run, not claims you have to trust.</div>
+  <div class="quote">من <span class="en">Roya Vosoughi</span> هستم، مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار. اپلیکیشن‌هایی می‌سازم که با مدل‌های زبانی (LLM) کار می‌کنند — ابزارهایی مثل RAG و ایجنت‌های هوشمند. یک قانون برای خودم دارم: همه‌چیز را در معرض دید عموم می‌سازم. هر پروژه‌ی من دیپلوی‌شده، متن‌باز و مستند است — پورتفولیویی که می‌توانی اجرایش کنی، نه فقط ادعایی که باید باورش کنی.</div>
+  <div class="card en" style="font-size:8.5pt; text-align:left; padding:3mm 5mm;"><b>English version:</b> I'm Roya Vosoughi, an AI engineer and software developer — AI engineered for reality. I build applications powered by LLMs — RAG tools, AI assistants, and agents. My rule: build everything in public. Every project is deployed, open source, and documented — a portfolio you can run, not claims you have to trust.</div>
 
   <h2>Key Messages — پیام‌های کلیدی</h2>
   <table>
@@ -120,7 +120,7 @@ b.acc{ color:var(--coraldeep); }
     <tr><td class="lbl">۰۳</td><td><b>برای هر مسئله، راه‌حلی خاص و خلاقانه</b> — نه نسخه‌ی کپی‌شده.</td></tr>
     <tr><td class="lbl">۰۴</td><td><b>پشتیبانی بعد از تحویل</b> — من یک همکار قابل‌اعتمادم، نه فقط یک سازنده.</td></tr>
   </table>
-  <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">03</div>
+  <div class="pagefoot">Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">03</div>
 </div>
 
 <!-- PAGE 4 — COLORS & TYPE -->
@@ -130,34 +130,34 @@ b.acc{ color:var(--coraldeep); }
 
   <h2>Color Palette — پالت رنگ</h2>
   <div class="grid4" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:3mm;">
-    <div class="swatch"><div class="c" style="background:#F5F5F7; box-shadow:inset 0 0 0 1px rgba(20,33,61,.12);"></div><div class="t"><b>Canvas</b><span class="mono">#F5F5F7</span><br>پس‌زمینه‌ی اصلی<br><span class="ok">the ground</span></div></div>
-    <div class="swatch"><div class="c" style="background:#14213D;"></div><div class="t"><b>Navy</b><span class="mono">#14213D</span><br>متن، تیترها، بخش‌های تیره<br><span class="ok">14.7:1 on Canvas · AAA</span></div></div>
-    <div class="swatch"><div class="c" style="background:#E07A5F;"></div><div class="t"><b>Coral</b><span class="mono">#E07A5F</span><br>دکمه‌ها — همیشه با متن سرمه‌ای<br><span class="ok">navy on coral 5.4:1 · AA</span></div></div>
+    <div class="swatch"><div class="c" style="background:#F5EBE0; box-shadow:inset 0 0 0 1px rgba(30,30,30,.12);"></div><div class="t"><b>Canvas · کرم</b><span class="mono">#F5EBE0</span><br>پس‌زمینه‌ی اصلی<br><span class="ok">the ground</span></div></div>
+    <div class="swatch"><div class="c" style="background:#1E1E1E;"></div><div class="t"><b>Ink · جوهری</b><span class="mono">#1E1E1E</span><br>متن، تیترها، بخش‌های تیره<br><span class="ok">14.2:1 on Canvas · AAA</span></div></div>
+    <div class="swatch"><div class="c" style="background:#0047AB;"></div><div class="t"><b>Cobalt · آبی کبالت</b><span class="mono">#0047AB</span><br>دکمه‌ها (متن سفید) و لینک‌ها<br><span class="ok">white on cobalt 8:1 · AAA</span></div></div>
   </div>
   <div class="grid4">
-    <div class="swatch"><div class="c" style="background:#E6E6E6; height:10mm;"></div><div class="t"><b>Mist</b><span class="mono">#E6E6E6</span><br>کارت‌ها و بخش‌های ملایم</div></div>
-    <div class="swatch"><div class="c" style="background:#AD4428; height:10mm;"></div><div class="t"><b>Coral Deep</b><span class="mono">#AD4428</span><br>لینک و تاکید متنی · 5.3:1</div></div>
-    <div class="swatch"><div class="c" style="background:#A9B4CC; height:10mm;"></div><div class="t"><b>Fog</b><span class="mono">#A9B4CC</span><br>متن کم‌رنگ روی سرمه‌ای · 7.7:1</div></div>
+    <div class="swatch"><div class="c" style="background:#EBDFD1; height:10mm;"></div><div class="t"><b>Mist</b><span class="mono">#EBDFD1</span><br>کارت‌ها و بخش‌های ملایم</div></div>
+    <div class="swatch"><div class="c" style="background:#7FA6E8; height:10mm;"></div><div class="t"><b>Cobalt Light</b><span class="mono">#7FA6E8</span><br>آبی روی زمینه‌ی جوهری · 6.8:1</div></div>
+    <div class="swatch"><div class="c" style="background:#B8B0A6; height:10mm;"></div><div class="t"><b>Fog</b><span class="mono">#B8B0A6</span><br>متن کم‌رنگ روی جوهری · 7.8:1</div></div>
     <div class="swatch"><div class="c" style="background:#E3A72F; height:10mm;"></div><div class="t"><b>Amber</b><span class="mono">#E3A72F</span><br>فقط رنگ وضعیت — نه برند</div></div>
   </div>
-  <p style="font-size:8.5pt; color:rgba(20,33,61,.65); margin-top:2mm;">سرمه‌ای = اعتماد (رنگ بانک‌ها، مشاوران و نرم‌افزارهای جدی)؛ مرجانی = گرما و دعوت به اقدام. رنگ‌های ردیف دوم از همین سه رنگ ساخته شده‌اند.</p>
+  <p style="font-size:8.5pt; color:rgba(30,30,30,.65); margin-top:2mm;">کرم = گرما و انسانیت (نه سفیدِ سرد اداری)؛ جوهری = جدیت و خوانایی؛ آبی کبالت = اعتماد و تکنولوژی، و دعوت به اقدام. رنگ‌های ردیف دوم از همین سه رنگ ساخته شده‌اند. hover دکمه: <span class="mono">#003A8C</span>.</p>
 
   <h2 style="margin-top:5mm;">Typography — تایپوگرافی</h2>
   <div class="card">
-    <div style="font-size:13pt; font-weight:700; color:var(--navy);">وزیرمتن بولد — تیترهای فارسی</div>
+    <div style="font-size:13pt; font-weight:700; color:var(--ink);">وزیرمتن بولد — تیترهای فارسی</div>
     <div style="font-size:10.5pt;">وزیرمتن رگولار — متن بدنه‌ی فارسی. خوانا و هماهنگ با هویت انگلیسی برند.</div>
-    <div class="sg en" style="font-size:14pt; font-weight:700; color:var(--navy); margin-top:2mm; text-align:left;">Space Grotesk Bold — English headings &amp; the <span style="color:var(--coraldeep);">nura</span> wordmark</div>
+    <div class="sg en" style="font-size:14pt; font-weight:700; color:var(--ink); margin-top:2mm; text-align:left;">Space Grotesk Bold — English headings &amp; the <span style="color:var(--cobalt);">Roya Vosoughi</span> wordmark</div>
     <div class="en" style="font-size:10pt; text-align:left;">Inter Regular — English body text.</div>
     <div class="mono en" style="font-size:9pt; margin-top:1mm; text-align:left;">JetBrains Mono — code snippets</div>
   </div>
 
   <h2>قوانین دسترس‌پذیری</h2>
   <ul style="font-size:9.5pt;">
-    <li>زمینه Canvas، متن Navy؛ بخش‌های تیره Navy با متن Canvas.</li>
-    <li>متن روی دکمه‌ی مرجانی همیشه Navy — متن سفید روی مرجانی فقط ۳:۱ است.</li>
-    <li>مرجانی خام هرگز برای متن روی زمینه‌ی روشن؛ برای لینک و تاکید Coral Deep.</li>
+    <li>زمینه Canvas، متن Ink؛ بخش‌های تیره Ink با متن Canvas.</li>
+    <li>متن روی دکمه‌ی آبی همیشه سفید — متن جوهری روی کبالت فقط ۲٫۲:۱ است.</li>
+    <li>کبالت خام روی زمینه‌ی جوهری فقط ۲٫۱:۱ است؛ آنجا Cobalt Light.</li>
   </ul>
-  <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">04</div>
+  <div class="pagefoot">Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">04</div>
 </div>
 
 <!-- PAGE 6 — LOGO -->
@@ -165,29 +165,29 @@ b.acc{ color:var(--coraldeep); }
   <div class="kicker"><span class="en sg">02 — VISUAL IDENTITY</span> · هویت بصری</div>
   <h1>سیستم لوگو</h1>
   <div class="card" style="text-align:center; padding:6mm; direction:ltr;">
-    <div style="width:120mm; margin:0 auto;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370.0 180.0"><rect width="370.0" height="180.0" rx="28.8" fill="#14213D"/><g transform="translate(40,40)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/><path fill="#F5F5F7" d="M133.22222222222223 76.9111111111111V38.33333333333333H142.86666666666665V43.38888888888888H144.26666666666665Q145.2 41.36666666666666 147.76666666666665 39.53888888888888Q150.33333333333331 37.7111111111111 155.54444444444442 37.7111111111111Q160.05555555555554 37.7111111111111 163.43888888888887 39.77222222222221Q166.8222222222222 41.83333333333333 168.68888888888887 45.44999999999999Q170.55555555555554 49.066666666666656 170.55555555555554 53.88888888888888V76.9111111111111H160.75555555555553V54.66666666666666Q160.75555555555553 50.3111111111111 158.61666666666665 48.133333333333326Q156.47777777777776 45.95555555555555 152.5111111111111 45.95555555555555Q148.0 45.95555555555555 145.51111111111112 48.94999999999999Q143.0222222222222 51.944444444444436 143.0222222222222 57.3111111111111V76.9111111111111ZM192.72222222222223 77.53333333333332Q188.2111111111111 77.53333333333332 184.82777777777778 75.4722222222222Q181.44444444444446 73.4111111111111 179.57777777777778 69.75555555555555Q177.7111111111111 66.1 177.7111111111111 61.35555555555554V38.33333333333333H187.51111111111112V60.57777777777777Q187.51111111111112 64.93333333333332 189.65 67.1111111111111Q191.7888888888889 69.28888888888888 195.75555555555556 69.28888888888888Q200.26666666666665 69.28888888888888 202.75555555555553 66.29444444444444Q205.24444444444444 63.29999999999999 205.24444444444444 57.93333333333332V38.33333333333333H215.04444444444445V76.9111111111111H205.4V71.85555555555554H204.0Q203.06666666666666 73.79999999999998 200.5 75.66666666666666Q197.93333333333334 77.53333333333332 192.72222222222223 77.53333333333332ZM222.82222222222225 76.9111111111111V38.33333333333333H232.46666666666667V42.68888888888888H233.86666666666667Q234.72222222222223 40.35555555555555 236.70555555555558 39.26666666666666Q238.6888888888889 38.17777777777777 241.33333333333334 38.17777777777777H246.0V46.88888888888888H241.1777777777778Q237.44444444444446 46.88888888888888 235.03333333333336 48.87222222222221Q232.62222222222223 50.85555555555555 232.62222222222223 54.97777777777777V76.9111111111111ZM262.4888888888889 77.99999999999999Q258.3666666666667 77.99999999999999 255.1 76.5611111111111Q251.83333333333331 75.1222222222222 249.92777777777775 72.3611111111111Q248.0222222222222 69.6 248.0222222222222 65.63333333333333Q248.0222222222222 61.66666666666666 249.92777777777775 58.98333333333332Q251.83333333333331 56.29999999999999 255.21666666666667 54.93888888888888Q258.6 53.57777777777777 262.9555555555555 53.57777777777777H273.5333333333333V51.39999999999999Q273.5333333333333 48.67777777777777 271.8222222222222 46.92777777777777Q270.1111111111111 45.17777777777777 266.3777777777778 45.17777777777777Q262.72222222222223 45.17777777777777 260.93333333333334 46.849999999999994Q259.14444444444445 48.52222222222221 258.6 51.16666666666666L249.57777777777778 48.133333333333326Q250.51111111111112 45.17777777777777 252.57222222222222 42.727777777777774Q254.63333333333333 40.27777777777777 258.09444444444443 38.761111111111106Q261.55555555555554 37.24444444444444 266.5333333333333 37.24444444444444Q274.15555555555557 37.24444444444444 278.5888888888889 41.05555555555555Q283.02222222222224 44.86666666666666 283.02222222222224 52.099999999999994V66.48888888888888Q283.02222222222224 68.82222222222221 285.2 68.82222222222221H288.31111111111113V76.9111111111111H281.77777777777777Q278.9 76.9111111111111 277.0333333333333 75.51111111111109Q275.16666666666663 74.1111111111111 275.16666666666663 71.77777777777777V71.69999999999999H273.68888888888887Q273.3777777777778 72.63333333333333 272.2888888888889 74.14999999999999Q271.2 75.66666666666666 268.8666666666667 76.83333333333331Q266.5333333333333 77.99999999999999 262.4888888888889 77.99999999999999ZM264.2 70.06666666666665Q268.3222222222222 70.06666666666665 270.92777777777775 67.77222222222221Q273.5333333333333 65.47777777777776 273.5333333333333 61.66666666666666V60.88888888888888H263.65555555555557Q260.93333333333334 60.88888888888888 259.37777777777774 62.05555555555554Q257.8222222222222 63.222222222222214 257.8222222222222 65.32222222222221Q257.8222222222222 67.42222222222222 259.4555555555555 68.74444444444444Q261.0888888888889 70.06666666666665 264.2 70.06666666666665Z"/></g></svg></div>
-    <p style="font-size:9pt; margin:3mm 0 0; direction:rtl;"><b>لوگوی اصلی — علامت + وردمارک</b><br>حرف N با یک خط پیوسته‌ی سرمه‌ای که به یک نقطه‌ی مرجانی ختم می‌شود، + «nura» با فونت <span class="en">Space Grotesk Bold</span>.</p>
+    <div style="width:120mm; margin:0 auto;"><svg style="width:100%; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 791.6 202.0"><rect width="791.6" height="202.0" rx="32.3" fill="#1E1E1E"/><g transform="translate(60,62)"><g transform="scale(0.7000)"><path d="M10 90 V10 H40 a22 22 0 0 1 0 44 H10" fill="none" stroke="#F5EBE0" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><line x1="26" y1="54" x2="64" y2="90" stroke="#7FA6E8" stroke-width="20" stroke-linecap="round"/></g><path fill="#F5EBE0" d="M84.40 71.40L84.40 71.40Q77 71.40 71.10 68.40Q65.20 65.40 61.80 59.70Q58.40 54 58.40 46L58.40 46L58.40 44.40Q58.40 36.40 61.80 30.70Q65.20 25 71.10 22Q77 19 84.40 19L84.40 19Q91.80 19 97.70 22Q103.60 25 107 30.70Q110.40 36.40 110.40 44.40L110.40 44.40L110.40 46Q110.40 54 107 59.70Q103.60 65.40 97.70 68.40Q91.80 71.40 84.40 71.40ZM84.40 60.20L84.40 60.20Q90.20 60.20 94 56.45Q97.80 52.70 97.80 45.70L97.80 45.70L97.80 44.70Q97.80 37.70 94.05 33.95Q90.30 30.20 84.40 30.20L84.40 30.20Q78.60 30.20 74.80 33.95Q71 37.70 71 44.70L71 44.70L71 45.70Q71 52.70 74.80 56.45Q78.60 60.20 84.40 60.20ZM154.60 90L123.40 90L123.40 79L150.40 79Q153.20 79 153.20 76L153.20 76L153.20 63.50L151.40 63.50Q150.60 65.20 148.90 66.90Q147.20 68.60 144.30 69.70Q141.40 70.80 136.90 70.80L136.90 70.80Q131.10 70.80 126.75 68.15Q122.40 65.50 120 60.80Q117.60 56.10 117.60 50L117.60 50L117.60 20.40L130.20 20.40L130.20 49Q130.20 54.60 132.95 57.40Q135.70 60.20 140.80 60.20L140.80 60.20Q146.60 60.20 149.80 56.35Q153 52.50 153 45.60L153 45.60L153 20.40L165.60 20.40L165.60 78.80Q165.60 83.90 162.60 86.95Q159.60 90 154.60 90L154.60 90ZM191 71.40L191 71.40Q185.70 71.40 181.50 69.55Q177.30 67.70 174.85 64.15Q172.40 60.60 172.40 55.50L172.40 55.50Q172.40 50.40 174.85 46.95Q177.30 43.50 181.65 41.75Q186 40 191.60 40L191.60 40L205.20 40L205.20 37.20Q205.20 33.70 203 31.45Q200.80 29.20 196 29.20L196 29.20Q191.30 29.20 189 31.35Q186.70 33.50 186 36.90L186 36.90L174.40 33Q175.60 29.20 178.25 26.05Q180.90 22.90 185.35 20.95Q189.80 19 196.20 19L196.20 19Q206 19 211.70 23.90Q217.40 28.80 217.40 38.10L217.40 38.10L217.40 56.60Q217.40 59.60 220.20 59.60L220.20 59.60L224.20 59.60L224.20 70L215.80 70Q212.10 70 209.70 68.20Q207.30 66.40 207.30 63.40L207.30 63.40L207.30 63.30L205.40 63.30Q205 64.50 203.60 66.45Q202.20 68.40 199.20 69.90Q196.20 71.40 191 71.40ZM193.20 61.20L193.20 61.20Q198.50 61.20 201.85 58.25Q205.20 55.30 205.20 50.40L205.20 50.40L205.20 49.40L192.50 49.40Q189 49.40 187 50.90Q185 52.40 185 55.10L185 55.10Q185 57.80 187.10 59.50Q189.20 61.20 193.20 61.20ZM294.60 70L272 70L254.20 0L267.80 0L282.60 61.50L284 61.50L298.80 0L312.40 0L294.60 70ZM337.80 71.40L337.80 71.40Q330.40 71.40 324.50 68.40Q318.60 65.40 315.20 59.70Q311.80 54 311.80 46L311.80 46L311.80 44.40Q311.80 36.40 315.20 30.70Q318.60 25 324.50 22Q330.40 19 337.80 19L337.80 19Q345.20 19 351.10 22Q357 25 360.40 30.70Q363.80 36.40 363.80 44.40L363.80 44.40L363.80 46Q363.80 54 360.40 59.70Q357 65.40 351.10 68.40Q345.20 71.40 337.80 71.40ZM337.80 60.20L337.80 60.20Q343.60 60.20 347.40 56.45Q351.20 52.70 351.20 45.70L351.20 45.70L351.20 44.70Q351.20 37.70 347.45 33.95Q343.70 30.20 337.80 30.20L337.80 30.20Q332 30.20 328.20 33.95Q324.40 37.70 324.40 44.70L324.40 44.70L324.40 45.70Q324.40 52.70 328.20 56.45Q332 60.20 337.80 60.20ZM392 71.40L392 71.40Q382.30 71.40 376.10 67.20Q369.90 63 368.60 55.20L368.60 55.20L380.20 52.20Q380.90 55.70 382.55 57.70Q384.20 59.70 386.65 60.55Q389.10 61.40 392 61.40L392 61.40Q396.40 61.40 398.50 59.85Q400.60 58.30 400.60 56L400.60 56Q400.60 53.70 398.60 52.45Q396.60 51.20 392.20 50.40L392.20 50.40L389.40 49.90Q384.20 48.90 379.90 47.15Q375.60 45.40 373 42.30Q370.40 39.20 370.40 34.30L370.40 34.30Q370.40 26.90 375.80 22.95Q381.20 19 390 19L390 19Q398.30 19 403.80 22.70Q409.30 26.40 411 32.40L411 32.40L399.30 36Q398.50 32.20 396.05 30.60Q393.60 29 390 29L390 29Q386.40 29 384.50 30.25Q382.60 31.50 382.60 33.70L382.60 33.70Q382.60 36.10 384.60 37.25Q386.60 38.40 390 39L390 39L392.80 39.50Q398.40 40.50 402.95 42.15Q407.50 43.80 410.15 46.85Q412.80 49.90 412.80 55.10L412.80 55.10Q412.80 62.90 407.15 67.15Q401.50 71.40 392 71.40ZM443.40 71.40L443.40 71.40Q436.00 71.40 430.10 68.40Q424.20 65.40 420.80 59.70Q417.40 54 417.40 46L417.40 46L417.40 44.40Q417.40 36.40 420.80 30.70Q424.20 25 430.10 22Q436.00 19 443.40 19L443.40 19Q450.80 19 456.70 22Q462.60 25 466.00 30.70Q469.40 36.40 469.40 44.40L469.40 44.40L469.40 46Q469.40 54 466.00 59.70Q462.60 65.40 456.70 68.40Q450.80 71.40 443.40 71.40ZM443.40 60.20L443.40 60.20Q449.20 60.20 453.00 56.45Q456.80 52.70 456.80 45.70L456.80 45.70L456.80 44.70Q456.80 37.70 453.05 33.95Q449.30 30.20 443.40 30.20L443.40 30.20Q437.60 30.20 433.80 33.95Q430.00 37.70 430.00 44.70L430.00 44.70L430.00 45.70Q430.00 52.70 433.80 56.45Q437.60 60.20 443.40 60.20ZM495.90 70.80L495.90 70.80Q490.10 70.80 485.75 68.15Q481.40 65.50 479.00 60.80Q476.60 56.10 476.60 50L476.60 50L476.60 20.40L489.20 20.40L489.20 49Q489.20 54.60 491.95 57.40Q494.70 60.20 499.80 60.20L499.80 60.20Q505.60 60.20 508.80 56.35Q512.00 52.50 512.00 45.60L512.00 45.60L512.00 20.40L524.60 20.40L524.60 70L512.20 70L512.20 63.50L510.40 63.50Q509.20 66 505.90 68.40Q502.60 70.80 495.90 70.80ZM532.20 45.40L532.20 45.40L532.20 43.80Q532.20 36 535.30 30.45Q538.40 24.90 543.55 21.95Q548.70 19 554.80 19L554.80 19Q561.60 19 565.10 21.40Q568.60 23.80 570.20 26.40L570.20 26.40L572.00 26.40L572.00 20.40L584.40 20.40L584.40 78.80Q584.40 83.90 581.40 86.95Q578.40 90 573.40 90L573.40 90L540.20 90L540.20 79L569.00 79Q571.80 79 571.80 76L571.80 76L571.80 63.10L570.00 63.10Q569.00 64.70 567.20 66.35Q565.40 68 562.40 69.10Q559.40 70.20 554.80 70.20L554.80 70.20Q548.70 70.20 543.55 67.25Q538.40 64.30 535.30 58.75Q532.20 53.20 532.20 45.40ZM558.40 59.20L558.40 59.20Q564.20 59.20 568.10 55.50Q572.00 51.80 572.00 45.10L572.00 45.10L572.00 44.10Q572.00 37.30 568.15 33.65Q564.30 30 558.40 30L558.40 30Q552.60 30 548.70 33.65Q544.80 37.30 544.80 44.10L544.80 44.10L544.80 45.10Q544.80 51.80 548.70 55.50Q552.60 59.20 558.40 59.20ZM607.00 70L594.40 70L594.40 0L607.00 0L607.00 26.50L608.80 26.50Q609.60 24.90 611.30 23.30Q613.00 21.70 615.85 20.65Q618.70 19.60 623.10 19.60L623.10 19.60Q628.90 19.60 633.25 22.25Q637.60 24.90 640.00 29.55Q642.40 34.20 642.40 40.40L642.40 40.40L642.40 70L629.80 70L629.80 41.40Q629.80 35.80 627.05 33Q624.30 30.20 619.20 30.20L619.20 30.20Q613.40 30.20 610.20 34.05Q607.00 37.90 607.00 44.80L607.00 44.80L607.00 70ZM664.60 70L652.00 70L652.00 20.40L664.60 20.40L664.60 70ZM658.30 14.60L658.30 14.60Q654.90 14.60 652.55 12.40Q650.20 10.20 650.20 6.60L650.20 6.60Q650.20 3 652.55 0.80Q654.90-1.40 658.30-1.40L658.30-1.40Q661.80-1.40 664.10 0.80Q666.40 3 666.40 6.60L666.40 6.60Q666.40 10.20 664.10 12.40Q661.80 14.60 658.30 14.60Z"/></g></svg></div>
+    <p style="font-size:9pt; margin:3mm 0 0; direction:rtl;"><b>لوگوی اصلی — Signal R + وردمارک</b><br>علامت R خودش حرف اولِ «Roya» است و بعد «oya Vosoughi» با فونت <span class="en">Space Grotesk Bold</span> می‌آید — هیچ حرفی تکرار نمی‌شود.</p>
   </div>
   <div class="grid2" style="align-items:stretch;">
     <div class="card" style="text-align:center;">
-      <svg viewBox="0 0 120 120" style="width:30mm;"><rect width="120" height="120" rx="26" fill="#14213D"/><g transform="translate(14,14) scale(0.92)"><path d="M22 80 V24 L76 76 V40" fill="none" stroke="#F5F5F7" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><circle cx="76" cy="17" r="10" fill="#E07A5F"/></g></svg>
-      <p style="font-size:9pt; margin-top:2mm;"><b>آیکون</b><br>برای فاوآیکون، آواتار و واترمارک اینستاگرام.</p>
+      <svg style="width:30mm;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="28" fill="#0047AB"/><g transform="translate(33,24) scale(0.72)"><path d="M10 90 V10 H40 a22 22 0 0 1 0 44 H10" fill="none" stroke="#F5EBE0" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><line x1="26" y1="54" x2="64" y2="90" stroke="#1E1E1E" stroke-width="20" stroke-linecap="round"/></g></svg>
+      <p style="font-size:9pt; margin-top:2mm;"><b>آیکون</b><br>R کرم با پای جوهری روی مربع آبی — فاوآیکون، آواتار LinkedIn و اینستاگرام.</p>
     </div>
     <div class="card">
       <b class="acc">معنای علامت</b>
-      <p style="font-size:9pt; margin-top:1mm;"><span class="en">Nura</span> از «نور» می‌آید. خط پیوسته‌ی سرمه‌ای یعنی ساختنِ پیوسته و دقیق؛ نقطه‌ی مرجانی هم جرقه‌ی نور است و هم یک «نود» در شبکه — نماد هوش مصنوعی. تنها رنگ گرم علامت همین نقطه است.</p>
+      <p style="font-size:9pt; margin-top:1mm;">یک R با خط پیوسته و گوشه‌های گرد؛ «پای» آن تنها خطِ آبی است — قدمی که یک ایده را به سیستمی واقعی و کارا تبدیل می‌کند. همان زبان بصری «یک حرف جوهری + یک خط آبی» در کل سایت تکرار می‌شود.</p>
     </div>
   </div>
   <h2>قوانین استفاده</h2>
   <ul style="font-size:9.5pt;">
-    <li>آیکون برای فضاهای کوچک، لوگوی کامل برای فضاهای بزرگ. فایل‌ها: <span class="mono">public/brand/nura-*.svg / .png</span></li>
-    <li>هرگز لوگو را نکشید، رنگ نقطه‌ی مرجانی را عوض نکنید یا آن را از N جدا نکنید؛ حداقل ارتفاع در وب: ۲۸ پیکسل.</li>
-    <li>وردمارک همیشه لاتین است («nura»)، حتی در متن فارسی.</li>
+    <li>آیکون برای فضاهای کوچک، لوگوی کامل برای فضاهای بزرگ — این دو را کنار هم نگذارید (R تکرار می‌شود). فایل‌ها: <span class="mono">public/brand/roya-*.svg / .png</span></li>
+    <li>هرگز لوگو را نکشید و پای R را با رنگی خارج از پالت رنگ نکنید؛ روی زمینه‌ی تیره پای R آبی روشن است. حداقل ارتفاع در وب: ۲۰ پیکسل.</li>
+    <li>وردمارک همیشه لاتین است («Roya Vosoughi»)، حتی در متن فارسی.</li>
   </ul>
   <h2>Imagery Style — سبک تصاویر</h2>
-  <p style="font-size:9.5pt;"><span class="tag">واقعی، نه استیج‌شده</span><span class="tag">نور طبیعی پنجره</span><span class="tag">اکسنت سرمه‌ای و مرجانی</span><span class="tag">فرآیند، نه بی‌نقصی</span><br>
-  میز واقعی، صفحه‌ی واقعی، دفترچه‌ی واقعی. روشن و ملایم. اسکرین‌شات‌ها: پنل کد سرمه‌ای در قاب Mist.</p>
-  <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">05</div>
+  <p style="font-size:9.5pt;"><span class="tag">واقعی، نه استیج‌شده</span><span class="tag">نور طبیعی پنجره</span><span class="tag">اکسنت آبی کبالت و جوهری</span><span class="tag">فرآیند، نه بی‌نقصی</span><br>
+  میز واقعی، صفحه‌ی واقعی، دفترچه‌ی واقعی. روشن و ملایم. اسکرین‌شات‌ها: پنل کد جوهری در قاب Mist.</p>
+  <div class="pagefoot">Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">05</div>
 </div>
 
 <!-- PAGE 7 — VERBAL -->
@@ -197,34 +197,34 @@ b.acc{ color:var(--coraldeep); }
   <h2 style="margin-top:0;">Brand Personality — شخصیت برند</h2>
   <p style="font-size:9.5pt; margin-bottom:2mm;">اگر این برند یک آدم بود: <b>یک «سازنده‌ی قابل‌اعتماد»</b> — کسی که هم خلاقانه می‌سازد و هم دقیقا طبق قول تحویل می‌دهد.</p>
   <div class="grid4" style="margin-bottom:3mm;">
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">قابل‌اعتماد</b><br><span style="font-size:8pt;">می‌گوید پنجشنبه آماده است — و هست.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">عمل‌گرا</b><br><span style="font-size:8pt;">بدون هیاهو؛ هر حرف به کاری قابل‌استفاده می‌رسد.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">خلاق</b><br><span style="font-size:8pt;">خلاقیت در خودِ کار دیده می‌شود، نه در تبلیغِ خود.</span></div>
-    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--coraldeep);">امیدبخش و گرم</b><br><span style="font-size:8pt;">یک همکار کنار تو، نه فروشنده‌ای بالای سر تو.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cobalt);">قابل‌اعتماد</b><br><span style="font-size:8pt;">می‌گوید پنجشنبه آماده است — و هست.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cobalt);">عمل‌گرا</b><br><span style="font-size:8pt;">بدون هیاهو؛ هر حرف به کاری قابل‌استفاده می‌رسد.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cobalt);">خلاق</b><br><span style="font-size:8pt;">خلاقیت در خودِ کار دیده می‌شود، نه در تبلیغِ خود.</span></div>
+    <div class="card" style="padding:3mm 4mm;"><b style="color:var(--cobalt);">امیدبخش و گرم</b><br><span style="font-size:8pt;">یک همکار کنار تو، نه فروشنده‌ای بالای سر تو.</span></div>
   </div>
   <div class="mintcard" style="text-align:center; padding:3.5mm;">
-    <div class="sg en" style="font-size:15pt; font-weight:700; color:var(--navy);">&ldquo;Nura: AI engineered for <span style="color:var(--coraldeep);">reality</span>.&rdquo;</div>
-    <div style="font-size:11.5pt; font-weight:700; color:var(--navy); margin-top:1mm;">«Nura: هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
-    <div style="font-size:8.5pt; color:rgba(20,33,61,.65); margin-top:1mm;">شعار برند · Nura از «نور»؛ «واقعیت» = راه‌حل کاربردی، نه دموی نمایشی</div>
+    <div class="sg en" style="font-size:15pt; font-weight:700; color:var(--ink);">&ldquo;AI engineered for <span style="color:var(--cobalt);">reality</span>.&rdquo;</div>
+    <div style="font-size:11.5pt; font-weight:700; color:var(--ink); margin-top:1mm;">«هوش مصنوعی، مهندسی‌شده برای واقعیت»</div>
+    <div style="font-size:8.5pt; color:rgba(30,30,30,.65); margin-top:1mm;">شعار برند · «رویا» یعنی آرزو — رویا را به واقعیت تبدیل می‌کنم؛ «واقعیت» = راه‌حل کاربردی، نه دموی نمایشی</div>
   </div>
   <h2>Brand Voice — صدای برند</h2>
   <p style="font-size:9.5pt; margin-bottom:3mm;">صدای برند دقیقا از شخصیت برند می‌آید: سه صفت از شخصیت مستقیما صدا را می‌سازند (<b>عمل‌گرا، امیدبخش، خلاقانه</b>) و صفت چهارم — <b>قابل‌اعتماد بودن</b> — پایه‌ای است که همه‌چیز روی آن ساخته می‌شود. این سه صفت در هر متن، پست و ایمیل حاضرند:</p>
   <div class="grid2" style="margin-bottom:2mm;">
-    <div class="card"><b style="color:var(--coraldeep); font-size:11pt;">عمل‌گرا</b><br><span style="font-size:9pt;">مستقیم و کاربردی حرف می‌زنم؛ هر حرف به یک نتیجه یا اقدام مشخص ختم می‌شود، نه وعده‌ی توخالی.</span></div>
-    <div class="card"><b style="color:var(--coraldeep); font-size:11pt;">امیدبخش</b><br><span style="font-size:9pt;">با لحنی مثبت و مطمئن نشان می‌دهم که رسیدن به هدف ممکن است — بدون اغراق و بدون ترساندن.</span></div>
-    <div class="card" style="grid-column:1 / -1;"><b style="color:var(--coraldeep); font-size:11pt;">خلاقانه</b><br><span style="font-size:9pt;">مسائل را از زاویه‌ای تازه می‌بینم و راه‌حل‌هایی متفاوت و خاص ارائه می‌دهم — نه نسخه‌های تکراری و کلیشه‌ای.</span></div>
+    <div class="card"><b style="color:var(--cobalt); font-size:11pt;">عمل‌گرا</b><br><span style="font-size:9pt;">مستقیم و کاربردی حرف می‌زنم؛ هر حرف به یک نتیجه یا اقدام مشخص ختم می‌شود، نه وعده‌ی توخالی.</span></div>
+    <div class="card"><b style="color:var(--cobalt); font-size:11pt;">امیدبخش</b><br><span style="font-size:9pt;">با لحنی مثبت و مطمئن نشان می‌دهم که رسیدن به هدف ممکن است — بدون اغراق و بدون ترساندن.</span></div>
+    <div class="card" style="grid-column:1 / -1;"><b style="color:var(--cobalt); font-size:11pt;">خلاقانه</b><br><span style="font-size:9pt;">مسائل را از زاویه‌ای تازه می‌بینم و راه‌حل‌هایی متفاوت و خاص ارائه می‌دهم — نه نسخه‌های تکراری و کلیشه‌ای.</span></div>
   </div>
   <h2>Do's &amp; Don'ts — بایدها و نبایدها</h2>
   <div class="grid2">
-    <div class="card"><b style="color:var(--coraldeep);">بایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>شکست <i>و</i> راه‌حل را با هم نشان بده — راه‌حل همان محتواست.</li><li>هر اصطلاح فنی را بار اول توضیح بده.</li><li>هر پست را با سوال یا قدم بعدی مشخص تمام کن.</li><li>داستان واقعی خودت را بگو — کپی هیچ‌کس نباش.</li></ul></div>
+    <div class="card"><b style="color:var(--cobalt);">بایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>شکست <i>و</i> راه‌حل را با هم نشان بده — راه‌حل همان محتواست.</li><li>هر اصطلاح فنی را بار اول توضیح بده.</li><li>هر پست را با سوال یا قدم بعدی مشخص تمام کن.</li><li>داستان واقعی خودت را بگو — کپی هیچ‌کس نباش.</li></ul></div>
     <div class="card"><b style="color:#B3261E;">نبایدها</b><ul style="font-size:9pt; margin-top:1mm;"><li>چیزی را که تجربه نکرده‌ای وعده نده («یادگیری AI در ۷ روز»).</li><li>کلمات پرهیاهو ممنوع: انقلابی، تحول‌آفرین، راز.</li><li>انگیزه بدون نکته‌ی عملی پست نکن.</li></ul></div>
   </div>
-  <div class="pagefoot">Nura · Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">06</div>
+  <div class="pagefoot">Roya Vosoughi — برند گاید ۲۰۲۶</div><div class="pagenum">06</div>
 </div>
 
 <!-- PAGE 8 — APPLICATIONS -->
 <div class="page" id="p8">
-  <style>#p8 h2{ margin:4mm 0 1.5mm; } #p8 .card{ margin-bottom:2.5mm; padding:3.5mm 5mm; }</style>
+  <style>#p8 h1{ margin-bottom:3mm; } #p8 h2{ margin:2.6mm 0 1mm; } #p8 .card{ margin-bottom:1.8mm; padding:2.6mm 5mm; } #p8 p{ margin-bottom:1.5mm; } #p8 .check li{ margin-bottom:0.6mm; }</style>
   <div class="kicker"><span class="en sg">04 — BRAND APPLICATIONS</span> · کاربردهای برند</div>
   <h1>کاربردهای برند</h1>
 
@@ -232,38 +232,39 @@ b.acc{ color:var(--coraldeep); }
   <div class="card en" style="font-size:9.5pt; text-align:left;">
     <b>Headline:</b> AI Engineer &amp; Software Developer | Building AI-powered applications in public | Python · LLMs · RAG
   </div>
-  <p style="font-size:9pt;">بنر: پس‌زمینه‌ی سرمه‌ای + لوگوی سفید <span class="en">Nura</span> + شعار با خط زیر مرجانی. ریتم: ۱–۲ پست در هفته به انگلیسی — «این را ساختم، این را یاد گرفتم.»</p>
+  <p style="font-size:9pt;">بنر: پس‌زمینه‌ی جوهری + لوگوی کرم + شعار با خط زیر آبی. آواتار: عکس شخصی یا آیکون R. ریتم: ۱–۲ پست در هفته به انگلیسی — «این را ساختم، این را یاد گرفتم.»</p>
 
   <h2>اینستاگرام (فارسی)</h2>
   <div class="card" style="font-size:10pt;">
-    <span class="en">Nura · Roya Vosoughi</span><br>
+    <span class="en">Roya Vosoughi · AI Engineer</span><br>
     هوش مصنوعی، مهندسی‌شده برای واقعیت<br>
     اپلیکیشن‌های AI می‌سازم و مسیرش رو قدم‌به‌قدم باهات به اشتراک می‌ذارم
   </div>
   <p style="font-size:9pt;"><b>ستون‌های محتوا:</b> <span class="tag">مسیر من</span><span class="tag">هوش مصنوعی به زبان ساده</span><span class="tag">ساختم که ببینی</span><span class="tag">صادقانه</span></p>
 
   <h2>وب‌سایت — <span class="en">royavosoughi.com</span></h2>
-  <div class="card" style="font-size:9pt;"><b>برچسب Hero:</b> <span class="en">"Nura: AI engineered for reality"</span> · <b>تیتر:</b> <span class="en">"Automate the system, Live the life."</span> · <b>دکمه‌ها:</b> <span class="en">[Request a consultation] + [See my work]</span><br><b>ساختار:</b> Hero ← خدمات ← روند کار ← پروژه‌ها ← درباره‌ی من ← تماس · طراحی روشن با پالت سرمه‌ای و مرجانی <span class="en">Nura</span>.</div>
+  <div class="card" style="font-size:9pt;"><b>برچسب Hero:</b> <span class="en">"AI engineered for reality"</span> · <b>تیتر:</b> <span class="en">"Practical AI for real business problems."</span> · <b>دکمه‌ها:</b> <span class="en">[Request a consultation] + [See my work]</span><br><b>ساختار:</b> Hero ← خدمات ← روند کار ← پروژه‌ها ← درباره‌ی من ← تماس · طراحی روشن با پالت کرم، جوهری و آبی کبالت.</div>
 
   <h2>امضای ایمیل</h2>
-  <div class="card" style="font-size:9pt;"><b class="en">Roya Vosoughi · Nura</b> · <span class="en">AI Engineer &amp; Software Developer</span> | مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار · <span class="en">royavosoughi.com · LinkedIn</span> · <i class="en">Nura: AI engineered for reality.</i></div>
+  <div class="card" style="font-size:9pt;"><b class="en">Roya Vosoughi</b> · <span class="en">AI Engineer &amp; Software Developer</span> | مهندس هوش مصنوعی و توسعه‌دهنده‌ی نرم‌افزار · <span class="en">royavosoughi.com · LinkedIn</span> · <i class="en">AI engineered for reality.</i></div>
 
   <h2>دامنه و هندل‌ها (یک نام در همه‌جا)</h2>
   <p style="font-size:8.5pt;" class="mono">royavosoughi.com (or .dev) · linkedin.com/in/royavosoughi · @royavosoughi · github.com/royavosoughi</p>
 
   <h2>چک‌لیست راه‌اندازی</h2>
   <ul class="check" style="font-size:8.5pt; line-height:1.5;">
-    <li>☑ لوگو و هویت بصری <span class="en">Nura</span> ← فایل‌های نهایی (SVG، PNG، فاوآیکون)</li>
-    <li>☐ ثبت دامنه + هندل‌های هماهنگ</li>
+    <li>☑ برند <span class="en">Roya Vosoughi</span>: پالت کرم / جوهری / کبالت، لوگوی <span class="en">Signal R</span> ← فایل‌های نهایی (SVG، PNG، فاوآیکون)</li>
+    <li>☐ ثبت دامنه‌ی <span class="en">royavosoughi.com</span> + هندل‌های هماهنگ</li>
     <li>☐ سه عکس با گوشی: نور پنجره، پس‌زمینه‌ی ساده</li>
-    <li>☐ به‌روزرسانی LinkedIn: هدلاین و بنر Nura</li>
+    <li>☐ به‌روزرسانی LinkedIn: هدلاین، بنر و آواتار جدید</li>
     <li>☐ اینستاگرام: بیوی بالا؛ پست اول = معرفی خودت و اولین پروژه</li>
-    <li>☑ وب‌سایت زنده با برند <span class="en">Nura</span></li>
+    <li>☑ وب‌سایت زنده با برند جدید</li>
+    <li>☐ (اختیاری) ثبت علامت تجاری اتحادیه‌ی اروپا — کلاس ۴۲ و ۳۵، بعد از مشورت با وکیل</li>
   </ul>
 
-  <div style="position:absolute; bottom:14mm; left:18mm; right:18mm; background:var(--navy); border:none; color:var(--canvas); border-radius:10px; padding:3.5mm 6mm; display:flex; justify-content:space-between; align-items:center;">
-    <span class="sg en" style="font-size:11pt; font-weight:700;">nura</span>
-    <span class="sg en" style="font-size:9pt; color:var(--coral);">AI engineered for reality.</span>
+  <div style="position:absolute; bottom:14mm; left:18mm; right:18mm; background:var(--ink); border:none; color:var(--canvas); border-radius:10px; padding:3.5mm 6mm; display:flex; justify-content:space-between; align-items:center;">
+    <span style="height:5mm; display:inline-flex;"><svg style="height:5mm; width:auto;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 679.6 100.0"><g transform="translate(4,4)"><g transform="scale(0.7000)"><path d="M10 90 V10 H40 a22 22 0 0 1 0 44 H10" fill="none" stroke="#F5EBE0" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><line x1="26" y1="54" x2="64" y2="90" stroke="#7FA6E8" stroke-width="20" stroke-linecap="round"/></g><path fill="#F5EBE0" d="M84.40 71.40L84.40 71.40Q77 71.40 71.10 68.40Q65.20 65.40 61.80 59.70Q58.40 54 58.40 46L58.40 46L58.40 44.40Q58.40 36.40 61.80 30.70Q65.20 25 71.10 22Q77 19 84.40 19L84.40 19Q91.80 19 97.70 22Q103.60 25 107 30.70Q110.40 36.40 110.40 44.40L110.40 44.40L110.40 46Q110.40 54 107 59.70Q103.60 65.40 97.70 68.40Q91.80 71.40 84.40 71.40ZM84.40 60.20L84.40 60.20Q90.20 60.20 94 56.45Q97.80 52.70 97.80 45.70L97.80 45.70L97.80 44.70Q97.80 37.70 94.05 33.95Q90.30 30.20 84.40 30.20L84.40 30.20Q78.60 30.20 74.80 33.95Q71 37.70 71 44.70L71 44.70L71 45.70Q71 52.70 74.80 56.45Q78.60 60.20 84.40 60.20ZM154.60 90L123.40 90L123.40 79L150.40 79Q153.20 79 153.20 76L153.20 76L153.20 63.50L151.40 63.50Q150.60 65.20 148.90 66.90Q147.20 68.60 144.30 69.70Q141.40 70.80 136.90 70.80L136.90 70.80Q131.10 70.80 126.75 68.15Q122.40 65.50 120 60.80Q117.60 56.10 117.60 50L117.60 50L117.60 20.40L130.20 20.40L130.20 49Q130.20 54.60 132.95 57.40Q135.70 60.20 140.80 60.20L140.80 60.20Q146.60 60.20 149.80 56.35Q153 52.50 153 45.60L153 45.60L153 20.40L165.60 20.40L165.60 78.80Q165.60 83.90 162.60 86.95Q159.60 90 154.60 90L154.60 90ZM191 71.40L191 71.40Q185.70 71.40 181.50 69.55Q177.30 67.70 174.85 64.15Q172.40 60.60 172.40 55.50L172.40 55.50Q172.40 50.40 174.85 46.95Q177.30 43.50 181.65 41.75Q186 40 191.60 40L191.60 40L205.20 40L205.20 37.20Q205.20 33.70 203 31.45Q200.80 29.20 196 29.20L196 29.20Q191.30 29.20 189 31.35Q186.70 33.50 186 36.90L186 36.90L174.40 33Q175.60 29.20 178.25 26.05Q180.90 22.90 185.35 20.95Q189.80 19 196.20 19L196.20 19Q206 19 211.70 23.90Q217.40 28.80 217.40 38.10L217.40 38.10L217.40 56.60Q217.40 59.60 220.20 59.60L220.20 59.60L224.20 59.60L224.20 70L215.80 70Q212.10 70 209.70 68.20Q207.30 66.40 207.30 63.40L207.30 63.40L207.30 63.30L205.40 63.30Q205 64.50 203.60 66.45Q202.20 68.40 199.20 69.90Q196.20 71.40 191 71.40ZM193.20 61.20L193.20 61.20Q198.50 61.20 201.85 58.25Q205.20 55.30 205.20 50.40L205.20 50.40L205.20 49.40L192.50 49.40Q189 49.40 187 50.90Q185 52.40 185 55.10L185 55.10Q185 57.80 187.10 59.50Q189.20 61.20 193.20 61.20ZM294.60 70L272 70L254.20 0L267.80 0L282.60 61.50L284 61.50L298.80 0L312.40 0L294.60 70ZM337.80 71.40L337.80 71.40Q330.40 71.40 324.50 68.40Q318.60 65.40 315.20 59.70Q311.80 54 311.80 46L311.80 46L311.80 44.40Q311.80 36.40 315.20 30.70Q318.60 25 324.50 22Q330.40 19 337.80 19L337.80 19Q345.20 19 351.10 22Q357 25 360.40 30.70Q363.80 36.40 363.80 44.40L363.80 44.40L363.80 46Q363.80 54 360.40 59.70Q357 65.40 351.10 68.40Q345.20 71.40 337.80 71.40ZM337.80 60.20L337.80 60.20Q343.60 60.20 347.40 56.45Q351.20 52.70 351.20 45.70L351.20 45.70L351.20 44.70Q351.20 37.70 347.45 33.95Q343.70 30.20 337.80 30.20L337.80 30.20Q332 30.20 328.20 33.95Q324.40 37.70 324.40 44.70L324.40 44.70L324.40 45.70Q324.40 52.70 328.20 56.45Q332 60.20 337.80 60.20ZM392 71.40L392 71.40Q382.30 71.40 376.10 67.20Q369.90 63 368.60 55.20L368.60 55.20L380.20 52.20Q380.90 55.70 382.55 57.70Q384.20 59.70 386.65 60.55Q389.10 61.40 392 61.40L392 61.40Q396.40 61.40 398.50 59.85Q400.60 58.30 400.60 56L400.60 56Q400.60 53.70 398.60 52.45Q396.60 51.20 392.20 50.40L392.20 50.40L389.40 49.90Q384.20 48.90 379.90 47.15Q375.60 45.40 373 42.30Q370.40 39.20 370.40 34.30L370.40 34.30Q370.40 26.90 375.80 22.95Q381.20 19 390 19L390 19Q398.30 19 403.80 22.70Q409.30 26.40 411 32.40L411 32.40L399.30 36Q398.50 32.20 396.05 30.60Q393.60 29 390 29L390 29Q386.40 29 384.50 30.25Q382.60 31.50 382.60 33.70L382.60 33.70Q382.60 36.10 384.60 37.25Q386.60 38.40 390 39L390 39L392.80 39.50Q398.40 40.50 402.95 42.15Q407.50 43.80 410.15 46.85Q412.80 49.90 412.80 55.10L412.80 55.10Q412.80 62.90 407.15 67.15Q401.50 71.40 392 71.40ZM443.40 71.40L443.40 71.40Q436.00 71.40 430.10 68.40Q424.20 65.40 420.80 59.70Q417.40 54 417.40 46L417.40 46L417.40 44.40Q417.40 36.40 420.80 30.70Q424.20 25 430.10 22Q436.00 19 443.40 19L443.40 19Q450.80 19 456.70 22Q462.60 25 466.00 30.70Q469.40 36.40 469.40 44.40L469.40 44.40L469.40 46Q469.40 54 466.00 59.70Q462.60 65.40 456.70 68.40Q450.80 71.40 443.40 71.40ZM443.40 60.20L443.40 60.20Q449.20 60.20 453.00 56.45Q456.80 52.70 456.80 45.70L456.80 45.70L456.80 44.70Q456.80 37.70 453.05 33.95Q449.30 30.20 443.40 30.20L443.40 30.20Q437.60 30.20 433.80 33.95Q430.00 37.70 430.00 44.70L430.00 44.70L430.00 45.70Q430.00 52.70 433.80 56.45Q437.60 60.20 443.40 60.20ZM495.90 70.80L495.90 70.80Q490.10 70.80 485.75 68.15Q481.40 65.50 479.00 60.80Q476.60 56.10 476.60 50L476.60 50L476.60 20.40L489.20 20.40L489.20 49Q489.20 54.60 491.95 57.40Q494.70 60.20 499.80 60.20L499.80 60.20Q505.60 60.20 508.80 56.35Q512.00 52.50 512.00 45.60L512.00 45.60L512.00 20.40L524.60 20.40L524.60 70L512.20 70L512.20 63.50L510.40 63.50Q509.20 66 505.90 68.40Q502.60 70.80 495.90 70.80ZM532.20 45.40L532.20 45.40L532.20 43.80Q532.20 36 535.30 30.45Q538.40 24.90 543.55 21.95Q548.70 19 554.80 19L554.80 19Q561.60 19 565.10 21.40Q568.60 23.80 570.20 26.40L570.20 26.40L572.00 26.40L572.00 20.40L584.40 20.40L584.40 78.80Q584.40 83.90 581.40 86.95Q578.40 90 573.40 90L573.40 90L540.20 90L540.20 79L569.00 79Q571.80 79 571.80 76L571.80 76L571.80 63.10L570.00 63.10Q569.00 64.70 567.20 66.35Q565.40 68 562.40 69.10Q559.40 70.20 554.80 70.20L554.80 70.20Q548.70 70.20 543.55 67.25Q538.40 64.30 535.30 58.75Q532.20 53.20 532.20 45.40ZM558.40 59.20L558.40 59.20Q564.20 59.20 568.10 55.50Q572.00 51.80 572.00 45.10L572.00 45.10L572.00 44.10Q572.00 37.30 568.15 33.65Q564.30 30 558.40 30L558.40 30Q552.60 30 548.70 33.65Q544.80 37.30 544.80 44.10L544.80 44.10L544.80 45.10Q544.80 51.80 548.70 55.50Q552.60 59.20 558.40 59.20ZM607.00 70L594.40 70L594.40 0L607.00 0L607.00 26.50L608.80 26.50Q609.60 24.90 611.30 23.30Q613.00 21.70 615.85 20.65Q618.70 19.60 623.10 19.60L623.10 19.60Q628.90 19.60 633.25 22.25Q637.60 24.90 640.00 29.55Q642.40 34.20 642.40 40.40L642.40 40.40L642.40 70L629.80 70L629.80 41.40Q629.80 35.80 627.05 33Q624.30 30.20 619.20 30.20L619.20 30.20Q613.40 30.20 610.20 34.05Q607.00 37.90 607.00 44.80L607.00 44.80L607.00 70ZM664.60 70L652.00 70L652.00 20.40L664.60 20.40L664.60 70ZM658.30 14.60L658.30 14.60Q654.90 14.60 652.55 12.40Q650.20 10.20 650.20 6.60L650.20 6.60Q650.20 3 652.55 0.80Q654.90-1.40 658.30-1.40L658.30-1.40Q661.80-1.40 664.10 0.80Q666.40 3 666.40 6.60L666.40 6.60Q666.40 10.20 664.10 12.40Q661.80 14.60 658.30 14.60Z"/></g></svg></span>
+    <span class="sg en" style="font-size:9pt; color:var(--cobaltlight);">AI engineered for reality.</span>
   </div>
   <div class="pagenum" style="bottom:8mm;">07</div>
 </div>

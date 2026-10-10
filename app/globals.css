@@ -191,7 +191,7 @@
    Motion — every animation here must no-op under prefers-reduced-motion
    -------------------------------------------------------------------------- */
 
-/* The Coral underline that draws itself under "line by line".
+/* The Cobalt underline that draws itself under "real" in the Hero headline.
    A literal reading of the tagline: the line is built, left to right. */
 @keyframes draw-underline {
   from {
@@ -264,7 +264,7 @@
   transform: translateY(0);
 }
 
-/* Subtle technical texture for dark (Navy) sections — a fine dot grid,
+/* Subtle technical texture for dark (Ink) sections — a fine dot grid,
    deliberately faint so it reads as texture, never competes with content.
    The alpha lives in the dot colour itself (not element opacity), so it
    never dims the section's actual content. */
