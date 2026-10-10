@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Conversation, type Mode, type VoiceConversation } from "@elevenlabs/client";
 
+import { NuraAvatar } from "./NuraAvatar";
+
 const AGENT_ID =
   process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? "agent_8501kzxw287petfv74ank0vr0ec1";
 
@@ -146,7 +148,13 @@ export function VoiceWidget() {
           className="flex h-[min(28rem,60vh)] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-ink/15 bg-canvas shadow-[0_20px_50px_rgba(30,30,30,0.25)]"
         >
           <header className="flex shrink-0 items-center justify-between bg-ink px-[18px] py-3.5">
-            <p className="text-[15px] font-semibold text-canvas">{t("title")}</p>
+            <div className="flex min-w-0 items-center gap-2.5">
+              <NuraAvatar className="h-10 w-10" />
+              <div className="min-w-0">
+                <p className="text-[15px] leading-tight font-bold text-canvas">{t("name")}</p>
+                <p className="text-xs leading-tight text-fog">{t("role")}</p>
+              </div>
+            </div>
             <button
               type="button"
               onClick={endCall}
@@ -160,11 +168,11 @@ export function VoiceWidget() {
 
           <div className="flex flex-1 flex-col items-center justify-center gap-5 p-6 text-center">
             <div
-              className={`grid h-20 w-20 place-items-center rounded-full bg-mist transition-transform duration-300 ${
+              className={`rounded-full transition-transform duration-300 ${
                 phase === "active" && mode === "speaking" ? "scale-110" : "scale-100"
               }`}
             >
-              <PhoneIcon className="h-8 w-8 text-ink" />
+              <NuraAvatar className="h-20 w-20" />
             </div>
             <p aria-live="polite" className="text-ink/70">
               {statusText}

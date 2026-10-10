@@ -184,7 +184,9 @@
   },
   "voice": {
     "start": "Start a voice call",
-    "title": "Talk to Roya's assistant",
+    "title": "Voice call with Nura",
+    "name": "Nura",
+    "role": "Roya's voice assistant",
     "close": "End call",
     "connecting": "Connecting…",
     "listening": "Listening…",
