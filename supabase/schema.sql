@@ -50,6 +50,30 @@ alter table public.contact_messages
   add column if not exists preferred_time text
     check (preferred_time in ('morning', 'afternoon', 'evening'));
 
+-- -----------------------------------------------------------------------------
+-- V1.2: required qualifying questions on the consultation form (role,
+-- industry, team size, need, current approach, timeline, budget). The API
+-- enforces "required"; columns stay nullable so older rows remain valid.
+-- Allowed values must match lib/contact-options.ts.
+-- -----------------------------------------------------------------------------
+
+alter table public.contact_messages
+  add column if not exists role text
+    check (role in ('founder', 'manager', 'technical', 'other')),
+  add column if not exists industry text
+    check (industry in ('retail', 'services', 'healthcare', 'education',
+      'realEstate', 'hospitality', 'manufacturing', 'marketing', 'tech', 'other')),
+  add column if not exists company_size text
+    check (company_size in ('solo', 'small', 'medium', 'large', 'enterprise')),
+  add column if not exists need_type text
+    check (need_type in ('documents', 'support', 'automation', 'agent', 'unsure')),
+  add column if not exists current_approach text
+    check (current_approach in ('manual', 'tool', 'otherAi', 'none')),
+  add column if not exists timeline text
+    check (timeline in ('asap', 'quarter', 'half', 'exploring')),
+  add column if not exists budget text
+    check (budget in ('under2k', 'from2to5k', 'from5to15k', 'over15k', 'unsure'));
+
 
 -- =============================================================================
 -- V2: chatbot brain (RAG + memory + tools) — service-role only.

@@ -204,10 +204,10 @@
     "nameLabel": "Your name",
     "namePlaceholder": "Maria Rossi",
     "nameError": "Enter your name — at least 2 characters.",
-    "companyLabel": "Company",
-    "companyPlaceholder": "Where you work",
+    "companyLabel": "Company name",
+    "companyPlaceholder": "Your company or project",
     "optional": "(optional)",
-    "businessStageLabel": "What stage is your business at?",
+    "businessStageLabel": "Business stage",
     "businessStageOptions": {
       "idea": "Just an idea",
       "early": "Early stage",
@@ -221,9 +221,9 @@
       "evening": "Evening"
     },
     "selectPlaceholder": "Select…",
-    "messageLabel": "What are you working on?",
-    "messagePlaceholder": "Describe the problem in a few sentences — no need for technical detail.",
-    "messageError": "Say a little more — at least 10 characters.",
+    "messageLabel": "Describe the problem",
+    "messagePlaceholder": "What happens today, what it costs you (time, money, customers), and what “solved” would look like. No technical detail needed.",
+    "messageError": "Say a little more — at least 30 characters.",
     "emailError": "Enter a valid email address.",
     "submit": "Send message",
     "sending": "Sending…",
@@ -231,7 +231,71 @@
     "successBody": "Thank you — I'll get back to you within two working days.",
     "errorBody": "That didn't go through. Please email me directly at",
     "formErrorSummary": "Please fix the highlighted field before sending.",
-    "fallbackIntro": "The contact form isn't switched on yet. Email me directly — I read every message."
+    "fallbackIntro": "The contact form isn't switched on yet. Email me directly — I read every message.",
+    "requiredNote": "All fields are required unless marked optional. It takes about three minutes, and it means our first call starts with your problem instead of introductions.",
+    "groupYou": "About you",
+    "groupBusiness": "Your business",
+    "groupProject": "Your project",
+    "roleLabel": "Your role",
+    "roleOptions": {
+      "founder": "Founder or owner",
+      "manager": "Manager or team lead",
+      "technical": "Technical (developer, IT, data)",
+      "other": "Other"
+    },
+    "companyError": "Enter your company or project name.",
+    "industryLabel": "Industry",
+    "industryOptions": {
+      "retail": "Retail and e-commerce",
+      "services": "Professional services (legal, finance, consulting)",
+      "healthcare": "Healthcare",
+      "education": "Education and training",
+      "realEstate": "Real estate",
+      "hospitality": "Hospitality and travel",
+      "manufacturing": "Manufacturing and logistics",
+      "marketing": "Marketing and media",
+      "tech": "Software and technology",
+      "other": "Other"
+    },
+    "companySizeLabel": "Team size",
+    "companySizeOptions": {
+      "solo": "Just me",
+      "small": "2–10 people",
+      "medium": "11–50 people",
+      "large": "51–200 people",
+      "enterprise": "More than 200 people"
+    },
+    "needTypeLabel": "What do you need help with?",
+    "needTypeOptions": {
+      "documents": "Answering questions from our documents and data",
+      "support": "A customer support assistant or chatbot",
+      "automation": "Automating a repetitive workflow",
+      "agent": "An AI agent for a specific task",
+      "unsure": "Not sure yet — I need advice"
+    },
+    "currentApproachLabel": "How do you handle this today?",
+    "currentApproachOptions": {
+      "manual": "Manually, by our team",
+      "tool": "With existing software that falls short",
+      "otherAi": "We tried an AI tool or another provider",
+      "none": "We don't yet — it's a new need"
+    },
+    "timelineLabel": "When do you want to start?",
+    "timelineOptions": {
+      "asap": "As soon as possible",
+      "quarter": "Within 1–3 months",
+      "half": "In 3–6 months",
+      "exploring": "Just exploring for now"
+    },
+    "budgetLabel": "Approximate budget",
+    "budgetOptions": {
+      "under2k": "Under €2,000",
+      "from2to5k": "€2,000–5,000",
+      "from5to15k": "€5,000–15,000",
+      "over15k": "More than €15,000",
+      "unsure": "Not sure yet"
+    },
+    "selectError": "Please choose an option."
   },
   "footer": {
     "tagline": "AI engineered for reality.",

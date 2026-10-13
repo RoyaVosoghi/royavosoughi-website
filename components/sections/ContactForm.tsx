@@ -1,15 +1,36 @@
 "use client";
 
-import { useState, type FocusEvent, type FormEvent } from "react";
+import { useState, type FocusEvent, type FormEvent, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/Button";
+import { contactSelects, type ContactSelect } from "@/lib/contact-options";
 
 type Status = "idle" | "sending" | "sent" | "error";
-type FieldName = "name" | "email" | "message";
+type FieldName =
+  | "name"
+  | "email"
+  | "company"
+  | "message"
+  | Exclude<ContactSelect, "preferredTime">;
 type FieldErrors = Partial<Record<FieldName, string>>;
+type FieldElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
-const validatedFields = ["name", "email", "message"] as const;
+/** Every field the visitor must answer, in on-screen order (first invalid gets focus). */
+const validatedFields: FieldName[] = [
+  "name",
+  "email",
+  "role",
+  "company",
+  "industry",
+  "companySize",
+  "businessStage",
+  "needType",
+  "message",
+  "currentApproach",
+  "timeline",
+  "budget",
+];
 
 function fieldClass(invalid: boolean) {
   return (
@@ -33,27 +54,29 @@ export function ContactForm({
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  const errorMessages: Record<FieldName, string> = {
-    name: t("nameError"),
-    email: t("emailError"),
-    message: t("messageError"),
-  };
+  function errorMessage(name: FieldName) {
+    if (name === "name") return t("nameError");
+    if (name === "email") return t("emailError");
+    if (name === "company") return t("companyError");
+    if (name === "message") return t("messageError");
+    return t("selectError");
+  }
 
   /** Native constraint validation (required / minLength / type=email) drives the message
    *  we already show per field — no hand-rolled regex to keep in sync with the markup. */
-  function validateField(el: HTMLInputElement | HTMLTextAreaElement) {
+  function validateField(el: FieldElement) {
     const name = el.name as FieldName;
     const valid = el.validity.valid;
     setErrors((prev) => {
       const next = { ...prev };
       if (valid) delete next[name];
-      else next[name] = errorMessages[name];
+      else next[name] = errorMessage(name);
       return next;
     });
     return valid;
   }
 
-  function onBlur(event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function onBlur(event: FocusEvent<FieldElement>) {
     validateField(event.currentTarget);
   }
 
@@ -61,13 +84,10 @@ export function ContactForm({
     event.preventDefault();
     const form = event.currentTarget;
 
-    let firstInvalid: HTMLInputElement | HTMLTextAreaElement | null = null;
+    let firstInvalid: FieldElement | null = null;
     let hasError = false;
     for (const name of validatedFields) {
-      const el = form.elements.namedItem(name) as
-        | HTMLInputElement
-        | HTMLTextAreaElement
-        | null;
+      const el = form.elements.namedItem(name) as FieldElement | null;
       if (!el) continue;
       const valid = validateField(el);
       if (!valid) {
@@ -96,6 +116,78 @@ export function ContactForm({
     } catch {
       setStatus("error");
     }
+  }
+
+  /** Label + control + inline error, shared by every field below. */
+  function field(
+    name: FieldName | "preferredTime",
+    label: string,
+    control: ReactNode,
+    optional = false,
+  ) {
+    const error = name === "preferredTime" ? undefined : errors[name];
+    return (
+      <div>
+        <label htmlFor={name} className="mb-2 block font-medium text-ink">
+          {label}
+          {optional ? (
+            <>
+              {" "}
+              <span className="font-normal text-ink/70">{t("optional")}</span>
+            </>
+          ) : null}
+        </label>
+        {control}
+        {error ? (
+          <p id={`${name}-error`} role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    );
+  }
+
+  function controlProps(name: FieldName) {
+    return {
+      id: name,
+      name,
+      required: true,
+      onBlur,
+      "aria-invalid": Boolean(errors[name]),
+      "aria-describedby": errors[name] ? `${name}-error` : undefined,
+      className: fieldClass(Boolean(errors[name])),
+    };
+  }
+
+  function select(name: ContactSelect, optional = false) {
+    const props =
+      name === "preferredTime"
+        ? { id: name, name, className: fieldClass(false) }
+        : controlProps(name);
+    return field(
+      name,
+      t(`${name}Label`),
+      <select {...props} defaultValue="">
+        <option value="" disabled={!optional}>
+          {t("selectPlaceholder")}
+        </option>
+        {contactSelects[name].map((value) => (
+          <option key={value} value={value}>
+            {t(`${name}Options.${value}`)}
+          </option>
+        ))}
+      </select>,
+      optional,
+    );
+  }
+
+  function group(title: string, children: ReactNode) {
+    return (
+      <fieldset className="space-y-5">
+        <legend className="label-eyebrow mb-4 text-cobalt">{title}</legend>
+        {children}
+      </fieldset>
+    );
   }
 
   /**
@@ -160,140 +252,86 @@ export function ContactForm({
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-5">
+    <form onSubmit={onSubmit} noValidate className="space-y-10">
       {statusAnnouncer}
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="name" className="mb-2 block font-medium text-ink">
-            {t("nameLabel")}
-          </label>
-          <input
-            id="name"
-            name="name"
-            required
-            minLength={2}
-            autoComplete="name"
-            onBlur={onBlur}
-            aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? "name-error" : undefined}
-            className={fieldClass(Boolean(errors.name))}
-            placeholder={t("namePlaceholder")}
-          />
-          {errors.name ? (
-            <p id="name-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
-              {errors.name}
-            </p>
-          ) : null}
-        </div>
-        <div>
-          <label htmlFor="email" className="mb-2 block font-medium text-ink">
-            {t("emailLabel")}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            dir="ltr"
-            onBlur={onBlur}
-            aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            className={fieldClass(Boolean(errors.email))}
-            placeholder="name@company.com"
-          />
-          {errors.email ? (
-            <p id="email-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
-              {errors.email}
-            </p>
-          ) : null}
-        </div>
-      </div>
+      <p className="text-sm text-ink/70">{t("requiredNote")}</p>
 
-      <div>
-        <label htmlFor="company" className="mb-2 block font-medium text-ink">
-          {t("companyLabel")}{" "}
-          <span className="font-normal text-ink/70">{t("optional")}</span>
-        </label>
-        <input
-          id="company"
-          name="company"
-          autoComplete="organization"
-          className={fieldClass(false)}
-          placeholder={t("companyPlaceholder")}
-        />
-      </div>
+      {group(
+        t("groupYou"),
+        <>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {field(
+              "name",
+              t("nameLabel"),
+              <input
+                {...controlProps("name")}
+                minLength={2}
+                autoComplete="name"
+                placeholder={t("namePlaceholder")}
+              />,
+            )}
+            {field(
+              "email",
+              t("emailLabel"),
+              <input
+                {...controlProps("email")}
+                type="email"
+                autoComplete="email"
+                dir="ltr"
+                placeholder="name@company.com"
+              />,
+            )}
+          </div>
+          {select("role")}
+        </>,
+      )}
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label
-            htmlFor="businessStage"
-            className="mb-2 block font-medium text-ink"
-          >
-            {t("businessStageLabel")}{" "}
-            <span className="font-normal text-ink/70">{t("optional")}</span>
-          </label>
-          <select
-            id="businessStage"
-            name="businessStage"
-            defaultValue=""
-            className={fieldClass(false)}
-          >
-            <option value="">{t("selectPlaceholder")}</option>
-            <option value="idea">{t("businessStageOptions.idea")}</option>
-            <option value="early">{t("businessStageOptions.early")}</option>
-            <option value="growing">{t("businessStageOptions.growing")}</option>
-            <option value="established">
-              {t("businessStageOptions.established")}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label
-            htmlFor="preferredTime"
-            className="mb-2 block font-medium text-ink"
-          >
-            {t("preferredTimeLabel")}{" "}
-            <span className="font-normal text-ink/70">{t("optional")}</span>
-          </label>
-          <select
-            id="preferredTime"
-            name="preferredTime"
-            defaultValue=""
-            className={fieldClass(false)}
-          >
-            <option value="">{t("selectPlaceholder")}</option>
-            <option value="morning">{t("preferredTimeOptions.morning")}</option>
-            <option value="afternoon">
-              {t("preferredTimeOptions.afternoon")}
-            </option>
-            <option value="evening">{t("preferredTimeOptions.evening")}</option>
-          </select>
-        </div>
-      </div>
+      {group(
+        t("groupBusiness"),
+        <>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {field(
+              "company",
+              t("companyLabel"),
+              <input
+                {...controlProps("company")}
+                minLength={2}
+                autoComplete="organization"
+                placeholder={t("companyPlaceholder")}
+              />,
+            )}
+            {select("industry")}
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {select("companySize")}
+            {select("businessStage")}
+          </div>
+        </>,
+      )}
 
-      <div>
-        <label htmlFor="message" className="mb-2 block font-medium text-ink">
-          {t("messageLabel")}
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          minLength={10}
-          rows={5}
-          onBlur={onBlur}
-          aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? "message-error" : undefined}
-          className={`${fieldClass(Boolean(errors.message))} resize-y`}
-          placeholder={t("messagePlaceholder")}
-        />
-        {errors.message ? (
-          <p id="message-error" role="alert" className="mt-1.5 text-sm font-medium text-amber-deep">
-            {errors.message}
-          </p>
-        ) : null}
-      </div>
+      {group(
+        t("groupProject"),
+        <>
+          {select("needType")}
+          {field(
+            "message",
+            t("messageLabel"),
+            <textarea
+              {...controlProps("message")}
+              minLength={30}
+              rows={5}
+              className={`${fieldClass(Boolean(errors.message))} resize-y`}
+              placeholder={t("messagePlaceholder")}
+            />,
+          )}
+          {select("currentApproach")}
+          <div className="grid gap-5 sm:grid-cols-2">
+            {select("timeline")}
+            {select("budget")}
+          </div>
+          {select("preferredTime", true)}
+        </>,
+      )}
 
       {/* Honeypot — hidden from people, tempting to bots. Never remove. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
@@ -301,7 +339,7 @@ export function ContactForm({
         <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 pt-2">
+      <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" disabled={status === "sending"}>
           {status === "sending" ? t("sending") : t("submit")}
         </Button>

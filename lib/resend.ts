@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
+import en from "@/messages/en.json";
 import { site } from "@/lib/site";
+import type { ContactSelect } from "@/lib/contact-options";
 
 const apiKey = process.env.RESEND_API_KEY;
 
@@ -27,11 +29,16 @@ function getClient(): Resend | null {
 type ContactNotification = {
   name: string;
   email: string;
-  company?: string | null;
-  businessStage?: string | null;
-  preferredTime?: string | null;
+  company: string;
   message: string;
-};
+} & Partial<Record<ContactSelect, string>>;
+
+/** Turns a stored option key ("from2to5k") into the English label the visitor saw. */
+function optionLabel(field: ContactSelect, value: string | undefined): string {
+  if (!value) return "—";
+  const labels = en.contact[`${field}Options`] as Record<string, string>;
+  return labels[value] ?? value;
+}
 
 function escapeHtml(value: string): string {
   return value
@@ -51,9 +58,16 @@ export async function sendContactNotification(data: ContactNotification) {
   const rows = [
     ["Name", data.name],
     ["Email", data.email],
-    ["Company", data.company || "—"],
-    ["Business stage", data.businessStage || "—"],
-    ["Preferred time", data.preferredTime || "—"],
+    ["Role", optionLabel("role", data.role)],
+    ["Company", data.company],
+    ["Industry", optionLabel("industry", data.industry)],
+    ["Company size", optionLabel("companySize", data.companySize)],
+    ["Business stage", optionLabel("businessStage", data.businessStage)],
+    ["Needs help with", optionLabel("needType", data.needType)],
+    ["Handled today by", optionLabel("currentApproach", data.currentApproach)],
+    ["Timeline", optionLabel("timeline", data.timeline)],
+    ["Budget", optionLabel("budget", data.budget)],
+    ["Preferred time", optionLabel("preferredTime", data.preferredTime)],
   ];
 
   const html = `
@@ -67,7 +81,7 @@ export async function sendContactNotification(data: ContactNotification) {
           )
           .join("")}
       </table>
-      <p style="color:#666; margin-top: 16px;">Message</p>
+      <p style="color:#666; margin-top: 16px;">The problem</p>
       <p style="white-space: pre-wrap;">${escapeHtml(data.message)}</p>
     </div>
   `;
@@ -79,7 +93,7 @@ export async function sendContactNotification(data: ContactNotification) {
       // case-sensitively — lowercase avoids a false rejection from casing alone.
       to: NOTIFY_TO.toLowerCase(),
       replyTo: data.email,
-      subject: `New inquiry from ${data.name}`,
+      subject: `New inquiry from ${data.name} (${data.company})`,
       html,
     });
   } catch (error) {

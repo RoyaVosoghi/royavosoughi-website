@@ -3,20 +3,22 @@ import { z } from "zod";
 
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { sendContactNotification } from "@/lib/resend";
+import { contactSelects as options } from "@/lib/contact-options";
 
 const ContactSchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: z.email().max(200),
-  company: z.string().trim().max(160).optional().or(z.literal("")),
-  businessStage: z
-    .enum(["idea", "early", "growing", "established"])
-    .optional()
-    .or(z.literal("")),
-  preferredTime: z
-    .enum(["morning", "afternoon", "evening"])
-    .optional()
-    .or(z.literal("")),
-  message: z.string().trim().min(10).max(4000),
+  company: z.string().trim().min(2).max(160),
+  role: z.enum(options.role),
+  industry: z.enum(options.industry),
+  companySize: z.enum(options.companySize),
+  businessStage: z.enum(options.businessStage),
+  needType: z.enum(options.needType),
+  currentApproach: z.enum(options.currentApproach),
+  timeline: z.enum(options.timeline),
+  budget: z.enum(options.budget),
+  preferredTime: z.enum(options.preferredTime).optional().or(z.literal("")),
+  message: z.string().trim().min(30).max(4000),
   locale: z.enum(["en", "fa"]).default("en"),
   subject: z.string().trim().max(80).optional().or(z.literal("")),
   /**
@@ -58,8 +60,15 @@ export async function POST(request: Request) {
   const { error } = await supabase.from("contact_messages").insert({
     name: data.name,
     email: data.email,
-    company: data.company || null,
-    business_stage: data.businessStage || null,
+    company: data.company,
+    role: data.role,
+    industry: data.industry,
+    company_size: data.companySize,
+    business_stage: data.businessStage,
+    need_type: data.needType,
+    current_approach: data.currentApproach,
+    timeline: data.timeline,
+    budget: data.budget,
     preferred_time: data.preferredTime || null,
     message: data.message,
     locale: data.locale,
