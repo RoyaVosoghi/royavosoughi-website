@@ -47,13 +47,27 @@ function parseSseChunk(buffer: string, raw: string): { events: Array<{ event: st
 }
 
 const SESSION_STORAGE_KEY = "rv_chat_session_id";
+const SESSION_SEEN_KEY = "rv_chat_session_seen_at";
+/** A conversation idle longer than this starts over, so a returning visitor isn't dropped back into a weeks-old thread. */
+const SESSION_MAX_IDLE_MS = 24 * 60 * 60 * 1000;
+
+function touchSession() {
+  window.localStorage.setItem(SESSION_SEEN_KEY, String(Date.now()));
+}
+
+/** A fresh id starts a brand-new conversation server-side (getOrCreateConversation keys on channel + external_user_id). */
+function rotateSessionId(): string {
+  const id = crypto.randomUUID();
+  window.localStorage.setItem(SESSION_STORAGE_KEY, id);
+  touchSession();
+  return id;
+}
 
 function getOrCreateSessionId(): string {
   const existing = window.localStorage.getItem(SESSION_STORAGE_KEY);
-  if (existing) return existing;
-  const id = crypto.randomUUID();
-  window.localStorage.setItem(SESSION_STORAGE_KEY, id);
-  return id;
+  const seenAt = Number(window.localStorage.getItem(SESSION_SEEN_KEY) ?? 0);
+  if (existing && Date.now() - seenAt < SESSION_MAX_IDLE_MS) return existing;
+  return rotateSessionId();
 }
 
 export function ChatWidget({
@@ -163,6 +177,7 @@ export function ChatWidget({
   async function sendMessage(text: string, honeypot?: string) {
     if (!text || !sessionId || status === "sending" || status === "streaming") return;
 
+    touchSession();
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setStatus("sending");
 
@@ -277,6 +292,13 @@ export function ChatWidget({
     await sendMessage(trimmed, honeypot);
   }
 
+  function startNewChat() {
+    setSessionId(rotateSessionId());
+    setMessages([]);
+    setInput("");
+    setStatus("idle");
+  }
+
   async function onRate(index: number, rating: 1 | -1) {
     const message = messages[index];
     if (!message.id || message.feedback !== null) return;
@@ -380,6 +402,18 @@ export function ChatWidget({
 
       {status === "waitingForHuman" ? (
         <p className="border-t border-ink/10 px-5 py-3 text-sm font-medium text-cobalt">{t("waitingForHuman")}</p>
+      ) : null}
+
+      {messages.length > 0 && status !== "sending" && status !== "streaming" ? (
+        <div className="flex justify-end border-t border-ink/10 px-5 pt-2">
+          <button
+            type="button"
+            onClick={startNewChat}
+            className="rounded-full px-3 py-1 text-sm font-medium text-ink/60 transition-colors hover:text-cobalt focus-visible:outline-2 focus-visible:outline-cobalt"
+          >
+            {t("newChat")}
+          </button>
+        </div>
       ) : null}
 
       {showConsultationButton ? (

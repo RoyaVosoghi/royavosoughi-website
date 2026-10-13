@@ -1,9 +1,10 @@
 import "server-only";
 
-import type { Content, GenerateContentResponse, GoogleGenAI, Part } from "@google/genai";
+import { ThinkingLevel, type Content, type GenerateContentResponse, type GoogleGenAI, type Part } from "@google/genai";
 import type { ChatCompletionMessageParam, ChatCompletionTool } from "openai/resources/chat/completions";
 import type OpenAI from "openai";
 
+import { site } from "@/lib/site";
 import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 import { getGeminiClient, isGeminiConfigured } from "./gemini";
 import { appendMessage, getConversationContext, getLongTermFacts, getOrCreateConversation, upsertUnifiedUser, type Conversation } from "./memory";
@@ -26,6 +27,12 @@ export function isBrainConfigured(): boolean {
 const FALLBACK_REPLY: Record<"en" | "fa", string> = {
   en: "Sorry, I couldn't put together a reply just now. Please try again in a moment.",
   fa: "متاسفم، الان نتوانستم پاسخ بدهم. لطفاً کمی بعد دوباره امتحان کنید.",
+};
+
+/** Shown when every model failed or timed out before saying anything — usually the provider is overloaded, so give the visitor a way to reach Roya that doesn't depend on it. */
+const BUSY_REPLY: Record<"en" | "fa", string> = {
+  en: `Sorry, I'm getting more requests than I can answer right now. Please try again in a minute, or email Roya directly at ${site.email}.`,
+  fa: `متأسفم، الان درخواست‌ها بیشتر از توان پاسخ‌گویی من است. لطفاً یک دقیقه‌ی دیگر دوباره امتحان کنید، یا مستقیماً به رویا ایمیل بزنید: ${site.email}`,
 };
 
 interface PreparedTurn {
@@ -62,16 +69,22 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
   const allowed = await checkRateLimit(channel, channelSessionId, ip ?? null);
   if (!allowed) throw new RateLimitError();
 
-  const conversation = await getOrCreateConversation(channel, channelSessionId, locale);
-  await upsertUnifiedUser(channel, channelSessionId);
+  // Lookups that don't depend on the conversation row start right away, so
+  // the embedding call and config reads overlap the session bookkeeping
+  // below instead of queuing behind it. All three fail soft (they log and
+  // return a default), so an unused result on the paused path is harmless.
+  const contextPromise = retrieveContext(userMessage, locale);
+  const modelConfigPromise = getModelConfig(channel);
+  const promptPromise = getActivePromptContent(locale);
 
-  await appendMessage(conversation.id, "user", userMessage);
+  const conversation = await getOrCreateConversation(channel, channelSessionId, locale);
+  await Promise.all([upsertUnifiedUser(channel, channelSessionId), appendMessage(conversation.id, "user", userMessage)]);
 
   if (conversation.botPaused) {
     return { paused: true, sessionId: conversation.id };
   }
 
-  const modelConfig = await getModelConfig(channel);
+  const modelConfig = await modelConfigPromise;
   const primaryModel = resolveScheduledModel(modelConfig);
 
   if (modelConfig.provider === "gemini" ? !isGeminiConfigured() : !isOpenRouterConfigured()) {
@@ -79,10 +92,10 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
   }
 
   const [context, { recent, summary }, facts, promptOverride] = await Promise.all([
-    retrieveContext(userMessage, locale),
+    contextPromise,
     getConversationContext(conversation),
     conversation.leadEmail ? getLongTermFacts(conversation.leadEmail) : Promise.resolve([]),
-    getActivePromptContent(locale),
+    promptPromise,
   ]);
 
   const systemInstruction = buildSystemInstruction(locale, context, facts, {
@@ -319,7 +332,7 @@ async function* streamBrainTurnOpenRouter(turn: PreparedTurn): AsyncGenerator<Br
   } catch (err) {
     if (hasStreamedContent) throw err;
     console.error("[brain] streamBrainTurn: both models failed before any content streamed, degrading gracefully:", err);
-    reply = FALLBACK_REPLY[locale];
+    reply = BUSY_REPLY[locale];
   }
 
   yield await finishTurn(conversation, context, reply, locale, modelUsedForReply, tokensIn, tokensOut);
@@ -370,42 +383,62 @@ function toGeminiContents(messages: ChatCompletionMessageParam[]): { systemInstr
   return { systemInstruction, contents };
 }
 
+/**
+ * How long a Gemini model gets to send its first chunk before we give up on
+ * it. Normal first-chunk time is a few seconds; when Google is overloaded a
+ * request either fails fast with a 503 or hangs for a minute or more, and a
+ * visitor watching a typing indicator won't wait that long. Primary + fallback
+ * together stay under ~25s.
+ */
+const GEMINI_FIRST_CHUNK_TIMEOUT_MS = { primary: 10_000, fallback: 14_000 };
+
+class ModelTimeoutError extends Error {}
+
+/**
+ * Opens a Gemini stream and waits for its first chunk, aborting the request
+ * if nothing arrives within timeoutMs. Returns a stream that replays that
+ * first chunk, so callers iterate it as if nothing happened. The timeout only
+ * covers the wait for the first chunk — once the model is talking, a slow
+ * tail is left alone.
+ */
 async function openGeminiStream(
   client: GoogleGenAI,
   model: string,
   contents: Content[],
   systemInstruction: string,
   params: { temperature: number; topP: number; maxOutputTokens: number },
-): Promise<AsyncGenerator<GenerateContentResponse>> {
-  return client.models.generateContentStream({
-    model,
-    contents,
-    config: {
-      systemInstruction,
-      tools: [{ functionDeclarations: toolDeclarations }],
-      // Keeps the model's internal reasoning out of visible text — see the
-      // module docstring above streamBrainTurnGemini.
-      thinkingConfig: { includeThoughts: false },
-      temperature: params.temperature,
-      topP: params.topP,
-      maxOutputTokens: params.maxOutputTokens,
-    },
-  });
-}
-
-/** Same short-backoff-then-retry-once policy as openStreamWithRetry (OpenRouter path) — absorbs a transient provider blip before it's treated as a real failure. */
-async function openGeminiStreamWithRetry(
-  client: GoogleGenAI,
-  model: string,
-  contents: Content[],
-  systemInstruction: string,
-  params: { temperature: number; topP: number; maxOutputTokens: number },
-): Promise<AsyncGenerator<GenerateContentResponse>> {
+  timeoutMs: number,
+): Promise<AsyncIterable<GenerateContentResponse>> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await openGeminiStream(client, model, contents, systemInstruction, params);
+    const stream = await client.models.generateContentStream({
+      model,
+      contents,
+      config: {
+        systemInstruction,
+        tools: [{ functionDeclarations: toolDeclarations }],
+        // includeThoughts keeps the model's internal reasoning out of
+        // visible text — see the module docstring above streamBrainTurnGemini.
+        // LOW keeps that silent reasoning pass short: the default level made
+        // the visitor wait several seconds before the first word.
+        thinkingConfig: { includeThoughts: false, thinkingLevel: ThinkingLevel.LOW },
+        temperature: params.temperature,
+        topP: params.topP,
+        maxOutputTokens: params.maxOutputTokens,
+        abortSignal: controller.signal,
+      },
+    });
+    const first = await stream.next();
+    clearTimeout(timer);
+    return (async function* () {
+      if (!first.done) yield first.value;
+      yield* stream;
+    })();
   } catch (err) {
-    await sleep(400);
-    return openGeminiStream(client, model, contents, systemInstruction, params);
+    clearTimeout(timer);
+    if (controller.signal.aborted) throw new ModelTimeoutError(`${model} sent nothing within ${timeoutMs}ms`);
+    throw err;
   }
 }
 
@@ -439,14 +472,17 @@ async function* streamBrainTurnGemini(turn: PreparedTurn): AsyncGenerator<BrainS
         maxOutputTokens: modelConfig.maxTokens,
       };
 
+      // No same-model retry here: when Gemini is overloaded, retrying the
+      // model that just 503'd or timed out only adds waiting — moving
+      // straight to the fallback is the faster path to a reply.
       let stream: AsyncIterable<GenerateContentResponse>;
       let modelUsed = primaryModel;
       try {
-        stream = await openGeminiStreamWithRetry(geminiClient, primaryModel, contents, systemInstruction, genParams);
+        stream = await openGeminiStream(geminiClient, primaryModel, contents, systemInstruction, genParams, GEMINI_FIRST_CHUNK_TIMEOUT_MS.primary);
       } catch (err) {
         if (fallbackModel && fallbackModel !== primaryModel) {
-          console.error(`[brain] gemini ${primaryModel} failed, retrying with fallback ${fallbackModel}:`, err);
-          stream = await openGeminiStreamWithRetry(geminiClient, fallbackModel, contents, systemInstruction, genParams);
+          console.error(`[brain] gemini ${primaryModel} failed, trying fallback ${fallbackModel}:`, err);
+          stream = await openGeminiStream(geminiClient, fallbackModel, contents, systemInstruction, genParams, GEMINI_FIRST_CHUNK_TIMEOUT_MS.fallback);
           modelUsed = fallbackModel;
         } else {
           throw err;
@@ -510,7 +546,7 @@ async function* streamBrainTurnGemini(turn: PreparedTurn): AsyncGenerator<BrainS
   } catch (err) {
     if (hasStreamedContent) throw err;
     console.error("[brain] streamBrainTurnGemini: both models failed before any content streamed, degrading gracefully:", err);
-    reply = FALLBACK_REPLY[locale];
+    reply = BUSY_REPLY[locale];
   }
 
   yield await finishTurn(conversation, context, reply, locale, modelUsedForReply, tokensIn, tokensOut);

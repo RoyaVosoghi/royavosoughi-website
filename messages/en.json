@@ -180,7 +180,8 @@
     "sourcesLabel": "Sources",
     "requestConsultation": "Request a consultation",
     "consultationMessage": "I'd like to book a consultation.",
-    "waitingForHuman": "Roya will reply here personally shortly."
+    "waitingForHuman": "Roya will reply here personally shortly.",
+    "newChat": "New chat"
   },
   "voice": {
     "start": "Start a voice call",
