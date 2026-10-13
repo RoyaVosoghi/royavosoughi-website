@@ -47,11 +47,6 @@ export default async function AboutPage({
             <p>{t("p1")}</p>
             <p>{t("p2")}</p>
             <p>{t("p3")}</p>
-
-            {/* Placeholder until the CV and photos arrive — see README */}
-            <div className="rounded-2xl border-2 border-dashed border-ink/20 bg-mist/40 p-6 text-base text-ink/70">
-              {t("cvPlaceholder")}
-            </div>
           </div>
 
           <aside>

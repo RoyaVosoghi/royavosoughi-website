@@ -111,23 +111,22 @@
   },
   "about": {
     "eyebrow": "About",
-    "title": "Hi, I'm Roya.",
-    "p1": "I'm an AI engineer and software developer based in Turin, Italy. I build applications powered by large language models — RAG tools, assistants and agents that do a specific job for a specific business.",
-    "p2": "I came to this work later than some, and that turned out to be the useful part: I've been the person on the other side of a software project, waiting for an update that never came. I build the way I wished someone had built for me.",
-    "quote": "Never too late to build.",
+    "title": "I'm Roya Vosoughi.",
+    "p1": "I'm an AI engineer and software developer. I design and build applications powered by large language models — RAG systems, assistants and agents that take on a specific, measurable job inside a business.",
+    "p2": "My focus is the gap between an impressive demo and a dependable product: answers grounded in your own data, sensible limits on what the AI decides alone, clear documentation, and support after handoff. Every project starts with your problem, not the technology.",
+    "quote": "Built to be used, not just shown.",
     "readMore": "More about me",
-    "photoAlt": "Roya Vosoughi outdoors in Turin"
+    "photoAlt": "Portrait of Roya Vosoughi"
   },
   "aboutPage": {
     "metaTitle": "About",
-    "metaDescription": "Roya Vosoughi — AI engineer and software developer in Turin, Italy. Building AI-powered applications in public.",
+    "metaDescription": "Roya Vosoughi — AI engineer and software developer building reliable LLM-powered applications, assistants and agents for businesses.",
     "eyebrow": "About",
-    "title": "I build the way I wished someone had built for me.",
-    "lead": "AI engineer and software developer in Turin, Italy. I make large language models do specific, useful jobs for real businesses.",
+    "title": "I turn large language models into tools businesses rely on.",
+    "lead": "AI engineer and software developer. I design, build and support LLM-powered applications that do a specific, useful job — and keep doing it after handoff.",
     "p1": "My work is mostly applications powered by LLMs: retrieval systems that answer questions from a company's own documents, assistants that handle a repetitive task properly, and agents that know the limits of what they should decide alone.",
     "p2": "I have one rule that shapes everything: build in public. Every project is deployed, open source and documented. That is partly discipline — it is much harder to cut a corner when the repository is open — and partly the fastest way to show what I can do without asking anyone to take my word for it.",
-    "p3": "I studied computer engineering at Politecnico di Torino. I work in English with clients across Italy and Europe, and in Persian with Persian-speaking businesses.",
-    "cvPlaceholder": "This section will be rewritten once Roya sends her CV and photos — the current text is a working draft, not final copy.",
+    "p3": "I graduated from Politecnico di Torino in AI and Software Engineering.",
     "valuesTitle": "What I hold to",
     "values": {
       "punctual": {
@@ -197,8 +196,8 @@
   },
   "contact": {
     "eyebrow": "Contact",
-    "title": "Ready to bring your vision to life?",
-    "intro": "Check out my latest projects, and let's build something amazing together — fill out the form below to get started.",
+    "title": "Tell me what you're trying to solve.",
+    "intro": "Share a few lines about your business and the problem. I'll reply personally within two working days with an honest view of whether AI is the right fit.",
     "emailLabel": "Email",
     "responseLabel": "Response time",
     "responseValue": "Within two working days. Always a real reply, even if the answer is no.",
