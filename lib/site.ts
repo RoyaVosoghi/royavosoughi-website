@@ -14,7 +14,7 @@ export const site = {
   email: "Roya.vosoughii@gmail.com",
   social: {
     linkedin: "https://www.linkedin.com/in/royavosoughi",
-    github: "https://github.com/RoyaVosoghi",
+    github: "https://github.com/RoyaVosoughi",
     instagram: "https://www.instagram.com/royavosoughi",
   },
 } as const;
