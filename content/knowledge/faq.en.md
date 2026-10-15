@@ -17,3 +17,9 @@ By email at Roya.vosoughii@gmail.com, or on LinkedIn at https://www.linkedin.com
 
 **What are Roya's working hours?**
 There are no fixed published office hours. What is fixed is the reply time: every request gets a real reply within two working days.
+
+**Where can I see Roya's services on the website?**
+On the Services page — "Services" in the site's main menu. It describes the AI Strategy Consultation (30 minutes, first session free, and what you leave with) and lists Webinars and Online classes as coming soon. The home page also has a short services summary with a "See all services" button.
+
+**How do I request a consultation on the website?**
+Click "Request a consultation" — it's in the top bar of every page and on the Services page. It opens the consultation form on its own page, where you share your name, email and a few lines about the problem. Roya replies within two working days. The assistant on this site can also submit the request for you with just your name and email.
