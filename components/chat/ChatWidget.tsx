@@ -20,6 +20,8 @@ interface DisplayMessage {
   sources?: string[];
   /** True while this bubble is still receiving SSE chunks — cleared once the "done" event lands. */
   streaming?: boolean;
+  /** The visitor pressed Stop mid-reply — the text is partial and was never saved, so it can't be rated. */
+  stopped?: boolean;
 }
 
 /**
@@ -93,6 +95,12 @@ export function ChatWidget({
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const listRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  /** Index of the reply whose 👎 reason panel is open — the rating is only sent once the visitor sends or skips. */
+  const [reasonFor, setReasonFor] = useState<number | null>(null);
+  const [reasonChoice, setReasonChoice] = useState<string | null>(null);
+  const [reasonText, setReasonText] = useState("");
+  const [thanksFor, setThanksFor] = useState<number | null>(null);
   const starters = startersOverride?.length ? startersOverride : (t.raw("starters") as string[]);
 
   useEffect(() => {
@@ -177,13 +185,19 @@ export function ChatWidget({
   async function sendMessage(text: string, honeypot?: string) {
     if (!text || !sessionId || status === "sending" || status === "streaming") return;
 
+    if (reasonFor !== null) void submitDownvote(reasonFor);
+
     touchSession();
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setStatus("sending");
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
+        signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           channelSessionId: sessionId,
@@ -278,8 +292,26 @@ export function ChatWidget({
 
       setStatus(streamError ? "error" : "idle");
     } catch {
-      setStatus("error");
+      if (controller.signal.aborted) {
+        // Visitor pressed Stop — keep whatever streamed so far, marked as cut off.
+        setMessages((prev) => {
+          const last = prev[prev.length - 1];
+          if (last?.role !== "assistant" || !last.streaming) return prev;
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: "assistant", content: last.content, stopped: true };
+          return updated;
+        });
+        setStatus("idle");
+      } else {
+        setStatus("error");
+      }
+    } finally {
+      if (abortRef.current === controller) abortRef.current = null;
     }
+  }
+
+  function stopReply() {
+    abortRef.current?.abort();
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -293,28 +325,51 @@ export function ChatWidget({
   }
 
   function startNewChat() {
+    if (reasonFor !== null) void submitDownvote(reasonFor);
+    setThanksFor(null);
     setSessionId(rotateSessionId());
     setMessages([]);
     setInput("");
     setStatus("idle");
   }
 
-  async function onRate(index: number, rating: 1 | -1) {
-    const message = messages[index];
-    if (!message.id || message.feedback !== null) return;
-
-    setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, feedback: rating } : m)));
-
+  async function postFeedback(messageId: string, rating: 1 | -1, comment?: string) {
     try {
       await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageId: message.id, rating }),
+        body: JSON.stringify({ messageId, rating, comment: comment || undefined }),
       });
     } catch {
       // Best-effort — the button already reflects the visitor's choice; a
       // failed network call here isn't worth surfacing as a chat error.
     }
+  }
+
+  function onRate(index: number, rating: 1 | -1) {
+    const message = messages[index];
+    if (!message.id || message.feedback !== null) return;
+
+    setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, feedback: rating } : m)));
+
+    if (rating === 1) {
+      void postFeedback(message.id, 1);
+      return;
+    }
+    // 👎 asks why before sending; Skip (or moving on) still records the rating.
+    if (reasonFor !== null && reasonFor !== index) void submitDownvote(reasonFor);
+    setReasonFor(index);
+    setReasonChoice(null);
+    setReasonText("");
+  }
+
+  async function submitDownvote(index: number, withReason = false) {
+    const message = messages[index];
+    setReasonFor(null);
+    if (!message?.id) return;
+    const comment = withReason ? [reasonChoice, reasonText.trim()].filter(Boolean).join(" — ") : undefined;
+    setThanksFor(index);
+    await postFeedback(message.id, -1, comment);
   }
 
   /** Announces status independently of the message list, which redraws wholesale on every turn. */
@@ -370,6 +425,54 @@ export function ChatWidget({
                 feedback={message.feedback}
                 onRate={message.role === "assistant" ? (rating) => onRate(index, rating) : undefined}
               />
+              {message.stopped ? <p className="px-1 text-xs text-ink/40">{t("stopped")}</p> : null}
+              {reasonFor === index ? (
+                <div className="max-w-[80%] rounded-2xl border-2 border-ink/10 bg-canvas p-3 sm:max-w-[70%]">
+                  <p className="text-sm font-semibold text-ink">{t("feedbackReasonTitle")}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {(t.raw("feedbackReasons") as string[]).map((reason) => (
+                      <button
+                        key={reason}
+                        type="button"
+                        onClick={() => setReasonChoice(reasonChoice === reason ? null : reason)}
+                        aria-pressed={reasonChoice === reason}
+                        className={`rounded-full border-2 px-3 py-1 text-xs transition-colors ${
+                          reasonChoice === reason ? "border-cobalt bg-cobalt/10 text-cobalt" : "border-ink/15 text-ink/70 hover:border-ink/30"
+                        }`}
+                      >
+                        {reason}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={reasonText}
+                    onChange={(e) => setReasonText(e.target.value)}
+                    maxLength={500}
+                    rows={2}
+                    aria-label={t("feedbackReasonPlaceholder")}
+                    placeholder={t("feedbackReasonPlaceholder")}
+                    className="mt-2 w-full resize-none rounded-xl border-2 border-ink/15 bg-canvas px-3 py-2 text-sm text-ink placeholder:text-ink/35 focus:border-cobalt focus:outline-none"
+                  />
+                  <div className="mt-2 flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => submitDownvote(index)}
+                      className="rounded-full px-3 py-1 text-sm font-medium text-ink/60 hover:text-ink"
+                    >
+                      {t("feedbackSkip")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => submitDownvote(index, true)}
+                      disabled={!reasonChoice && !reasonText.trim()}
+                      className="rounded-full bg-ink px-4 py-1 text-sm font-semibold text-canvas disabled:opacity-40"
+                    >
+                      {t("feedbackSend")}
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+              {thanksFor === index ? <p className="px-1 text-xs text-ink/50">{t("feedbackThanks")}</p> : null}
               {message.sources && message.sources.length > 0 ? (
                 <p className={`px-1 text-xs text-ink/40 ${message.role === "user" ? "text-end" : "text-start"}`}>
                   {t("sourcesLabel")}: {message.sources.join(", ")}
@@ -443,9 +546,15 @@ export function ChatWidget({
           disabled={status === "sending" || status === "streaming"}
           className="w-full rounded-2xl border-2 border-ink/15 bg-canvas px-4 py-3 text-ink transition-colors placeholder:text-ink/35 focus:border-cobalt focus:outline-none"
         />
-        <Button type="submit" disabled={status === "sending" || status === "streaming" || !input.trim()}>
-          {status === "sending" || status === "streaming" ? t("sending") : t("send")}
-        </Button>
+        {status === "sending" || status === "streaming" ? (
+          <Button type="button" variant="secondary" onClick={stopReply}>
+            {t("stop")}
+          </Button>
+        ) : (
+          <Button type="submit" disabled={!input.trim()}>
+            {t("send")}
+          </Button>
+        )}
       </form>
     </div>
   );

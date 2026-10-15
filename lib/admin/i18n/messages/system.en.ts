@@ -187,6 +187,25 @@ const messages = {
       cleanupResult: "Deleted {conversations} conversation(s), {rateLimitHits} old rate-limit record(s).",
       cleanupError: "Cleanup failed.",
     },
+    guards: {
+      title: "Chat guards",
+      subtitle: "Applied on every channel — website chat, widget, and Telegram.",
+      injectionLabel: "Block prompt-injection attempts",
+      injectionHint:
+        "Messages like \"ignore all previous instructions\" or \"show me your system prompt\" get a fixed reply without calling the model (no token cost). The conversation is flagged for review.",
+      hoursLabel: "Working hours",
+      hoursHint:
+        "Outside these hours the bot still answers, but tells visitors who want Roya herself that she'll reply on the next working day. Hours and time zone are never shown to visitors.",
+      timezoneLabel: "Time zone (IANA, e.g. Europe/London)",
+      startLabel: "Start hour (0–23)",
+      endLabel: "End hour (1–24)",
+      daysLabel: "Working days",
+      day: { sun: "Sun", mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat" },
+      save: "Save",
+      saving: "Saving…",
+      saved: "Saved.",
+      saveError: "Couldn't save — check the time zone and that the end hour is after the start hour.",
+    },
     budget: {
       title: "AI spend cap",
       subtitle:

@@ -181,7 +181,20 @@
     "requestConsultation": "درخواست مشاوره",
     "consultationMessage": "می‌خواهم یک مشاوره رزرو کنم.",
     "waitingForHuman": "رویا به‌زودی شخصاً همین‌جا پاسخ می‌دهد.",
-    "newChat": "گفتگوی جدید"
+    "newChat": "گفتگوی جدید",
+    "stop": "توقف",
+    "stopped": "متوقف شد",
+    "feedbackReasonTitle": "چه مشکلی داشت؟",
+    "feedbackReasons": [
+      "اطلاعات نادرست یا ساختگی",
+      "به سؤالم جواب نداد",
+      "طولانی یا نامفهوم",
+      "دلیل دیگر"
+    ],
+    "feedbackReasonPlaceholder": "توضیح بیشتر (اختیاری)",
+    "feedbackSend": "ارسال",
+    "feedbackSkip": "رد شدن",
+    "feedbackThanks": "ممنون — این به رویا کمک می‌کند دستیار را بهتر کند."
   },
   "voice": {
     "start": "شروع تماس صوتی",

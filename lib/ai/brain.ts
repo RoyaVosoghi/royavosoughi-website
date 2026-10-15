@@ -5,8 +5,9 @@ import type { ChatCompletionMessageParam, ChatCompletionTool } from "openai/reso
 import type OpenAI from "openai";
 
 import { site } from "@/lib/site";
-import { isSupabaseServiceConfigured } from "@/lib/supabase-admin";
+import { getSupabaseAdminClient, isSupabaseServiceConfigured } from "@/lib/supabase-admin";
 import { getGeminiClient, isGeminiConfigured } from "./gemini";
+import { INJECTION_GUARD_REPLY, looksLikePromptInjection } from "./injection-guard";
 import { appendMessage, getConversationContext, getLongTermFacts, getOrCreateConversation, upsertUnifiedUser, type Conversation } from "./memory";
 import { getModelConfig, resolveScheduledModel, type ModelConfig } from "./model-config";
 import { getOpenRouterClient, isOpenRouterConfigured, isRateLimitError } from "./providers/openrouter";
@@ -14,6 +15,7 @@ import { buildSystemInstruction } from "./prompt";
 import { getActivePromptContent } from "./prompt-versions";
 import { checkRateLimit } from "./rate-limit";
 import { retrieveContext, type RetrievedChunk } from "./retrieval";
+import { getSecurityConfig, isOutsideWorkingHours } from "./security-config";
 import { dispatchTool, openAiToolDeclarations, toolDeclarations, type ToolContext } from "./tools";
 import { BrainNotConfiguredError, RateLimitError, type BrainTurnInput, type BrainTurnOutput, type Locale } from "./types";
 
@@ -45,7 +47,12 @@ interface PreparedTurn {
   modelConfig: ModelConfig;
   toolCtx: ToolContext;
   context: RetrievedChunk[];
+  /** Set when the injection guard caught the message — streamBrainTurn replies with this and never calls a model. */
+  cannedReply?: string;
 }
+
+/** Recorded as messages.model_used on guard replies, so they're easy to find in the admin inbox. */
+const INJECTION_GUARD_MODEL = "injection-guard";
 
 export type PrepareTurnResult = { paused: true; sessionId: string } | { paused: false; turn: PreparedTurn };
 
@@ -69,11 +76,16 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
   const allowed = await checkRateLimit(channel, channelSessionId, ip ?? null);
   if (!allowed) throw new RateLimitError();
 
+  // Already cached by checkRateLimit above, so this is free.
+  const securityConfig = await getSecurityConfig();
+  const blocked = securityConfig.injectionGuardEnabled && looksLikePromptInjection(userMessage);
+
   // Lookups that don't depend on the conversation row start right away, so
   // the embedding call and config reads overlap the session bookkeeping
   // below instead of queuing behind it. All three fail soft (they log and
   // return a default), so an unused result on the paused path is harmless.
-  const contextPromise = retrieveContext(userMessage, locale);
+  // A guarded message skips retrieval entirely — no embedding call either.
+  const contextPromise = blocked ? Promise.resolve<RetrievedChunk[]>([]) : retrieveContext(userMessage, locale);
   const modelConfigPromise = getModelConfig(channel);
   const promptPromise = getActivePromptContent(locale);
 
@@ -86,6 +98,32 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
 
   const modelConfig = await modelConfigPromise;
   const primaryModel = resolveScheduledModel(modelConfig);
+  const toolCtx: ToolContext = {
+    conversationId: conversation.id,
+    channel,
+    externalUserId: channelSessionId,
+    locale,
+  };
+
+  if (blocked) {
+    // Flag for review like a 👎 does, so attempts show up in the admin inbox.
+    await getSupabaseAdminClient()?.from("conversations").update({ flagged: true }).eq("id", conversation.id);
+    return {
+      paused: false,
+      turn: {
+        conversation,
+        locale,
+        messages: [],
+        client: null,
+        primaryModel: INJECTION_GUARD_MODEL,
+        fallbackModel: null,
+        modelConfig,
+        toolCtx,
+        context: [],
+        cannedReply: INJECTION_GUARD_REPLY[locale],
+      },
+    };
+  }
 
   if (modelConfig.provider === "gemini" ? !isGeminiConfigured() : !isOpenRouterConfigured()) {
     throw new BrainNotConfiguredError();
@@ -102,6 +140,7 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
     prompt: promptOverride,
     summary,
     channel,
+    outsideWorkingHours: isOutsideWorkingHours(securityConfig.workingHours),
   });
 
   const messages: ChatCompletionMessageParam[] = [
@@ -115,12 +154,6 @@ export async function prepareBrainTurn(input: BrainTurnInput): Promise<PrepareTu
   ];
 
   const client = modelConfig.provider === "gemini" ? null : getOpenRouterClient();
-  const toolCtx: ToolContext = {
-    conversationId: conversation.id,
-    channel,
-    externalUserId: channelSessionId,
-    locale,
-  };
 
   return {
     paused: false,
@@ -562,7 +595,10 @@ async function* streamBrainTurnGemini(turn: PreparedTurn): AsyncGenerator<BrainS
  * model_config actually points at.
  */
 export async function* streamBrainTurn(turn: PreparedTurn): AsyncGenerator<BrainStreamEvent> {
-  if (turn.modelConfig.provider === "gemini") {
+  if (turn.cannedReply) {
+    yield { type: "chunk", text: turn.cannedReply };
+    yield await finishTurn(turn.conversation, [], turn.cannedReply, turn.locale, INJECTION_GUARD_MODEL, undefined, undefined);
+  } else if (turn.modelConfig.provider === "gemini") {
     yield* streamBrainTurnGemini(turn);
   } else {
     yield* streamBrainTurnOpenRouter(turn);

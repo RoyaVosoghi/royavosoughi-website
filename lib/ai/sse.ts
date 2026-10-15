@@ -12,22 +12,34 @@ import type { BrainStreamEvent } from "./brain";
 export function createChatStreamResponse(events: AsyncGenerator<BrainStreamEvent>, extraHeaders?: HeadersInit): Response {
   const encoder = new TextEncoder();
 
+  // Set when the visitor presses Stop (the browser aborts the fetch). We then
+  // leave the loop, which ends the generator and with it the model request,
+  // so a stopped reply stops costing tokens. The partial reply isn't saved.
+  let cancelled = false;
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (event: string, data: unknown) => {
+        if (cancelled) return;
         controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
       };
       try {
         for await (const ev of events) {
+          if (cancelled) break;
           if (ev.type === "chunk") send("chunk", { text: ev.text });
           else send("done", ev.result);
         }
       } catch (err) {
-        console.error("[chat] streamBrainTurn failed:", err);
-        send("error", { error: "upstream_failed" });
+        if (!cancelled) {
+          console.error("[chat] streamBrainTurn failed:", err);
+          send("error", { error: "upstream_failed" });
+        }
       } finally {
-        controller.close();
+        if (!cancelled) controller.close();
       }
+    },
+    cancel() {
+      cancelled = true;
     },
   });
 

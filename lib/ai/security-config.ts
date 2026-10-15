@@ -13,6 +13,21 @@ export interface SecurityConfig {
   rateLimitMaxMessages: number;
   /** null = keep forever (no automatic cleanup). */
   retentionDays: number | null;
+  /** Answer obvious prompt-injection attempts with a canned reply, no model call (lib/ai/injection-guard.ts). */
+  injectionGuardEnabled: boolean;
+  workingHours: WorkingHours;
+}
+
+export interface WorkingHours {
+  enabled: boolean;
+  /** IANA zone, e.g. "Europe/London". Never shown to visitors. */
+  timezone: string;
+  /** Hour of day, 0–23, inclusive. */
+  start: number;
+  /** Hour of day, 1–24, exclusive. */
+  end: number;
+  /** JS getDay() numbering: 0 = Sunday … 6 = Saturday. */
+  days: number[];
 }
 
 export function defaultSecurityConfig(): SecurityConfig {
@@ -20,6 +35,8 @@ export function defaultSecurityConfig(): SecurityConfig {
     rateLimitWindowMinutes: Number(process.env.CHAT_RATE_LIMIT_WINDOW_MINUTES ?? 10),
     rateLimitMaxMessages: Number(process.env.CHAT_RATE_LIMIT_MAX_MESSAGES ?? 20),
     retentionDays: null,
+    injectionGuardEnabled: true,
+    workingHours: { enabled: false, timezone: "UTC", start: 9, end: 18, days: [1, 2, 3, 4, 5] },
   };
 }
 
@@ -34,7 +51,7 @@ export async function getSecurityConfig(): Promise<SecurityConfig> {
 
   const { data, error } = await supabase
     .from("security_config")
-    .select("rate_limit_window_minutes, rate_limit_max_messages, retention_days")
+    .select("*")
     .eq("id", 1)
     .maybeSingle();
 
@@ -47,6 +64,16 @@ export async function getSecurityConfig(): Promise<SecurityConfig> {
     rateLimitWindowMinutes: data.rate_limit_window_minutes,
     rateLimitMaxMessages: data.rate_limit_max_messages,
     retentionDays: data.retention_days,
+    // `?? default` keeps this working on a database that hasn't run the
+    // chat-guard ALTERs in supabase/schema.sql yet (select("*") just omits them).
+    injectionGuardEnabled: data.injection_guard_enabled ?? true,
+    workingHours: {
+      enabled: data.working_hours_enabled ?? false,
+      timezone: data.working_hours_timezone ?? "UTC",
+      start: data.working_hours_start ?? 9,
+      end: data.working_hours_end ?? 18,
+      days: data.working_days ?? [1, 2, 3, 4, 5],
+    },
   };
   cached = { value, expiresAt: Date.now() + CACHE_TTL_MS };
   return value;
@@ -56,6 +83,8 @@ export interface SecurityConfigUpdate {
   rateLimitWindowMinutes?: number;
   rateLimitMaxMessages?: number;
   retentionDays?: number | null;
+  injectionGuardEnabled?: boolean;
+  workingHours?: WorkingHours;
 }
 
 export async function updateSecurityConfig(update: SecurityConfigUpdate): Promise<void> {
@@ -66,11 +95,41 @@ export async function updateSecurityConfig(update: SecurityConfigUpdate): Promis
   if (update.rateLimitWindowMinutes !== undefined) patch.rate_limit_window_minutes = update.rateLimitWindowMinutes;
   if (update.rateLimitMaxMessages !== undefined) patch.rate_limit_max_messages = update.rateLimitMaxMessages;
   if (update.retentionDays !== undefined) patch.retention_days = update.retentionDays;
+  if (update.injectionGuardEnabled !== undefined) patch.injection_guard_enabled = update.injectionGuardEnabled;
+  if (update.workingHours !== undefined) {
+    patch.working_hours_enabled = update.workingHours.enabled;
+    patch.working_hours_timezone = update.workingHours.timezone;
+    patch.working_hours_start = update.workingHours.start;
+    patch.working_hours_end = update.workingHours.end;
+    patch.working_days = update.workingHours.days;
+  }
 
   const { error } = await supabase.from("security_config").update(patch).eq("id", 1);
   if (error) throw error;
 
   cached = null;
+}
+
+/** True when `now` falls outside the configured hours (always false while the feature is off or the zone is invalid). */
+export function isOutsideWorkingHours(hours: WorkingHours, now = new Date()): boolean {
+  if (!hours.enabled) return false;
+  let weekday: string;
+  let hour: number;
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: hours.timezone,
+      weekday: "short",
+      hour: "numeric",
+      hourCycle: "h23",
+    }).formatToParts(now);
+    weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
+    hour = Number(parts.find((p) => p.type === "hour")?.value);
+  } catch {
+    return false;
+  }
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(weekday);
+  if (day === -1 || Number.isNaN(hour)) return false;
+  return !hours.days.includes(day) || hour < hours.start || hour >= hours.end;
 }
 
 export interface RetentionCleanupResult {

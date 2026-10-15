@@ -76,7 +76,7 @@ export function buildSystemInstruction(
   locale: Locale,
   context: RetrievedChunk[],
   facts: string[],
-  overrides?: { prompt?: string | null; summary?: string | null; channel?: Channel },
+  overrides?: { prompt?: string | null; summary?: string | null; channel?: Channel; outsideWorkingHours?: boolean },
 ): string {
   const defaultBase = locale === "fa" ? DEFAULT_SYSTEM_PROMPT_FA : DEFAULT_SYSTEM_PROMPT_EN;
   const base = overrides?.prompt?.trim() || defaultBase;
@@ -86,6 +86,15 @@ export function buildSystemInstruction(
     locale === "fa"
       ? `کانال فعلی این گفتگو: ${channelName}. اگر پرامپت پایه بخش «تفاوت‌های کانالی» دارد، راهنمای مربوط به همین کانال را از آن اعمال کن.`
       : `Current channel for this conversation: ${channelName}. If the base prompt above has a "Channel Differences" section, apply the guidance for this specific channel.`;
+
+  // Set from security_config.working_hours_* (see isOutsideWorkingHours).
+  // The bot keeps answering normally; this only resets the visitor's
+  // expectation of how fast a human will follow up.
+  const hoursLine = overrides?.outsideWorkingHours
+    ? locale === "fa"
+      ? "\n\nالان خارج از ساعت کاری رویاست. مثل همیشه کامل پاسخ بده، اما اگر بازدیدکننده خواست با خود رویا صحبت کند، مشاوره رزرو کند یا منتظر پاسخ انسانی است، بگو رویا در اولین روز کاری بعدی پاسخ می‌دهد. ساعت یا منطقهٔ زمانی را ذکر نکن."
+      : "\n\nIt is currently outside Roya's working hours. Answer as fully as usual, but if the visitor wants to talk to Roya herself, book a consultation, or is waiting on a human reply, let them know she'll get back to them on the next working day. Don't mention specific hours or a time zone."
+    : "";
 
   const contextLabel = locale === "fa" ? "اطلاعات شناخته‌شده" : "Known context";
   const contextBlock = context.length
@@ -106,5 +115,5 @@ export function buildSystemInstruction(
     ? `\n\n${summaryLabel}:\n${overrides.summary.trim()}`
     : "";
 
-  return `${base}\n\n${channelLine}\n\n${contextLabel}:\n${contextBlock}\n\n${factsLabel}:\n${factsBlock}${summaryBlock}`;
+  return `${base}\n\n${channelLine}${hoursLine}\n\n${contextLabel}:\n${contextBlock}\n\n${factsLabel}:\n${factsBlock}${summaryBlock}`;
 }

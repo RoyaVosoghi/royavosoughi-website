@@ -9,7 +9,27 @@ const BodySchema = z.object({
   rateLimitWindowMinutes: z.number().int().min(1).max(1440).optional(),
   rateLimitMaxMessages: z.number().int().min(1).max(1000).optional(),
   retentionDays: z.number().int().min(1).max(3650).nullable().optional(),
+  injectionGuardEnabled: z.boolean().optional(),
+  workingHours: z
+    .object({
+      enabled: z.boolean(),
+      timezone: z.string().trim().min(1).max(64).refine(isValidTimeZone, "invalid_timezone"),
+      start: z.number().int().min(0).max(23),
+      end: z.number().int().min(1).max(24),
+      days: z.array(z.number().int().min(0).max(6)).max(7),
+    })
+    .refine((h) => h.end > h.start, "end_before_start")
+    .optional(),
 });
+
+function isValidTimeZone(zone: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export async function POST(request: Request) {
   const gate = await requireRole("owner");

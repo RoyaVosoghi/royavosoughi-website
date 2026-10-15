@@ -22,6 +22,12 @@ interface DisplayMessage {
   feedback?: 1 | -1 | null;
   /** The client-rendered greeting bubble — never sent to/from the backend, never eligible for thumbs feedback. */
   synthetic?: boolean;
+  /** Visitor pressed Stop mid-reply — partial text, never saved, not ratable. */
+  stopped?: boolean;
+  /** 👎 clicked and the "what went wrong?" panel is open; the rating is sent on Send/Skip. */
+  askingReason?: boolean;
+  /** Shown once the 👎 (with or without a reason) has been sent. */
+  thanked?: boolean;
 }
 
 /**
@@ -106,6 +112,13 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       rateQuestion: "How was this conversation?",
       thanksForRating: "Thanks for your feedback!",
       checkInNudge: "Still there? Is there anything else I can help you with?",
+      stop: "Stop",
+      stopped: "Stopped",
+      feedbackReasonTitle: "What went wrong?",
+      feedbackReasonPlaceholder: "Tell us more (optional)",
+      feedbackSend: "Send",
+      feedbackSkip: "Skip",
+      feedbackThanks: "Thanks — this helps improve the assistant.",
     },
     fa: {
       assistantName: "نورا",
@@ -127,7 +140,20 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       rateQuestion: "این گفتگو چطور بود؟",
       thanksForRating: "بابت بازخوردتان ممنونیم!",
       checkInNudge: "هنوز آنجا هستید؟ کار دیگری هست که بتوانم کمکتان کنم؟",
+      stop: "توقف",
+      stopped: "متوقف شد",
+      feedbackReasonTitle: "چه مشکلی داشت؟",
+      feedbackReasonPlaceholder: "توضیح بیشتر (اختیاری)",
+      feedbackSend: "ارسال",
+      feedbackSkip: "رد شدن",
+      feedbackThanks: "ممنون — این به بهترشدن دستیار کمک می‌کند.",
     },
+  };
+
+  /** Kept outside STRINGS because STRINGS is string-valued only. */
+  const FEEDBACK_REASONS: Record<Locale, string[]> = {
+    en: ["Wrong or made-up information", "Didn't answer my question", "Too long or unclear", "Something else"],
+    fa: ["اطلاعات نادرست یا ساختگی", "به سؤالم جواب نداد", "طولانی یا نامفهوم", "دلیل دیگر"],
   };
 
   function detectLocale(): Locale {
@@ -295,6 +321,52 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
     .rv-feedback-btn:disabled { cursor: default; }
     .rv-feedback-btn[data-active="true"] { background: rgba(30, 30, 30, 0.1); color: ${COLORS.ink}; }
     .rv-feedback-btn[data-active="true"].rv-down { background: rgba(227, 167, 47, 0.16); color: ${COLORS.amberDeep}; }
+    .rv-note { font-size: 12px; color: rgba(30, 30, 30, 0.5); padding: 0 2px; margin: 0; }
+    .rv-reason {
+      max-width: 80%;
+      border: 1px solid rgba(30, 30, 30, 0.12);
+      border-radius: 14px;
+      padding: 10px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .rv-reason-title { font-size: 13px; font-weight: 600; color: ${COLORS.ink}; margin: 0; }
+    .rv-reason-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .rv-reason-chip {
+      border: 1px solid rgba(30, 30, 30, 0.18);
+      background: none;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: ${COLORS.ink};
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .rv-reason-chip[aria-pressed="true"] { border-color: ${COLORS.accent}; background: rgba(0, 71, 171, 0.08); }
+    .rv-reason-text {
+      border: 1px solid rgba(30, 30, 30, 0.18);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+      color: ${COLORS.ink};
+    }
+    .rv-reason-actions { display: flex; justify-content: flex-end; gap: 6px; }
+    .rv-reason-skip, .rv-reason-send {
+      border: none;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .rv-reason-skip { background: none; color: rgba(30, 30, 30, 0.6); }
+    .rv-reason-send { background: ${COLORS.ink}; color: ${COLORS.canvas}; }
+    .rv-reason-send:disabled { opacity: 0.4; cursor: default; }
     .rv-status {
       padding: 8px 18px;
       font-size: 13px;
@@ -559,24 +631,106 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     let open = false;
     let sending = false;
+    let abortController: AbortController | null = null;
     let ended = false;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
     const messages: DisplayMessage[] = [];
 
 
-    async function rate(message: DisplayMessage, rating: 1 | -1) {
-      if (!message.id || message.feedback !== null) return;
-      message.feedback = rating;
-      renderMessages();
+    async function postFeedback(messageId: string, rating: 1 | -1, comment?: string) {
       try {
         await fetch(`${API_BASE}/api/widget/feedback`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messageId: message.id, rating }),
+          body: JSON.stringify({ messageId, rating, comment: comment || undefined }),
         });
       } catch {
         // Best-effort — the button already reflects the visitor's choice.
       }
+    }
+
+    function rate(message: DisplayMessage, rating: 1 | -1) {
+      if (!message.id || message.feedback !== null) return;
+      message.feedback = rating;
+      if (rating === 1) {
+        void postFeedback(message.id, 1);
+      } else {
+        // 👎 asks why first; Skip (or sending another message) still records it.
+        flushPendingReasons();
+        message.askingReason = true;
+        // Don't let the idle close wipe a half-written reason.
+        cancelIdleClose();
+      }
+      renderMessages();
+    }
+
+    function submitDownvote(message: DisplayMessage, comment?: string) {
+      message.askingReason = false;
+      message.thanked = true;
+      if (open && !sending && !ended) scheduleIdleClose();
+      if (message.id) void postFeedback(message.id, -1, comment);
+    }
+
+    /** Sends any 👎 still waiting on its reason panel, without a reason. */
+    function flushPendingReasons() {
+      for (const m of messages) if (m.askingReason) submitDownvote(m);
+    }
+
+    function buildReasonPanel(message: DisplayMessage): HTMLElement {
+      const panelEl = el("div", "rv-reason");
+      const heading = el("p", "rv-reason-title");
+      heading.textContent = t("feedbackReasonTitle");
+      panelEl.appendChild(heading);
+
+      let choice: string | null = null;
+      const chips = el("div", "rv-reason-chips");
+      const textArea = el("textarea", "rv-reason-text");
+      const sendReason = el("button", "rv-reason-send");
+      const refresh = () => {
+        sendReason.disabled = !choice && !textArea.value.trim();
+      };
+      for (const reason of FEEDBACK_REASONS[locale]) {
+        const chip = el("button", "rv-reason-chip");
+        chip.type = "button";
+        chip.textContent = reason;
+        chip.setAttribute("aria-pressed", "false");
+        chip.addEventListener("click", () => {
+          choice = choice === reason ? null : reason;
+          for (const c of Array.from(chips.children)) {
+            c.setAttribute("aria-pressed", String(c.textContent === choice));
+          }
+          refresh();
+        });
+        chips.appendChild(chip);
+      }
+      panelEl.appendChild(chips);
+
+      textArea.rows = 2;
+      textArea.maxLength = 500;
+      textArea.placeholder = t("feedbackReasonPlaceholder");
+      textArea.setAttribute("aria-label", t("feedbackReasonPlaceholder"));
+      textArea.addEventListener("input", refresh);
+      panelEl.appendChild(textArea);
+
+      const actions = el("div", "rv-reason-actions");
+      const skip = el("button", "rv-reason-skip");
+      skip.type = "button";
+      skip.textContent = t("feedbackSkip");
+      skip.addEventListener("click", () => {
+        submitDownvote(message);
+        renderMessages();
+      });
+      sendReason.type = "button";
+      sendReason.textContent = t("feedbackSend");
+      sendReason.addEventListener("click", () => {
+        submitDownvote(message, [choice, textArea.value.trim()].filter(Boolean).join(" — "));
+        renderMessages();
+      });
+      refresh();
+      actions.appendChild(skip);
+      actions.appendChild(sendReason);
+      panelEl.appendChild(actions);
+      return panelEl;
     }
 
     function renderMessages() {
@@ -641,6 +795,18 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
           row.appendChild(feedbackRow);
         }
 
+        if (message.stopped) {
+          const note = el("p", "rv-note");
+          note.textContent = t("stopped");
+          row.appendChild(note);
+        }
+        if (message.askingReason) row.appendChild(buildReasonPanel(message));
+        if (message.thanked) {
+          const note = el("p", "rv-note");
+          note.textContent = t("feedbackThanks");
+          row.appendChild(note);
+        }
+
         messagesEl.appendChild(row);
       }
 
@@ -680,6 +846,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
 
     /** Undoes everything a prior conversation left behind, so the next open starts clean rather than resuming a closed one. */
     function resetToFresh() {
+      abortController?.abort();
       ended = false;
       messages.length = 0;
       endScreen.dataset.visible = "false";
@@ -789,17 +956,23 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       if (!text || sending) return;
 
       cancelIdleClose();
+      flushPendingReasons();
       messages.push({ role: "user", content: text });
       renderMessages();
       input.value = "";
       sending = true;
-      sendBtn.disabled = true;
-      sendBtn.textContent = t("sending");
+      // While a reply is on its way the send button becomes Stop (see the click handler below).
+      sendBtn.textContent = t("stop");
       setStatus(t("thinking"));
+
+      const controller = new AbortController();
+      abortController = controller;
+      let streamMessage: DisplayMessage | null = null;
 
       try {
         const response = await fetch(`${API_BASE}/api/widget/chat`, {
           method: "POST",
+          signal: controller.signal,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ channelSessionId: sessionId, locale, message: text }),
         });
@@ -825,7 +998,6 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
           let buffer = "";
-          let streamMessage: DisplayMessage | null = null;
           let streamFailed = false;
 
           for (;;) {
@@ -864,10 +1036,22 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
           if (streamFailed && !streamMessage) setStatus(t("errorBody"));
         }
       } catch {
-        setStatus(t("errorBody"));
+        if (controller.signal.aborted) {
+          // Stop pressed — keep the partial text, marked as cut off.
+          const partial = streamMessage as DisplayMessage | null;
+          if (partial && !partial.id) {
+            partial.stopped = true;
+            partial.feedback = undefined;
+          }
+          setStatus("");
+          renderMessages();
+          if (open) scheduleIdleClose();
+        } else {
+          setStatus(t("errorBody"));
+        }
       } finally {
+        if (abortController === controller) abortController = null;
         sending = false;
-        sendBtn.disabled = false;
         sendBtn.textContent = t("send");
       }
     }
@@ -916,7 +1100,10 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       }, 5000);
     }
 
-    sendBtn.addEventListener("click", () => send());
+    sendBtn.addEventListener("click", () => {
+      if (sending) abortController?.abort();
+      else void send();
+    });
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") send();
     });
@@ -950,7 +1137,7 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       role.textContent = t("assistantRole");
       closeBtn.setAttribute("aria-label", t("closeChat"));
       input.placeholder = t("inputPlaceholder");
-      if (!sending) sendBtn.textContent = t("send");
+      sendBtn.textContent = sending ? t("stop") : t("send");
       launcher.setAttribute("aria-label", open ? t("closeChat") : t("openChat"));
       endTitle.textContent = t("endedTitle");
       endBody.textContent = t("endedBody");

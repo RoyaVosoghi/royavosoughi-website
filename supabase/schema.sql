@@ -597,6 +597,19 @@ create table if not exists public.security_config (
 
 insert into public.security_config (id) values (1) on conflict (id) do nothing;
 
+-- Chat guards (added later — idempotent for databases created before them).
+-- injection_guard_enabled: answer obvious prompt-injection attempts with a
+--   canned reply before any model call (see lib/ai/injection-guard.ts).
+-- working_hours_*: outside these hours the bot still answers, but tells
+--   visitors who want Roya herself that she'll reply on the next working day.
+--   working_days uses JS getDay() numbering (0 = Sunday … 6 = Saturday).
+alter table public.security_config add column if not exists injection_guard_enabled boolean not null default true;
+alter table public.security_config add column if not exists working_hours_enabled   boolean not null default false;
+alter table public.security_config add column if not exists working_hours_timezone  text    not null default 'UTC';
+alter table public.security_config add column if not exists working_hours_start     smallint not null default 9  check (working_hours_start between 0 and 23);
+alter table public.security_config add column if not exists working_hours_end       smallint not null default 18 check (working_hours_end between 1 and 24);
+alter table public.security_config add column if not exists working_days            smallint[] not null default '{1,2,3,4,5}';
+
 alter table public.security_config enable row level security;
 -- No policies: service role only.
 

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { BudgetConfigForm } from "@/components/admin/BudgetConfigForm";
+import { ChatGuardsForm } from "@/components/admin/ChatGuardsForm";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { SecurityConfigForm } from "@/components/admin/SecurityConfigForm";
 import { getCurrentAdmin } from "@/lib/admin/auth";
@@ -82,7 +83,17 @@ export default async function AdminSecurityPage() {
           </div>
         </section>
 
-        <SecurityConfigForm initial={securityConfig} />
+        <SecurityConfigForm
+          initial={{
+            rateLimitWindowMinutes: securityConfig.rateLimitWindowMinutes,
+            rateLimitMaxMessages: securityConfig.rateLimitMaxMessages,
+            retentionDays: securityConfig.retentionDays,
+          }}
+        />
+
+        <ChatGuardsForm
+          initial={{ injectionGuardEnabled: securityConfig.injectionGuardEnabled, workingHours: securityConfig.workingHours }}
+        />
 
         <BudgetConfigForm
           monthlyCapUsd={budgetConfig.monthlyCapUsd}

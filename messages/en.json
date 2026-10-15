@@ -181,7 +181,20 @@
     "requestConsultation": "Request a consultation",
     "consultationMessage": "I'd like to book a consultation.",
     "waitingForHuman": "Roya will reply here personally shortly.",
-    "newChat": "New chat"
+    "newChat": "New chat",
+    "stop": "Stop",
+    "stopped": "Stopped",
+    "feedbackReasonTitle": "What went wrong?",
+    "feedbackReasons": [
+      "Wrong or made-up information",
+      "Didn't answer my question",
+      "Too long or unclear",
+      "Something else"
+    ],
+    "feedbackReasonPlaceholder": "Tell us more (optional)",
+    "feedbackSend": "Send",
+    "feedbackSkip": "Skip",
+    "feedbackThanks": "Thanks — this helps Roya improve the assistant."
   },
   "voice": {
     "start": "Start a voice call",
