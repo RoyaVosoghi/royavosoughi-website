@@ -11,7 +11,6 @@ import { LocaleSwitch } from "./LocaleSwitch";
 const navItems = [
   { key: "homeNav", href: "/" },
   { key: "services", href: "/#services" },
-  { key: "process", href: "/#process" },
   { key: "projects", href: "/#projects" },
   { key: "blog", href: "/blog" },
   { key: "about", href: "/about" },
