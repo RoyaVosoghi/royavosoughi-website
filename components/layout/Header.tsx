@@ -59,24 +59,18 @@ export function Header() {
             : "bg-transparent"
         }`}
       >
-        {/* Three zones: logo + language | nav pill | CTA. The grid's 1fr side
+        {/* Three zones: logo | nav pill | CTA + language. The grid's 1fr side
             columns keep the pill centred whatever the side widths, and the
             whole row mirrors in RTL. Slightly wider than container-page so
             the pill has room to breathe at xl. */}
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-gutter xl:grid xl:grid-cols-[1fr_auto_1fr] xl:gap-8">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="text-ink transition-opacity hover:opacity-80"
-              aria-label={t("home")}
-            >
-              <Wordmark />
-            </Link>
-
-            <div className="hidden sm:block">
-              <LocaleSwitch />
-            </div>
-          </div>
+          <Link
+            href="/"
+            className="justify-self-start text-ink transition-opacity hover:opacity-80"
+            aria-label={t("home")}
+          >
+            <Wordmark />
+          </Link>
 
           <nav
             className="hidden items-center gap-1 rounded-full border border-ink/15 bg-canvas/60 p-1.5 xl:flex"
@@ -98,6 +92,10 @@ export function Header() {
               <Link href="/contact" className={`${buttonStyles("primary")} whitespace-nowrap`}>
                 {t("cta")}
               </Link>
+            </div>
+
+            <div className="hidden sm:block">
+              <LocaleSwitch />
             </div>
 
             <button
