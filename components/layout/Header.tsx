@@ -15,7 +15,6 @@ const navItems = [
   { key: "blog", href: "/blog" },
   { key: "about", href: "/about" },
   { key: "chat", href: "/chat" },
-  { key: "contact", href: "/contact" },
 ] as const;
 
 export function Header() {
@@ -60,39 +59,45 @@ export function Header() {
             : "bg-transparent"
         }`}
       >
-        <div className="container-page flex h-20 items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="text-ink transition-opacity hover:opacity-80"
-            aria-label={t("home")}
-          >
-            <Wordmark />
-          </Link>
+        {/* Three zones: logo + language | nav pill | CTA. The grid's 1fr side
+            columns keep the pill centred whatever the side widths, and the
+            whole row mirrors in RTL. Slightly wider than container-page so
+            the pill has room to breathe at xl. */}
+        <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-gutter xl:grid xl:grid-cols-[1fr_auto_1fr] xl:gap-8">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="text-ink transition-opacity hover:opacity-80"
+              aria-label={t("home")}
+            >
+              <Wordmark />
+            </Link>
+
+            <div className="hidden sm:block">
+              <LocaleSwitch />
+            </div>
+          </div>
 
           <nav
-            className="hidden items-center gap-6 xl:flex"
+            className="hidden items-center gap-1 rounded-full border border-ink/15 bg-canvas/60 p-1.5 xl:flex"
             aria-label={t("primary")}
           >
             {navItems.map((item) => (
               <Link
                 key={item.key}
                 href={item.href}
-                className="text-[0.9375rem] font-medium text-ink/75 transition-colors hover:text-cobalt"
+                className="rounded-full px-4 py-2 text-[0.9375rem] font-medium whitespace-nowrap text-ink/75 transition-colors hover:bg-ink/5 hover:text-cobalt"
               >
                 {t(item.key)}
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-end gap-3">
             <div className="hidden md:block">
               <Link href="/contact" className={`${buttonStyles("primary")} whitespace-nowrap`}>
                 {t("cta")}
               </Link>
-            </div>
-
-            <div className="hidden sm:block">
-              <LocaleSwitch />
             </div>
 
             <button
