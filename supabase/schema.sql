@@ -839,6 +839,276 @@ alter table public.admin_users
   check (role in ('owner', 'admin', 'editor', 'operator', 'viewer'));
 
 -- =============================================================================
+-- V5 — CRM documents & outreach: proposals → contracts (public client pages,
+-- online approval/acceptance, PDF by email) and AI-personalised email
+-- campaigns. Run this block once in the Supabase SQL Editor, after V4.
+-- Idempotent: safe to re-run.
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- Proposals. `content` holds the editable sections (intro, understanding,
+-- goals, phases, deliverables, options/packages, exclusions, …) as one JSON
+-- document validated by lib/crm/proposal.ts — the shape evolves with the
+-- templates, so it isn't spread over a dozen columns. Client fields are a
+-- snapshot so a proposal can go to someone who isn't a CRM contact yet.
+-- `view_token` is the unguessable public link (/proposal/<token>), minted
+-- server-side with crypto.randomBytes.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.proposals (
+  id               uuid primary key default gen_random_uuid(),
+  proposal_no      text not null unique,
+  locale           text not null default 'en' check (locale in ('en', 'fa')),
+  contact_id       uuid references public.contacts(id) on delete set null,
+  deal_id          uuid references public.deals(id) on delete set null,
+  client_name      text not null,
+  client_email     text not null,
+  client_company   text,
+  client_phone     text,
+  title            text not null,
+  content          jsonb not null default '{}'::jsonb,
+  currency         text not null default 'EUR',
+  valid_until      date,
+  status           text not null default 'draft'
+                     check (status in ('draft', 'sent', 'viewed', 'approved', 'changes_requested',
+                                       'declined', 'converted', 'canceled')),
+  view_token       text not null unique,
+  revision         int not null default 0,
+  sent_at          timestamptz,
+  first_viewed_at  timestamptz,
+  last_viewed_at   timestamptz,
+  view_count       int not null default 0,
+  responded_at     timestamptz,
+  selected_option  text,
+  responder_name   text,
+  responder_ip     text,
+  contract_id      uuid,
+  created_by       uuid references public.admin_users(id) on delete set null,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+
+create index if not exists proposals_status_idx on public.proposals (status);
+create index if not exists proposals_contact_idx on public.proposals (contact_id);
+create index if not exists proposals_deal_idx on public.proposals (deal_id);
+
+alter table public.proposals enable row level security;
+-- No policies: service role only. The public page reads by token server-side.
+
+create table if not exists public.proposal_comments (
+  id          uuid primary key default gen_random_uuid(),
+  proposal_id uuid not null references public.proposals(id) on delete cascade,
+  author      text not null check (author in ('client', 'admin')),
+  body        text not null,
+  revision    int not null default 0,
+  created_by  uuid references public.admin_users(id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists proposal_comments_proposal_idx on public.proposal_comments (proposal_id, created_at);
+
+alter table public.proposal_comments enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- Contracts. Body is Markdown (13-article template, lib/crm/contract-template.ts);
+-- `## ` headings are auto-numbered as articles when rendered. Acceptance is
+-- two-phase: accepted_* is stamped first (server time + IP), then the
+-- browser renders the signed copy and accepted_copy_sent_at guards the
+-- one-time email of that PDF.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.contracts (
+  id                    uuid primary key default gen_random_uuid(),
+  contract_no           text not null unique,
+  locale                text not null default 'en' check (locale in ('en', 'fa')),
+  title                 text not null,
+  contact_id            uuid references public.contacts(id) on delete set null,
+  deal_id               uuid references public.deals(id) on delete set null,
+  company_id            uuid references public.companies(id) on delete set null,
+  proposal_id           uuid references public.proposals(id) on delete set null,
+  client_name           text not null,
+  client_email          text not null,
+  client_company        text,
+  body_md               text not null default '',
+  amount_cents          bigint not null default 0,
+  currency              text not null default 'EUR',
+  start_date            date,
+  duration_label        text,
+  status                text not null default 'draft'
+                          check (status in ('draft', 'sent', 'viewed', 'accepted', 'canceled')),
+  share_token           text not null unique,
+  sent_at               timestamptz,
+  viewed_at             timestamptz,
+  accepted_at           timestamptz,
+  accepted_by_name      text,
+  accepted_ip           text,
+  accepted_copy_sent_at timestamptz,
+  created_by            uuid references public.admin_users(id) on delete set null,
+  created_at            timestamptz not null default now(),
+  updated_at            timestamptz not null default now()
+);
+
+create index if not exists contracts_status_idx on public.contracts (status);
+create index if not exists contracts_contact_idx on public.contracts (contact_id);
+create index if not exists contracts_deal_idx on public.contracts (deal_id);
+
+alter table public.contracts enable row level security;
+-- No policies: service role only.
+
+-- proposals.contract_id → contracts, added after both tables exist.
+alter table public.proposals drop constraint if exists proposals_contract_id_fkey;
+alter table public.proposals
+  add constraint proposals_contract_id_fkey
+  foreign key (contract_id) references public.contracts(id) on delete set null;
+
+-- -----------------------------------------------------------------------------
+-- Campaigns — human-in-the-loop personalised email. Recipients come from a
+-- code-defined segment (lib/crm/segments.ts) and are frozen into
+-- campaign_emails at creation; the AI drafts each one individually, and
+-- nothing is sent until an admin has reviewed it.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.campaigns (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  segment_key text not null,
+  goal        text not null,
+  status      text not null default 'draft' check (status in ('draft', 'sent')),
+  created_by  uuid references public.admin_users(id) on delete set null,
+  sent_at     timestamptz,
+  created_at  timestamptz not null default now()
+);
+
+alter table public.campaigns enable row level security;
+-- No policies: service role only.
+
+create table if not exists public.campaign_emails (
+  id          uuid primary key default gen_random_uuid(),
+  campaign_id uuid not null references public.campaigns(id) on delete cascade,
+  contact_id  uuid references public.contacts(id) on delete set null,
+  lead_id     uuid references public.leads(id) on delete set null,
+  to_name     text not null,
+  to_email    text not null,
+  locale      text not null default 'en' check (locale in ('en', 'fa')),
+  context     jsonb not null default '{}'::jsonb,
+  subject     text,
+  body_text   text,
+  status      text not null default 'pending'
+                check (status in ('pending', 'ready', 'skipped', 'sent', 'failed')),
+  error       text,
+  sent_at     timestamptz,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists campaign_emails_campaign_idx on public.campaign_emails (campaign_id);
+
+alter table public.campaign_emails enable row level security;
+-- No policies: service role only.
+
+-- -----------------------------------------------------------------------------
+-- AI usage log: new purposes for the V5 features (same drop/add-constraint
+-- pattern as admin_users_role_check above).
+-- -----------------------------------------------------------------------------
+
+alter table public.ai_usage_log
+  drop constraint if exists ai_usage_log_purpose_check;
+alter table public.ai_usage_log
+  add constraint ai_usage_log_purpose_check
+  check (purpose in ('lead_score', 'contact_summary', 'deal_next_action',
+                     'contract_rewrite', 'contract_followup', 'campaign_email', 'crm_assistant'));
+
+-- =============================================================================
+-- V6 — Blog. Bilingual posts (one row per language), written and published
+-- from /admin/blog, shown at /<locale>/blog, and used by the CRM's
+-- "Suggest content" button on leads. Run once after V5. Idempotent.
+-- =============================================================================
+
+create table if not exists public.blog_posts (
+  id           uuid primary key default gen_random_uuid(),
+  locale       text not null default 'en' check (locale in ('en', 'fa')),
+  slug         text not null check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
+  title        text not null,
+  excerpt      text not null default '',
+  body_md      text not null default '',
+  tags         text[] not null default '{}',
+  status       text not null default 'draft' check (status in ('draft', 'published')),
+  published_at timestamptz,
+  created_by   uuid references public.admin_users(id) on delete set null,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  unique (locale, slug)
+);
+
+create index if not exists blog_posts_published_idx on public.blog_posts (locale, published_at desc)
+  where status = 'published';
+
+alter table public.blog_posts enable row level security;
+-- No policies: service role only. Public pages read published rows server-side.
+
+-- Starter posts — DRAFTS. Nothing appears publicly until Roya reviews and
+-- publishes them from /admin/blog.
+insert into public.blog_posts (locale, slug, title, excerpt, tags, body_md) values
+(
+  'en',
+  'pick-the-right-problem-before-you-build-ai',
+  'Pick the right problem before you build anything with AI',
+  'Most AI projects go wrong before a line of code is written — the wrong problem gets picked. Here is the short checklist I use with every client.',
+  array['ai-strategy', 'getting-started'],
+  $md$Most AI projects that disappoint don't fail in the code. They fail in the first meeting, when the wrong problem gets picked.
+
+## Three questions before anything else
+
+1. **Does this happen often?** A task your team does 200 times a week is worth automating. A task done twice a month usually isn't.
+2. **Is the information already written down somewhere?** AI assistants are good at answering from your documents, emails and data. They can't invent knowledge your business doesn't have yet.
+3. **What does "better" look like, in numbers?** Minutes saved per request, answers per day, errors caught. If we can't measure it, we can't tell whether it worked.
+
+## A practical example
+
+A team answering the same delivery-status questions all day is a strong candidate: high volume, the answer lives in one system, and the result is easy to measure.
+
+"Use AI to grow sales" is not a problem yet. It's a wish. The work is turning it into one specific, repeated task.
+
+## What to do next
+
+Write down the three most repetitive tasks in your team this week. Bring them to a free 30-minute consultation and we'll find out together which one — if any — is worth building.$md$
+),
+(
+  'fa',
+  'pick-the-right-problem-before-you-build-ai',
+  'پیش از ساختن هر ابزار هوش مصنوعی، مسئله‌ی درست را انتخاب کنید',
+  'بیشتر پروژه‌های هوش مصنوعی پیش از نوشتن حتی یک خط کد شکست می‌خورند — چون مسئله‌ی اشتباه انتخاب می‌شود. این چک‌لیست کوتاهی است که با هر مشتری استفاده می‌کنم.',
+  array['ai-strategy', 'getting-started'],
+  $md$بیشتر پروژه‌های هوش مصنوعی که ناامیدکننده تمام می‌شوند، در کد شکست نمی‌خورند. در همان جلسه‌ی اول شکست می‌خورند؛ وقتی مسئله‌ی اشتباه انتخاب می‌شود.
+
+## سه سؤال پیش از هر کاری
+
+1. **آیا این کار زیاد تکرار می‌شود؟** کاری که تیم شما هفته‌ای ۲۰۰ بار انجام می‌دهد ارزش خودکارسازی دارد. کاری که ماهی دو بار انجام می‌شود معمولاً نه.
+2. **آیا اطلاعاتش جایی نوشته شده است؟** دستیارهای هوش مصنوعی در پاسخ دادن از روی اسناد، ایمیل‌ها و داده‌های شما خوب‌اند. اما نمی‌توانند دانشی را بسازند که کسب‌وکار شما هنوز ندارد.
+3. **«بهتر شدن» با عدد یعنی چه؟** دقیقه‌های صرفه‌جویی‌شده در هر درخواست، تعداد پاسخ در روز، خطاهای کمتر. اگر نتوانیم اندازه بگیریم، نمی‌فهمیم جواب داده یا نه.
+
+## یک مثال کاربردی
+
+تیمی که تمام روز به سؤال‌های تکراری درباره‌ی وضعیت سفارش جواب می‌دهد، گزینه‌ی خوبی است: حجم بالا، جواب در یک سیستم، و نتیجه‌ای که به‌راحتی اندازه‌گیری می‌شود.
+
+«با هوش مصنوعی فروش را بیشتر کنیم» هنوز مسئله نیست؛ یک آرزوست. کار اصلی این است که آن را به یک کار مشخص و تکراری تبدیل کنیم.
+
+## قدم بعدی
+
+سه کار تکراری تیم‌تان را در همین هفته یادداشت کنید. آن‌ها را به یک جلسه‌ی مشاوره‌ی رایگان ۳۰ دقیقه‌ای بیاورید تا با هم ببینیم کدام‌یک — اگر اصلاً — ارزش ساختن دارد.$md$
+)
+on conflict (locale, slug) do nothing;
+
+-- AI usage log: the CRM's blog-based content suggestion.
+alter table public.ai_usage_log
+  drop constraint if exists ai_usage_log_purpose_check;
+alter table public.ai_usage_log
+  add constraint ai_usage_log_purpose_check
+  check (purpose in ('lead_score', 'contact_summary', 'deal_next_action',
+                     'contract_rewrite', 'contract_followup', 'campaign_email', 'crm_assistant',
+                     'content_suggestion'));
+
+-- =============================================================================
 -- PHASE 2 — booking & payments. Not created yet; documented so the shape is
 -- agreed before it gets built. Uncomment when the consultation goes live.
 -- =============================================================================

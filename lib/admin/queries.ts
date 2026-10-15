@@ -787,6 +787,11 @@ export async function createCompany(input: {
   return toCompany(data);
 }
 
+/** ilike treats % and _ as wildcards — escape them so "100% Pure_Co" matches only itself. */
+export function escapeLike(value: string): string {
+  return value.replace(/[\\%_]/g, (c) => `\\${c}`);
+}
+
 /** Case-insensitive match on name — the convert-time helper, so "Acme Inc" and "acme inc" dedupe to one company. */
 export async function findOrCreateCompanyByName(name: string): Promise<Company> {
   const supabase = requireClient();
@@ -795,7 +800,8 @@ export async function findOrCreateCompanyByName(name: string): Promise<Company> 
   const { data: existing, error: findError } = await supabase
     .from("companies")
     .select(COMPANY_COLUMNS)
-    .ilike("name", trimmed)
+    .ilike("name", escapeLike(trimmed))
+    .limit(1)
     .maybeSingle();
   if (findError) throw findError;
   if (existing) return toCompany(existing);
@@ -1396,7 +1402,15 @@ export async function getContactTimeline(contactId: string): Promise<TimelineIte
 // writeAuditLog — a logging failure must never break the caller.
 // -----------------------------------------------------------------------------
 
-export type AiUsagePurpose = "lead_score" | "contact_summary" | "deal_next_action";
+export type AiUsagePurpose =
+  | "lead_score"
+  | "contact_summary"
+  | "deal_next_action"
+  | "contract_rewrite"
+  | "contract_followup"
+  | "campaign_email"
+  | "crm_assistant"
+  | "content_suggestion";
 
 export async function logAiUsage(
   purpose: AiUsagePurpose,

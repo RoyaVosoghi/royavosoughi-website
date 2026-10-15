@@ -13,6 +13,7 @@ const navItems = [
   { key: "services", href: "/#services" },
   { key: "process", href: "/#process" },
   { key: "projects", href: "/#projects" },
+  { key: "blog", href: "/blog" },
   { key: "about", href: "/about" },
   { key: "chat", href: "/chat" },
   { key: "contact", href: "/#contact" },

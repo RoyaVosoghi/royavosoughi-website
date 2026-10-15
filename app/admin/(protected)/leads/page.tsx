@@ -3,6 +3,7 @@ import { EmptyState } from "@/components/admin/EmptyState";
 import { LeadAiScore } from "@/components/admin/LeadAiScore";
 import { LeadConvertButton } from "@/components/admin/LeadConvertButton";
 import { LeadStatusSelect } from "@/components/admin/LeadStatusSelect";
+import { LeadSuggestContent } from "@/components/admin/LeadSuggestContent";
 import { ScoreUnscoredLeadsButton } from "@/components/admin/ScoreUnscoredLeadsButton";
 import { getAdminTranslator } from "@/lib/admin/i18n/server";
 import { getLeads, type Lead } from "@/lib/admin/queries";
@@ -22,8 +23,12 @@ function buildColumns(
     { header: t("columnAiScore"), cell: (row) => <LeadAiScore id={row.id} score={row.aiScore} reason={row.aiScoreReason} /> },
     {
       header: t("columnActions"),
-      cell: (row) =>
-        row.status === "converted" ? null : <LeadConvertButton id={row.id} companyName={row.companyName} />,
+      cell: (row) => (
+        <div className="flex flex-col items-start gap-2">
+          {row.status === "converted" ? null : <LeadConvertButton id={row.id} companyName={row.companyName} />}
+          <LeadSuggestContent id={row.id} />
+        </div>
+      ),
     },
     {
       header: t("columnCaptured"),

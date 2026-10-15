@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActivityListSection } from "@/components/admin/ActivityListSection";
+import { DocumentsCard } from "@/components/admin/crm/DocumentsCard";
 import { DealEditForm } from "@/components/admin/DealEditForm";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { SuggestNextActionButton } from "@/components/admin/SuggestNextActionButton";
@@ -47,6 +48,8 @@ export default async function AdminDealDetailPage({ params }: { params: Promise<
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 flex flex-col gap-6">
           <DealEditForm deal={deal} stages={stages} />
+
+          <DocumentsCard contactId={deal.contactId} dealId={deal.id} />
 
           <section className="rounded-3xl border-2 border-ink/10 bg-canvas p-6">
             <div className="flex items-center justify-between gap-4">

@@ -34,11 +34,11 @@ export async function Footer() {
             <nav aria-label={t("siteLinks")}>
               <h2 className="label-eyebrow text-fog">{t("siteLinks")}</h2>
               <ul className="mt-5 space-y-3">
-                {(["services", "process", "projects", "about", "contact"] as const).map(
+                {(["services", "process", "projects", "blog", "about", "contact"] as const).map(
                   (key) => (
                     <li key={key}>
                       <Link
-                        href={key === "about" ? "/about" : `/#${key}`}
+                        href={key === "about" || key === "blog" ? `/${key}` : `/#${key}`}
                         className="text-mist transition-colors hover:text-cobalt-light"
                       >
                         {nav(key)}

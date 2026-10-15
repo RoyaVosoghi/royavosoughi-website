@@ -10,6 +10,7 @@
     "services": "Services",
     "process": "Process",
     "projects": "Projects",
+    "blog": "Blog",
     "about": "About",
     "chat": "Chat",
     "contact": "Contact",
@@ -307,5 +308,20 @@
     "title": "This page doesn't exist.",
     "body": "The link may be old, or the page may not be built yet.",
     "cta": "Back to home"
+  },
+  "blog": {
+    "metaTitle": "Blog — practical AI for real business problems",
+    "metaDescription": "Short, practical notes on putting AI to work in a real business: what to build, what to skip, and how to tell whether it worked.",
+    "eyebrow": "Blog",
+    "title": "Practical notes on AI that works.",
+    "intro": "What I learn building AI tools for real businesses — what to build, what to skip, and how to tell whether it worked. No hype.",
+    "emptyState": "The first articles are being written. They appear here only once they are worth your time.",
+    "readMore": "Read the article",
+    "minutes": "{count} min read",
+    "backToBlog": "← All articles",
+    "otherLanguage": "Read in Persian",
+    "ctaTitle": "Have a problem like this in your business?",
+    "ctaBody": "Bring it to a free 30-minute consultation — we'll find out together whether AI is the right answer.",
+    "ctaButton": "Request a consultation"
   }
 }

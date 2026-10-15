@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ActivityListSection } from "@/components/admin/ActivityListSection";
 import { ContactStatusSelect } from "@/components/admin/ContactStatusSelect";
+import { DocumentsCard } from "@/components/admin/crm/DocumentsCard";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { RegenerateSummaryButton } from "@/components/admin/RegenerateSummaryButton";
 import { getAdminTranslator } from "@/lib/admin/i18n/server";
@@ -155,6 +156,8 @@ export default async function AdminContactDetailPage({ params }: { params: Promi
               </ul>
             )}
           </section>
+
+          <DocumentsCard contactId={contact.id} />
 
           <section className="rounded-3xl border-2 border-ink/10 bg-canvas p-6">
             <h2 className="font-display text-lg font-bold text-ink">{t("detail.activitiesTitle")}</h2>

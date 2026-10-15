@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 
 import { routing } from "@/i18n/routing";
+import { listPublishedPosts } from "@/lib/blog";
 import { site } from "@/lib/site";
 
-const paths = ["", "/about"] as const;
+const paths = ["", "/about", "/blog"] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return paths.flatMap((path) =>
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const pages = paths.flatMap((path) =>
     routing.locales.map((locale) => ({
       url: `${site.url}/${locale}${path}`,
       lastModified: new Date(),
@@ -19,4 +20,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     })),
   );
+
+  // Published posts only; each language version is its own URL.
+  const posts = (await listPublishedPosts()).map((post) => ({
+    url: `${site.url}/${post.locale}/blog/${post.slug}`,
+    lastModified: new Date(post.updatedAt),
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+  }));
+
+  return [...pages, ...posts];
 }

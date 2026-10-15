@@ -5,6 +5,7 @@ import inbox from "./messages/inbox.en";
 import system from "./messages/system.en";
 import crm from "./messages/crm.en";
 import identities from "./messages/identities.en";
+import docs from "./messages/docs.en";
 
 /**
  * Source-of-truth English strings for the admin panel — a separate tree from
@@ -26,6 +27,7 @@ const messages = {
   ...system,
   ...crm,
   ...identities,
+  ...docs,
 } as const;
 
 export default messages;

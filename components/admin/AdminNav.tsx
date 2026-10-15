@@ -24,7 +24,12 @@ interface NavLink {
     | "linkCompanies"
     | "linkDeals"
     | "linkActivities"
+    | "linkProposals"
+    | "linkContracts"
+    | "linkCampaigns"
     | "linkCrmReports"
+    | "linkAssistant"
+    | "linkBlog"
     | "linkChannels"
     | "linkBroadcast"
     | "linkTeam"
@@ -33,7 +38,7 @@ interface NavLink {
 }
 
 interface NavGroup {
-  labelKey: "groupOverview" | "groupKnowledgeAi" | "groupInboxPeople" | "groupCrm" | "groupChannels" | "groupSystem";
+  labelKey: "groupOverview" | "groupContent" | "groupKnowledgeAi" | "groupInboxPeople" | "groupCrm" | "groupChannels" | "groupSystem";
   links: NavLink[];
 }
 
@@ -41,6 +46,10 @@ const GROUPS: NavGroup[] = [
   {
     labelKey: "groupOverview",
     links: [{ href: "/admin", labelKey: "linkDashboard" }],
+  },
+  {
+    labelKey: "groupContent",
+    links: [{ href: "/admin/blog", labelKey: "linkBlog" }],
   },
   {
     labelKey: "groupKnowledgeAi",
@@ -68,7 +77,11 @@ const GROUPS: NavGroup[] = [
       { href: "/admin/companies", labelKey: "linkCompanies" },
       { href: "/admin/deals", labelKey: "linkDeals" },
       { href: "/admin/activities", labelKey: "linkActivities" },
+      { href: "/admin/proposals", labelKey: "linkProposals" },
+      { href: "/admin/contracts", labelKey: "linkContracts" },
+      { href: "/admin/campaigns", labelKey: "linkCampaigns" },
       { href: "/admin/reports", labelKey: "linkCrmReports" },
+      { href: "/admin/assistant", labelKey: "linkAssistant" },
     ],
   },
   {
