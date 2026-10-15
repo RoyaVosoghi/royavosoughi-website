@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 import { listPublishedPosts } from "@/lib/blog";
 import { site } from "@/lib/site";
 
-const paths = ["", "/about", "/blog", "/contact"] as const;
+const paths = ["", "/about", "/blog", "/contact", "/services"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = paths.flatMap((path) =>

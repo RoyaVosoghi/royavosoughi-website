@@ -4,13 +4,15 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 
-const consultationPoints = ["p1", "p2", "p3"] as const;
-const upcoming = ["webinars", "classes"] as const;
+const offers = [
+  { key: "consultation", available: true },
+  { key: "webinars", available: false },
+  { key: "classes", available: false },
+] as const;
 
 /**
- * The page's dark anchor. One real service, described in terms of what the
- * client walks away with. Booking + payment arrive in Phase 2 — until then the
- * CTA opens the contact form with the subject pre-filled.
+ * Home-page teaser and the page's dark anchor: what's on offer at a glance.
+ * The full description lives on /services (ServicesDetail).
  */
 export async function Services() {
   const t = await getTranslations("services");
@@ -27,73 +29,39 @@ export async function Services() {
         />
       </Reveal>
 
-      <div className="mt-14 grid gap-6 lg:grid-cols-3">
-        {/* Primary offer */}
-        <Reveal
-          delayMs={80}
-          className="rounded-3xl bg-canvas p-8 md:p-10 lg:col-span-2"
-        >
-          <div className="flex flex-wrap items-center gap-3">
-            <h3 className="text-2xl text-ink md:text-3xl">
-              {t("consultation.name")}
-            </h3>
-            <span className="rounded-full bg-mist px-3 py-1 text-sm font-semibold text-cobalt">
-              {t("consultation.duration")}
-            </span>
-            <span className="rounded-full bg-amber/20 px-3 py-1 text-sm font-semibold text-amber-deep">
-              {t("consultation.free")}
-            </span>
-          </div>
+      <div className="mt-12 grid gap-4 md:grid-cols-3">
+        {offers.map(({ key, available }, i) => (
+          <Reveal
+            key={key}
+            delayMs={80 + i * 80}
+            className={`rounded-3xl p-7 ${available ? "bg-canvas" : "border border-fog/25"}`}
+          >
+            <div>
+              <span
+                className={`label-eyebrow ${available ? "text-cobalt" : "text-cobalt-light"}`}
+              >
+                {available ? t("availableLabel") : t("soonLabel")}
+              </span>
+              <h3 className={`mt-3 text-xl ${available ? "text-ink" : "text-canvas"}`}>
+                {t(`${key}.name`)}
+              </h3>
+              {available ? (
+                <p className="mt-2 text-sm font-semibold text-ink/60">
+                  {t("consultation.duration")} · {t("consultation.free")}
+                </p>
+              ) : null}
+            </div>
+          </Reveal>
+        ))}
+      </div>
 
-          <p className="mt-5 text-lg text-ink/80">{t("consultation.summary")}</p>
-
-          <h4 className="label-eyebrow mt-8 text-cobalt">
-            {t("consultation.walkAwayWith")}
-          </h4>
-          <ul className="mt-4 space-y-3">
-            {consultationPoints.map((key) => (
-              <li key={key} className="flex gap-3 text-ink/80">
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="mt-1 h-5 w-5 shrink-0"
-                  fill="none"
-                  stroke="var(--color-cobalt)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 12.5 L9.5 18 L20 6" />
-                </svg>
-                <span>{t(`consultation.${key}`)}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <ButtonLink href={`/${locale}/contact`} variant="primary">
-              {t("consultation.cta")}
-            </ButtonLink>
-            <p className="text-sm text-ink/70">{t("consultation.note")}</p>
-          </div>
-        </Reveal>
-
-        {/* Roadmap — visible so the site reads as a growing practice */}
-        <div className="flex flex-col gap-6">
-          {upcoming.map((key, i) => (
-            <Reveal
-              key={key}
-              delayMs={160 + i * 80}
-              className="flex-1 rounded-3xl border border-fog/25 p-8"
-            >
-              <span className="label-eyebrow text-cobalt-light">{t("soonLabel")}</span>
-              <h3 className="mt-3 text-xl text-canvas">{t(`${key}.name`)}</h3>
-              <p className="mt-3 text-[0.9375rem] leading-relaxed text-mist">
-                {t(`${key}.summary`)}
-              </p>
-            </Reveal>
-          ))}
-        </div>
+      <div className="mt-10 flex flex-wrap gap-4">
+        <ButtonLink href={`/${locale}/services`} variant="onDark">
+          {t("teaserLink")}
+        </ButtonLink>
+        <ButtonLink href={`/${locale}/contact`} variant="onDarkGhost">
+          {t("consultation.cta")}
+        </ButtonLink>
       </div>
     </Section>
   );

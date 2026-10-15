@@ -10,7 +10,7 @@ import { LocaleSwitch } from "./LocaleSwitch";
 
 const navItems = [
   { key: "homeNav", href: "/" },
-  { key: "services", href: "/#services" },
+  { key: "services", href: "/services" },
   { key: "projects", href: "/#projects" },
   { key: "blog", href: "/blog" },
   { key: "about", href: "/about" },
