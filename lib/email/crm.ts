@@ -322,7 +322,7 @@ export function sendCampaignEmail(e: { locale: DocLocale; toEmail: string; subje
       locale: e.locale,
       heading: e.subject,
       paragraphs: e.bodyText.split(/\n\s*\n/),
-      cta: { label: fa ? "رزرو مشاوره‌ی رایگان ۳۰ دقیقه‌ای" : "Book a free 30-minute consultation", url: `${site.url}/${e.locale}#contact` },
+      cta: { label: fa ? "رزرو مشاوره‌ی رایگان ۳۰ دقیقه‌ای" : "Book a free 30-minute consultation", url: `${site.url}/${e.locale}/contact` },
       note: fa
         ? "اگر نمی‌خواهید ایمیل دیگری از من دریافت کنید، فقط به همین ایمیل پاسخ دهید و بنویسید «لغو»."
         : "If you'd rather not hear from me again, just reply with \"unsubscribe\".",

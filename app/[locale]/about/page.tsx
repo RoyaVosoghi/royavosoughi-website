@@ -74,7 +74,7 @@ export default async function AboutPage({
             {t("ctaBody")}
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <ButtonLink href={`/${locale}#contact`} variant="onDark">
+            <ButtonLink href={`/${locale}/contact`} variant="onDark">
               {t("ctaPrimary")}
             </ButtonLink>
             <ButtonLink

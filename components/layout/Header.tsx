@@ -16,7 +16,7 @@ const navItems = [
   { key: "blog", href: "/blog" },
   { key: "about", href: "/about" },
   { key: "chat", href: "/chat" },
-  { key: "contact", href: "/#contact" },
+  { key: "contact", href: "/contact" },
 ] as const;
 
 export function Header() {
@@ -87,7 +87,7 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             <div className="hidden md:block">
-              <Link href="/#contact" className={`${buttonStyles("primary")} whitespace-nowrap`}>
+              <Link href="/contact" className={`${buttonStyles("primary")} whitespace-nowrap`}>
                 {t("cta")}
               </Link>
             </div>
@@ -144,7 +144,7 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/#contact"
+              href="/contact"
               className={`mt-6 justify-center ${buttonStyles("primary")}`}
             >
               {t("cta")}

@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ const upcoming = ["webinars", "classes"] as const;
  */
 export async function Services() {
   const t = await getTranslations("services");
+  const locale = await getLocale();
 
   return (
     <Section id="services" tone="forest" className="bg-dot-grid">
@@ -70,7 +71,7 @@ export async function Services() {
           </ul>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <ButtonLink href="#contact" variant="primary">
+            <ButtonLink href={`/${locale}/contact`} variant="primary">
               {t("consultation.cta")}
             </ButtonLink>
             <p className="text-sm text-ink/70">{t("consultation.note")}</p>

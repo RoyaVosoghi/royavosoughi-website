@@ -35,11 +35,14 @@ export function SectionHeading({
   title,
   intro,
   tone = "light",
+  as: Heading = "h2",
 }: {
   eyebrow: string;
   title: string;
   intro?: string;
   tone?: Tone;
+  /** h1 when the section is the whole page (e.g. /contact). */
+  as?: "h1" | "h2";
 }) {
   const onForest = tone === "forest";
 
@@ -50,11 +53,11 @@ export function SectionHeading({
       >
         {eyebrow}
       </p>
-      <h2
+      <Heading
         className={`text-section mt-4 ${onForest ? "text-canvas" : "text-ink"}`}
       >
         {title}
-      </h2>
+      </Heading>
       {intro ? (
         <p
           className={`mt-6 text-lg md:text-xl ${

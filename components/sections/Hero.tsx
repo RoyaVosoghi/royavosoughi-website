@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { ButtonLink } from "@/components/ui/Button";
 import { HeroCodeCard } from "./HeroCodeCard";
@@ -12,6 +12,7 @@ import { HeroCodeCard } from "./HeroCodeCard";
  */
 export async function Hero() {
   const t = await getTranslations("hero");
+  const locale = await getLocale();
 
   return (
     <section className="relative flex min-h-[calc(100dvh-5rem)] items-center overflow-hidden py-16">
@@ -58,7 +59,7 @@ export async function Hero() {
             className="rise-in mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start"
             style={{ animationDelay: "320ms" }}
           >
-            <ButtonLink href="#contact" variant="primary">
+            <ButtonLink href={`/${locale}/contact`} variant="primary">
               {t("ctaPrimary")}
             </ButtonLink>
             <ButtonLink href="#projects" variant="secondary">

@@ -6,17 +6,19 @@ import { isSupabaseConfigured } from "@/lib/supabase";
 import { site } from "@/lib/site";
 import { ContactForm } from "./ContactForm";
 
+/** The consultation form. Rendered as its own page at /[locale]/contact. */
 export async function Contact() {
   const t = await getTranslations("contact");
 
   return (
-    <Section id="contact" tone="light">
+    <Section id="contact" tone="light" className="pt-14 md:pt-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-20">
         <Reveal>
           <SectionHeading
             eyebrow={t("eyebrow")}
             title={t("title")}
             intro={t("intro")}
+            as="h1"
           />
 
           <dl className="mt-10 space-y-6">

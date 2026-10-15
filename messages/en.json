@@ -209,6 +209,8 @@
     "errorBody": "The call couldn't connect. Check your microphone permission and try again."
   },
   "contact": {
+    "metaTitle": "Request a consultation",
+    "metaDescription": "Tell Roya Vosoughi what you're trying to solve. A personal reply within two working days with an honest view of whether AI is the right fit.",
     "eyebrow": "Contact",
     "title": "Tell me what you're trying to solve.",
     "intro": "Share a few lines about your business and the problem. I'll reply personally within two working days with an honest view of whether AI is the right fit.",

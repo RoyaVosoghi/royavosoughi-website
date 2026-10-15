@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
           <h2 className="text-2xl text-canvas">{t("ctaTitle")}</h2>
           <p className="mt-3 text-mist">{t("ctaBody")}</p>
           <div className="mt-6">
-            <ButtonLink href={`/${locale}#contact`}>{t("ctaButton")}</ButtonLink>
+            <ButtonLink href={`/${locale}/contact`}>{t("ctaButton")}</ButtonLink>
           </div>
         </aside>
       </article>

@@ -117,7 +117,7 @@ export async function Projects() {
         className="mt-14 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-start"
       >
         <p className="text-xl text-ink">{t("ctaTitle")}</p>
-        <ButtonLink href="#contact" variant="secondary">
+        <ButtonLink href={`/${locale}/contact`} variant="secondary">
           {t("ctaButton")}
         </ButtonLink>
       </Reveal>
