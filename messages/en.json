@@ -163,7 +163,7 @@
   },
   "about": {
     "eyebrow": "About",
-    "title": "I'm Roya Vosoughi.",
+    "title": "I'm Roya.",
     "p1": "I'm an AI engineer and software developer. I design and build applications powered by large language models — RAG systems, assistants and agents that take on a specific, measurable job inside a business.",
     "p2": "My focus is the gap between an impressive demo and a dependable product: answers grounded in your own data, sensible limits on what the AI decides alone, clear documentation, and support after handoff. Every project starts with your problem, not the technology.",
     "quote": "Built to be used, not just shown.",
