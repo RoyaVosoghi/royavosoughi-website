@@ -9,5 +9,5 @@ export const config = {
   // client-facing proposal/contract pages (their language comes from the
   // document itself, not the URL — see app/(documents)/layout.tsx), Next
   // internals, and files with an extension (images, svg, robots.txt, …).
-  matcher: ["/((?!api|admin|proposal/|contract/|_next|_vercel|.*\..*).*)"],
+  matcher: ["/((?!api|admin|proposal/|contract/|_next|_vercel|.*\\..*).*)"],
 };
