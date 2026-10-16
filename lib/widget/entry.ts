@@ -203,7 +203,13 @@ if (!(window as unknown as { __royaChatWidgetLoaded?: boolean }).__royaChatWidge
       flex-direction: column;
       align-items: flex-end;
       gap: 14px;
+      /* The root's box spans the (closed, invisible) panel too — up to
+         22rem × 70vh, i.e. most of a phone screen. Left hit-testable, it
+         swallowed every tap on the page beneath it. Only the children
+         take pointer events; the closed panel opts back out below. */
+      pointer-events: none;
     }
+    .rv-root > * { pointer-events: auto; }
     .rv-panel {
       width: min(22rem, calc(100vw - 2.5rem));
       height: min(32rem, 70vh);
