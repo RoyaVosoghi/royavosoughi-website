@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import en from "@/messages/en.json";
 import { site } from "@/lib/site";
 import type { ContactSelect } from "@/lib/contact-options";
+import type { ServiceKey } from "@/lib/service-options";
 
 const apiKey = process.env.RESEND_API_KEY;
 
@@ -98,5 +99,57 @@ export async function sendContactNotification(data: ContactNotification) {
     });
   } catch (error) {
     console.error("[resend] notification failed:", error);
+  }
+}
+
+type ServiceRequestNotification = {
+  service: ServiceKey;
+  name: string;
+  business: string;
+  contact: string;
+  email: string;
+  message: string;
+};
+
+/** Best-effort, like sendContactNotification — the request is already saved. */
+export async function sendServiceRequestNotification(data: ServiceRequestNotification) {
+  const client = getClient();
+  if (!client) return;
+
+  const service = en.services.items[data.service].name;
+  const rows = [
+    ["Service", service],
+    ["Name", data.name],
+    ["Business", data.business],
+    ["Phone / Telegram", data.contact],
+    ["Email", data.email],
+  ];
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 560px;">
+      <h2 style="color: #1E1E1E;">New service request</h2>
+      <table cellpadding="6" style="border-collapse: collapse;">
+        ${rows
+          .map(
+            ([label, value]) =>
+              `<tr><td style="color:#666;">${escapeHtml(label)}</td><td><strong>${escapeHtml(value)}</strong></td></tr>`,
+          )
+          .join("")}
+      </table>
+      <p style="color:#666; margin-top: 16px;">Most important task to improve with AI</p>
+      <p style="white-space: pre-wrap;">${escapeHtml(data.message)}</p>
+    </div>
+  `;
+
+  try {
+    await client.emails.send({
+      from: FROM,
+      to: NOTIFY_TO.toLowerCase(),
+      replyTo: data.email,
+      subject: `New ${service} request from ${data.name} (${data.business})`,
+      html,
+    });
+  } catch (error) {
+    console.error("[resend] service request notification failed:", error);
   }
 }

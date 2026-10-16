@@ -18,6 +18,7 @@ interface NavLink {
     | "linkHandoffs"
     | "linkLeads"
     | "linkRegistrations"
+    | "linkServiceRequests"
     | "linkFeedback"
     | "linkContacts"
     | "linkIdentities"
@@ -64,6 +65,7 @@ const GROUPS: NavGroup[] = [
     links: [
       { href: "/admin/conversations", labelKey: "linkInbox" },
       { href: "/admin/handoffs", labelKey: "linkHandoffs" },
+      { href: "/admin/requests", labelKey: "linkServiceRequests" },
       { href: "/admin/registrations", labelKey: "linkRegistrations" },
       { href: "/admin/feedback", labelKey: "linkFeedback" },
       { href: "/admin/identities", labelKey: "linkIdentities" },

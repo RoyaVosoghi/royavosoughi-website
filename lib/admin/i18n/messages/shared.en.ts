@@ -27,6 +27,7 @@ const messages = {
     linkHandoffs: "Handoffs",
     linkLeads: "Leads",
     linkRegistrations: "Registrations",
+    linkServiceRequests: "Service requests",
     linkFeedback: "Feedback",
     linkContacts: "Contacts",
     linkIdentities: "Identities",

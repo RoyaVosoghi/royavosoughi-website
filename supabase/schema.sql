@@ -1152,3 +1152,37 @@ alter table public.ai_usage_log
 -- RLS intent for all of the above: a user may select ONLY rows where
 -- user_id = auth.uid(). Inserts happen server-side from the Stripe webhook
 -- using the service-role key, never from the browser.
+
+-- -----------------------------------------------------------------------------
+-- Service requests: the "Register / Request" form on /services.
+-- Same rule as contact_messages: the website (anon key) may INSERT, nothing
+-- else. There is NO select policy, so only the service-role key — used by the
+-- logged-in /admin/requests page — and the Supabase dashboard can read rows.
+-- `service` values must match lib/service-options.ts.
+-- -----------------------------------------------------------------------------
+
+create table if not exists public.service_requests (
+  id         uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  service    text not null check (service in ('training', 'consulting', 'automation', 'agent', 'multiAgent')),
+  name       text not null check (char_length(name) between 2 and 120),
+  business   text not null check (char_length(business) between 1 and 160),
+  contact    text not null check (char_length(contact) between 3 and 120),
+  email      text not null check (char_length(email) <= 200 and email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'),
+  message    text not null check (char_length(message) between 5 and 4000)
+);
+
+create index if not exists service_requests_created_at_idx
+  on public.service_requests (created_at desc);
+
+alter table public.service_requests enable row level security;
+
+drop policy if exists "anon can insert service requests" on public.service_requests;
+create policy "anon can insert service requests"
+  on public.service_requests
+  for insert
+  to anon
+  with check (true);
+
+revoke all on public.service_requests from anon, authenticated;
+grant insert on public.service_requests to anon;

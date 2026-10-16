@@ -29,6 +29,7 @@ const messages: DeepStringify<typeof shared> = {
     linkHandoffs: "ارجاع به انسان",
     linkLeads: "سرنخ‌ها",
     linkRegistrations: "ثبت‌نام‌ها",
+    linkServiceRequests: "درخواست‌های خدمات",
     linkFeedback: "بازخوردها",
     linkContacts: "مخاطبان",
     linkIdentities: "هویت‌ها",

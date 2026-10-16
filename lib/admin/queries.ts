@@ -34,6 +34,17 @@ export interface Registration {
   createdAt: string;
 }
 
+export interface ServiceRequest {
+  id: string;
+  createdAt: string;
+  service: string;
+  name: string;
+  business: string;
+  contact: string;
+  email: string;
+  message: string;
+}
+
 export interface ConversationSummary {
   id: string;
   channel: string;
@@ -275,6 +286,29 @@ export async function getRegistrations(limit = 100): Promise<Registration[]> {
     status: row.status,
     locale: row.locale,
     createdAt: row.created_at,
+  }));
+}
+
+/** service_requests rows, newest first. Service-role only — RLS gives the anon key INSERT and nothing else. */
+export async function getServiceRequests(limit = 500): Promise<ServiceRequest[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("service_requests")
+    .select("id, created_at, service, name, business, contact, email, message")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    createdAt: row.created_at,
+    service: row.service,
+    name: row.name,
+    business: row.business,
+    contact: row.contact,
+    email: row.email,
+    message: row.message,
   }));
 }
 

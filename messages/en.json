@@ -51,36 +51,79 @@
   },
   "services": {
     "metaTitle": "Services",
-    "metaDescription": "AI Strategy Consultation with Roya Vosoughi: a focused 30-minute call, first session free. Webinars and online classes coming soon.",
+    "metaDescription": "Roya Vosoughi's AI services: group training, consulting sessions, automation, custom agents and multi-agent systems.",
     "eyebrow": "Services",
-    "title": "Start with a conversation.",
-    "intro": "Most AI projects go wrong before a line of code is written — the wrong problem gets picked. So we start by finding the right one.",
-    "soonLabel": "Coming soon",
-    "soonTitle": "Coming next",
-    "availableLabel": "Open for booking",
+    "title": "From one training session to a team of agents.",
+    "intro": "Five ways to make AI actually work in your business. Pick the one closest to your problem and send a request.",
     "teaserLink": "See all services",
-    "consultation": {
-      "name": "AI Strategy Consultation",
-      "duration": "30 minutes",
-      "free": "First session free",
-      "summary": "One focused call about your business and where AI genuinely fits — and, just as often, where it doesn't. Bring a problem, not a technology.",
-      "walkAwayWith": "You leave with",
-      "t1": "The right problem",
-      "t2": "Effort and timeline",
-      "t3": "Something to share",
-      "p1": "A clear read on which of your problems AI can actually solve today, and which are better solved another way.",
-      "p2": "A realistic scope: what it would take to build, roughly how long, and what could go wrong.",
-      "p3": "A written summary after the call, so you can share it with your team without relying on your notes.",
-      "cta": "Request a consultation",
-      "note": "Online booking and payment are opening soon."
+    "cta": "Register / Request",
+    "labels": {
+      "for": "For",
+      "problem": "Problem",
+      "deliverable": "Deliverable",
+      "duration": "Duration",
+      "price": "Price"
     },
-    "webinars": {
-      "name": "Webinars",
-      "summary": "Live sessions on putting AI to work in a real business — practical, in plain language, with the code shown on screen."
+    "items": {
+      "training": {
+        "name": "Training Course",
+        "for": "Groups of 5–6 people.",
+        "problem": "What people know about AI is scattered and missing the details that matter, so they don't get the results they want.",
+        "deliverable": "A document of engineered prompts and the step-by-step process of a sample project, plus the session recording.",
+        "duration": "A 2–3 hour training session.",
+        "price": "Set after the introductory meeting."
+      },
+      "consulting": {
+        "name": "Consulting Session",
+        "for": "A manager, or an employee, who wants to start using AI.",
+        "problem": "They don't know what improvements AI could bring to their work.",
+        "deliverable": "A 30–45 minute session reviewing your workflow, then a written proposal of opportunities and solutions a few days later.",
+        "duration": "One session plus a few working days.",
+        "price": "Set after the introductory meeting or once the proposal is ready."
+      },
+      "automation": {
+        "name": "Automation",
+        "for": "Anyone who has to do the same set of repetitive tasks every day.",
+        "problem": "A lot of time goes into that repetitive workflow, every single day.",
+        "deliverable": "An automated system that does those tasks for you at a set time each day.",
+        "duration": "From a few weeks up to several months, including support.",
+        "price": "Set after the consulting session."
+      },
+      "agent": {
+        "name": "Agent Creation",
+        "for": "Anyone for whom one process takes several days to complete.",
+        "problem": "Every step of the task has to be checked personally.",
+        "deliverable": "An agent that checks every detail of the process in line with your personal brand, and gets your approval.",
+        "duration": "Around 3–4 weeks.",
+        "price": "Set after the consulting session."
+      },
+      "multiAgent": {
+        "name": "Multi-Agent",
+        "for": "Clients happy with their automation and agent who want to go further.",
+        "problem": "Scattered processes across the company.",
+        "deliverable": "Several agents with independent tasks, and a manager agent for final approval.",
+        "duration": "6–8 weeks.",
+        "price": "Set after the consulting session."
+      }
     },
-    "classes": {
-      "name": "Online classes",
-      "summary": "Structured courses for teams who want to build their own AI capability instead of outsourcing it forever."
+    "form": {
+      "title": "Register / Request",
+      "requiredNote": "All fields are required.",
+      "serviceLabel": "Selected service",
+      "nameLabel": "Name",
+      "businessLabel": "Business name",
+      "contactLabel": "Phone number or Telegram ID",
+      "contactPlaceholder": "+1… or @username",
+      "emailLabel": "Email",
+      "messageLabel": "What is the most important task you want to improve with AI?",
+      "requiredError": "Please fill in this field.",
+      "emailError": "Enter a valid email address.",
+      "submit": "Send request",
+      "sending": "Sending…",
+      "close": "Close",
+      "successTitle": "Request received",
+      "successBody": "Your request has been submitted. I will contact you within 24 business hours.",
+      "errorBody": "That didn't go through. Please try again, or email me directly at"
     }
   },
   "process": {
