@@ -10,17 +10,18 @@ const base =
 
 const variants: Record<Variant, string> = {
   // Cobalt solid — the one primary action per screen. Text on cobalt is
-  // always white (8:1; ink on cobalt is only 2.2:1); hover deepens to
-  // cobalt-dark and the press-shadow is an Ink line.
+  // white in light (8:1; ink on cobalt is only 2.2:1) — on-cobalt flips it in
+  // dark. Hover deepens to cobalt-dark and the press-shadow is an Ink line
+  // (black in dark, where Ink is cream).
   primary:
-    "bg-cobalt text-white shadow-[0_2px_0_0_var(--color-ink)] " +
-    "hover:bg-cobalt-dark hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--color-ink)] active:translate-y-0",
+    "bg-cobalt text-on-cobalt shadow-[0_2px_0_0_var(--btn-press,var(--color-ink))] " +
+    "hover:bg-cobalt-dark hover:-translate-y-0.5 hover:shadow-[0_4px_0_0_var(--btn-press,var(--color-ink))] active:translate-y-0",
   // Outlined on light
   secondary:
     "border-2 border-ink text-ink hover:bg-ink hover:text-canvas",
   // Cobalt on Ink sections — white text keeps 8:1; hover flips to cream
   onDark:
-    "bg-cobalt text-white hover:bg-canvas hover:text-ink hover:-translate-y-0.5 active:translate-y-0",
+    "bg-cobalt text-on-cobalt hover:bg-canvas hover:text-ink hover:-translate-y-0.5 active:translate-y-0",
   onDarkGhost:
     "border-2 border-fog text-canvas hover:bg-canvas hover:text-ink hover:border-canvas",
 };

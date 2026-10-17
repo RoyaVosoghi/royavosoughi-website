@@ -141,7 +141,7 @@ export function Markdown({ source, className = "" }: { source: string; className
             );
           case "code":
             return (
-              <pre key={i} dir="ltr" className="overflow-x-auto rounded-2xl bg-ink p-5 text-sm text-canvas">
+              <pre key={i} dir="ltr" className="surface-ink overflow-x-auto rounded-2xl bg-ink p-5 text-sm text-canvas">
                 <code>{block.text}</code>
               </pre>
             );

@@ -11,6 +11,7 @@ import { site } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { VoiceWidget } from "@/components/chat/VoiceWidget";
+import { themeInitScript } from "@/lib/theme";
 import "../globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -102,6 +103,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} className={fontVars} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body
         className={`locale-${locale} min-h-dvh flex flex-col`}
         suppressHydrationWarning

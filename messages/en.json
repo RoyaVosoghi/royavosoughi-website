@@ -17,7 +17,8 @@
     "cta": "Request a consultation",
     "menu": "Open menu",
     "close": "Close menu",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "theme": "Toggle dark theme"
   },
   "hero": {
     "eyebrow": "AI engineered for reality",

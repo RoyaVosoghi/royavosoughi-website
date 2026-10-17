@@ -16,7 +16,7 @@ export async function Footer() {
   ];
 
   return (
-    <footer className="bg-ink text-canvas">
+    <footer className="surface-ink bg-ink text-canvas">
       <div className="container-page py-16 md:py-20">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">

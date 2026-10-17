@@ -7,6 +7,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/Logo";
 import { buttonStyles } from "@/components/ui/Button";
 import { LocaleSwitch } from "./LocaleSwitch";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navItems = [
   { key: "homeNav", href: "/" },
@@ -55,7 +56,7 @@ export function Header() {
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           scrolled
-            ? "bg-canvas/85 backdrop-blur-md shadow-[0_1px_0_0_rgba(30,30,30,0.1)]"
+            ? "bg-canvas/85 backdrop-blur-md shadow-[0_1px_0_0_color-mix(in_srgb,var(--color-ink)_10%,transparent)]"
             : "bg-transparent"
         }`}
       >
@@ -93,6 +94,8 @@ export function Header() {
                 {t("cta")}
               </Link>
             </div>
+
+            <ThemeToggle />
 
             <div className="hidden sm:block">
               <LocaleSwitch />

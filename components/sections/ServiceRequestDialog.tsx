@@ -139,7 +139,7 @@ export function ServiceRequestDialog({
       <dialog
         ref={dialogRef}
         aria-labelledby={`${prefix}-title`}
-        className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-3xl bg-canvas p-0 text-ink shadow-[0_28px_56px_-20px_rgba(30,30,30,0.5)] backdrop:bg-ink/60"
+        className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-3xl bg-canvas p-0 text-ink shadow-[0_28px_56px_-20px_rgba(30,30,30,0.5)] backdrop:bg-black/60"
       >
         <div className="p-6 md:p-8">
           <div className="flex items-start justify-between gap-4">

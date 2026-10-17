@@ -16,7 +16,7 @@ export function HeroCodeCard({ label }: { label: string }) {
       dir="ltr"
       className="rounded-3xl bg-mist p-3 shadow-[0_24px_60px_-24px_rgba(30,30,30,0.35)]"
     >
-      <div className="overflow-hidden rounded-2xl bg-ink">
+      <div className="surface-ink overflow-hidden rounded-2xl bg-ink">
         <div className="flex items-center gap-2.5 bg-ink-soft/60 px-4 py-3">
           <span
             aria-hidden="true"

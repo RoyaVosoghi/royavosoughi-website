@@ -54,7 +54,7 @@ export async function ServicesDetail() {
                   <header className="flex items-center gap-4">
                     <span
                       aria-hidden="true"
-                      className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-cobalt text-lg font-bold text-white"
+                      className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-cobalt text-lg font-bold text-on-cobalt"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       {num.format(i + 1)}

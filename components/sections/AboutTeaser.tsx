@@ -18,7 +18,7 @@ export async function AboutTeaser() {
     <Section id="about" tone="mint">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16">
         <Reveal className="mx-auto w-full max-w-sm lg:mx-0">
-          <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-ink">
+          <div className="relative aspect-4/5 overflow-hidden rounded-3xl surface-ink bg-ink">
             <Image
               src="/photos/roya-about.jpg"
               alt={t("photoAlt")}

@@ -5,7 +5,7 @@ type Tone = "light" | "mint" | "forest";
 const tones: Record<Tone, string> = {
   light: "bg-canvas text-ink",
   mint: "bg-mist text-ink",
-  forest: "bg-ink text-canvas",
+  forest: "surface-ink bg-ink text-canvas",
 };
 
 export function Section({

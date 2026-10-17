@@ -73,7 +73,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         <hr className="my-10 border-ink/10" />
         <Markdown source={post.bodyMd} />
 
-        <aside className="mt-16 rounded-3xl bg-ink p-8 text-canvas md:p-10">
+        <aside className="surface-ink mt-16 rounded-3xl bg-ink p-8 text-canvas md:p-10">
           <h2 className="text-2xl text-canvas">{t("ctaTitle")}</h2>
           <p className="mt-3 text-mist">{t("ctaBody")}</p>
           <div className="mt-6">

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* `dark:` follows the visitor's choice from ThemeToggle (data-theme on <html>),
+   not the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* ==========================================================================
    Roya Vosoughi — brand tokens
    "AI engineered for reality"
@@ -24,6 +28,10 @@
   --color-amber: #e3a72f;
   --color-amber-deep: #876012; /* amber for text on light — 5.2:1 */
 
+  /* Text on a solid Cobalt fill. White in light; flips to near-black in dark,
+     where Cobalt itself lightens. */
+  --color-on-cobalt: #ffffff;
+
   /* Type families. --font-display / --font-body are re-pointed per locale below. */
   --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
   --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
@@ -31,6 +39,40 @@
 
   /* Layout */
   --spacing-gutter: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Dark theme — set by ThemeToggle as data-theme="dark" on <html>.
+   The same tokens, re-valued: canvas and ink trade places, Cobalt lightens so
+   links stay readable (7fa6e8 on the dark canvas is 7.3:1), and solid Cobalt
+   buttons carry dark text instead of white (also 7.3:1). Light stays the
+   default; nothing here applies until the visitor opts in.
+   -------------------------------------------------------------------------- */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-canvas: #151413;
+  --color-ink: #f5ebe0;
+  --color-mist: #24221f;
+  --color-ink-soft: #e2d6c8;
+  --color-fog: #b8b0a6;
+  --color-cobalt: #7fa6e8;
+  --color-cobalt-dark: #a3c0f0;
+  --color-cobalt-light: #9dbbee;
+  --color-on-cobalt: #151413;
+  --color-amber-deep: #e3a72f;
+  --btn-press: #000000;
+}
+
+/* Ink surfaces (footer, dark sections, code blocks) stay dark in the dark
+   theme rather than inverting to cream: inside them the tokens go back to
+   their light-theme meaning, with Ink lifted just above the page canvas so
+   the surface still reads as a separate band. */
+:root[data-theme="dark"] .surface-ink {
+  --color-ink: #211f1d;
+  --color-ink-soft: #2e2b28;
+  --color-canvas: #f5ebe0;
+  --color-mist: #ebdfd1;
 }
 
 /* --------------------------------------------------------------------------
@@ -124,7 +166,7 @@
 
   ::selection {
     background-color: var(--color-cobalt);
-    color: #ffffff;
+    color: var(--color-on-cobalt);
   }
 }
 

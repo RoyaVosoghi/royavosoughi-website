@@ -147,7 +147,7 @@ export function VoiceWidget() {
           aria-label={t("title")}
           className="flex h-[min(28rem,60vh)] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border-2 border-ink/15 bg-canvas shadow-[0_20px_50px_rgba(30,30,30,0.25)]"
         >
-          <header className="flex shrink-0 items-center justify-between bg-ink px-[18px] py-3.5">
+          <header className="surface-ink flex shrink-0 items-center justify-between bg-ink px-[18px] py-3.5">
             <div className="flex min-w-0 items-center gap-2.5">
               <NuraAvatar className="h-10 w-10" />
               <div className="min-w-0">
